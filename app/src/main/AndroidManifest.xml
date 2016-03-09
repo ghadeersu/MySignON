@@ -13,15 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activity1"
-            android:label="Activity1"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Activity2"
-            android:label="@string/title_activity_2"
-            android:parentActivityName=".Activity1"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".IntroActivity"
             android:label="@string/title_activity_intro"
             android:theme="@style/AppTheme.NoActionBar">
