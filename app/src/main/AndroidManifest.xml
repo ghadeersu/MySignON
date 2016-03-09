@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="learn.navdrawbase">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="SignOn"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".Activity1"
+            android:label="Activity1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity2"
+            android:label="@string/title_activity_2"
+            android:parentActivityName=".Activity1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".IntroActivity"
+            android:label="@string/title_activity_intro"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".DocumentActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".DocumentOwnerList" />
+        <activity android:name=".MyPdfViewerActivity" />
+        <activity android:name=".SignatureSelectActivity" />
+        <activity
+            android:name=".alertDialog"
+            android:theme="@style/mytheme" />
+        <activity android:name=".CaptureSignatureActivity" />
+        <activity android:name=".Request_Signture" />
+        <activity android:name=".DocumentSignedList" />
+        <activity android:name=".RigesterActivity" />
+        <activity android:name=".hash" />
+        <activity android:name=".SignAndVerifyActivity" />
+        <activity android:name=".DocumentWaitingList" />
+        <activity android:name=".GetSignatureActivity" />
+        <activity android:name=".SignatureActivity" />
+        <activity android:name=".ViewDocumentActivity"></activity>
+    </application>
+
+</manifest>

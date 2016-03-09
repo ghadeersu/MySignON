@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e8e8e8"
+    android:layout_gravity="bottom"
+    android:weightSum="1">
+
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="346dp"
+        android:id="@+id/webView"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1.00" />
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#979797">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"
+            android:id="@+id/button2"
+            android:background="#7724cc"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="20dp"
+            android:layout_column="0"
+            android:layout_gravity="left"/>
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:id="@+id/signimage"
+            android:src="@drawable/signature"
+            android:scaleType="fitCenter"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_column="1"
+            android:layout_gravity="center_horizontal"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign"
+            android:id="@+id/button"
+            android:background="#7724cc"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_column="2"
+            android:layout_gravity="right"/>
+
+    </TableRow>
+</LinearLayout>

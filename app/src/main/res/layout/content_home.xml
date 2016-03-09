@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="learn.navdrawbase.HomeActivity"
+    android:background="#e0dfe1"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_home"
+    android:id="@+id/activity1_container">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        android:weightSum="1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:id="@+id/textView14"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="30dp" />
+
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:id="@+id/imageButton"
+                android:src="@drawable/photo512"
+                android:scaleType="fitXY"
+                android:layout_marginLeft="28dp"
+                android:layout_marginStart="28dp"
+                android:layout_below="@+id/textView15"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_row="0"
+
+                android:layout_column="2"
+                android:layout_rowSpan="2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Name"
+                android:id="@+id/textView15"
+                android:textSize="15dp"
+                android:textIsSelectable="true"
+                android:textColor="#000000"
+                android:layout_alignLeft="@+id/imageButton2"
+                android:layout_alignStart="@+id/imageButton2"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.13"
+                android:layout_row="0"
+                android:layout_column="4"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"/>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:id="@+id/homeSignatureImageView"
+                android:scaleType="fitXY"
+                android:layout_row="1"
+                android:layout_column="4"
+                android:layout_marginLeft="25dp"
+                android:layout_marginStart="25dp"
+                android:layout_gravity="center_horizontal" />
+        </GridLayout>
+
+        <Button
+            android:layout_width="148dp"
+            android:layout_height="wrap_content"
+            android:text="  Upload Document  "
+            android:id="@+id/homeUploadButton"
+            android:layout_column="38"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="60dp"
+            android:background="#7724cc"
+            android:textColor="#ffffff"
+            android:onClick="uploadDocument"
+            android:layout_gravity="center_horizontal"
+            android:clickable="false" />
+
+        <Button
+            android:layout_width="148dp"
+            android:layout_height="wrap_content"
+            android:text="    Sign Document    "
+            android:id="@+id/button8"
+            android:layout_column="38"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:background="#7724cc"
+            android:textColor="#ffffff"
+            android:onClick="testOn2"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:id="@+id/button3"
+                android:textColor="#ffffff"
+                android:background="#7724cc"
+                android:onClick="testOn3" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Request"
+                android:id="@+id/button4"
+                android:textColor="#ffffff"
+                android:background="#7724cc"
+                android:onClick="testOn4"
+                android:layout_marginLeft="30dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
+

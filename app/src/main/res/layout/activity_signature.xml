@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="46dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Create Signature"
+        android:id="@+id/textView16"
+        android:background="#464646"
+        android:textColor="#ffffff"
+        android:textSize="30dp"
+        android:textAlignment="center" />
+    <TextView android:layout_height="wrap_content" android:id="@+id/textView2"
+        android:text="Please Sign below ..." android:maxLength="30"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.28" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/editText3"
+        android:layout_weight="0.12"
+        android:text="By clicking ok you agree that this electronic signature is a representation of your signature and is equivalent to your wet signature." />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:id="@+id/button10"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>
