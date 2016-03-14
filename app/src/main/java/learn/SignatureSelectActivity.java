@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -44,6 +44,8 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import learn.R;
 
 public class SignatureSelectActivity extends ListActivity {
 

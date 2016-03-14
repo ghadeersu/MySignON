@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 
 import android.app.Activity;
@@ -36,6 +36,12 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+
+import learn.BaseActivity;
+import learn.DocumentOwnerList;
+import learn.DocumentSignedList;
+import learn.R;
+import learn.session;
 
 public class HomeActivity extends BaseActivity {
 

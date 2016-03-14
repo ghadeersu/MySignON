@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 /**
  * Created by OTAKU on 06/03/2016.

@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import learn.R;
+import learn.User;
+import learn.session;
 
 /**
  * Created by Naseebah on 26/02/16.

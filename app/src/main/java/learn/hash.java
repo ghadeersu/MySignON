@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import java.io.File;
+
+import learn.R;
+import learn.SHA512;
+import learn.SignAndVerifyActivity;
 
 public class hash extends AppCompatActivity {
     public TextView checksum;

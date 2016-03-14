@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -57,6 +57,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Calendar;
+
+import learn.R;
+import learn.SignatureArrayAdapter;
+import learn.session;
 
 public class CaptureSignatureActivity extends AppCompatActivity {
 
@@ -263,9 +267,9 @@ public class CaptureSignatureActivity extends AppCompatActivity {
                 String tSignatureName=SignatureName.getText().toString();
                 String tSignatureBase64=BitMapToString(resized);
                 ///temp
-                String tSignerID=session.userkey;
+                String tSignerID= session.userkey;
                 SignatureArrayAdapter mAdapter = new SignatureArrayAdapter(CaptureSignatureActivity.this);
-               learn.navdrawbase.signature CurrentSignature = new learn.navdrawbase.signature(null, tSignatureBase64, tSignatureName,tSignerID);
+               learn.signature CurrentSignature = new learn.signature(null, tSignatureBase64, tSignatureName,tSignerID);
                 mAdapter.addItem(CurrentSignature);
 
 

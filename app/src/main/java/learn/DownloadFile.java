@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 /**
  * Created by Mona on 3/6/2016.
@@ -25,6 +25,8 @@ import android.widget.Button;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import learn.R;
 
 public class DownloadFile extends AppCompatActivity {
 

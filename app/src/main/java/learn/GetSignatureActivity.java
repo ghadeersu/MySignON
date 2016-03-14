@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import learn.R;
 
 public class GetSignatureActivity extends AppCompatActivity {
 

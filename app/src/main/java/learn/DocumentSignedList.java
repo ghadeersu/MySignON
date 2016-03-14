@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -35,6 +35,10 @@ import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.io.File;
+
+import learn.R;
+import learn.User;
+import learn.session;
 
 
 /**

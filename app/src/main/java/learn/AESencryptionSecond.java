@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 /**
  * Created by Naseebah on 10/02/16.
@@ -23,6 +23,8 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
+import learn.CryptoException;
 
 /**
  * A utility class that encrypts or decrypts a file.

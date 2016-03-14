@@ -1,8 +1,10 @@
-package learn.navdrawbase;
+package learn;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import learn.R;
 
 public class DocumentActivity extends BaseActivity {
 

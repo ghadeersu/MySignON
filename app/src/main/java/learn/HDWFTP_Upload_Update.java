@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 /**
  * Created by daniah on 2/29/2016.
@@ -24,6 +24,10 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
+import learn.documents;
+import learn.SHA512;
+import learn.session;
+
 public class HDWFTP_Upload_Update extends AsyncTask <String, Void, Long>{
 
     private Context context;
@@ -32,7 +36,7 @@ public class HDWFTP_Upload_Update extends AsyncTask <String, Void, Long>{
     documentsArrayAdapter documentAdapter;
     File f ;
     byte[] key;
-    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+session.docKey+"/");
+    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+ session.docKey+"/");
 String originalOwner;
 
 
@@ -127,7 +131,7 @@ catch (CryptoException ex) {
 
                         documentURL="ftp.byethost4.com/htdocs/"+originalOwner+"/"+Picture_File_name+"/";
                         System.out.println("ftp.byethost4.com/htdocs/"+originalOwner+"/"+Picture_File_name+"/");
-                        messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
+                        messagedigest= SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
                         System.out.println(messagedigest);
                         System.out.println(ekey);
                         ///temp

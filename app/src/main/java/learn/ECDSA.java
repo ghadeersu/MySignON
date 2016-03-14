@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 
 /**
@@ -7,6 +7,9 @@ package learn.navdrawbase;
 
 import java.math.BigInteger;
 import java.util.Random;
+
+import learn.Curve;
+import learn.Point;
 
 
 /**

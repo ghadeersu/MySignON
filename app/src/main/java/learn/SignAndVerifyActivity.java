@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import learn.R;
 
 public class SignAndVerifyActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 /**
  * Created by Omaimah on 2/26/2016.
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import learn.session;
 
 public class RequestArrayAdapter extends BaseAdapter implements ChildEventListener {
 

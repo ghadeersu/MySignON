@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Context;
 import android.view.View;

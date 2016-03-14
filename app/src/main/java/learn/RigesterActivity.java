@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -52,9 +52,9 @@ public class RigesterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rigester);
+        setContentView(learn.R.layout.activity_rigester);
         Firebase.setAndroidContext(this);
-        etBirthdate = (EditText) findViewById(R.id.registerBirthdateEditText);
+        etBirthdate = (EditText) findViewById(learn.R.id.registerBirthdateEditText);
 
     }
 
@@ -69,11 +69,11 @@ public class RigesterActivity extends AppCompatActivity {
         EditText etName, etEmail, etPassword, etRePassword;
         Button register;
 
-        etName = (EditText) findViewById(R.id.registerNameEditText);
-        etEmail = (EditText) findViewById(R.id.registerEmailEditText);
-        etPassword = (EditText) findViewById(R.id.registerPasswordEditText);
-        etRePassword = (EditText) findViewById(R.id.registerRePasswordEditText);
-        register = (Button) findViewById(R.id.registerRegisterButton);
+        etName = (EditText) findViewById(learn.R.id.registerNameEditText);
+        etEmail = (EditText) findViewById(learn.R.id.registerEmailEditText);
+        etPassword = (EditText) findViewById(learn.R.id.registerPasswordEditText);
+        etRePassword = (EditText) findViewById(learn.R.id.registerRePasswordEditText);
+        register = (Button) findViewById(learn.R.id.registerRegisterButton);
 
         String name = etName.getText().toString();
         final String email = etEmail.getText().toString().trim().toLowerCase();
@@ -114,15 +114,15 @@ public class RigesterActivity extends AppCompatActivity {
         {
             Firebase.setAndroidContext(this);
             final Firebase mFirebase = new Firebase ("https://torrid-heat-4458.firebaseio.com/users");
-            final UserAdapter mAdapter = new UserAdapter(this);
-            final User CurrentUser = new User(null, email, birthdate, password, name);
+            final learn.UserAdapter mAdapter = new learn.UserAdapter(this);
+            final learn.User CurrentUser = new learn.User(null, email, birthdate, password, name);
             EmailExist(email, CurrentUser, mAdapter);
 
 
         }
     }
 
-    private void EmailExist(String email, final User currentUser, final UserAdapter mAdapter) {
+    private void EmailExist(String email, final learn.User currentUser, final learn.UserAdapter mAdapter) {
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users");
         Query queryRef = ref.orderByChild("Email").equalTo(email);
 
@@ -151,7 +151,7 @@ public class RigesterActivity extends AppCompatActivity {
 
     }
 
-    public void createAccount (final User CurrentUser, final UserAdapter mAdapter)
+    public void createAccount (final learn.User CurrentUser, final learn.UserAdapter mAdapter)
     {
         //final long PrK = CurrentUser.GeneratePK();
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());

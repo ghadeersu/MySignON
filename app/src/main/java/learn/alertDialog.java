@@ -1,7 +1,9 @@
-package learn.navdrawbase;
+package learn;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import learn.R;
 
 
 public class alertDialog extends AppCompatActivity {

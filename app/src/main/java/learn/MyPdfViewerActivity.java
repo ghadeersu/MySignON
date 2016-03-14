@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 
 /**
@@ -27,6 +27,7 @@ package learn.navdrawbase;
 
         import java.io.FileOutputStream;
         import java.io.IOException;
+        import learn.R;
 
 public class MyPdfViewerActivity extends Pdftry {//implements View.OnTouchListener {
 

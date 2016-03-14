@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.support.v7.app.AppCompatActivity;
 

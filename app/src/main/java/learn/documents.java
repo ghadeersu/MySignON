@@ -1,4 +1,6 @@
-package learn.navdrawbase;
+package learn;
+
+import learn.User;
 
 /**
  * Created by Naseebah on 24/02/16.

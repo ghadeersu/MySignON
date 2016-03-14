@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -129,6 +129,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+
+import learn.SignatureSelectActivity;
+import learn.session;
 
 //////////////////////////////////////Editing to PDF Viewer library.java/////////////////////////////
 

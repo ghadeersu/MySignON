@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import learn.R;
 
 /**
  * Created by daniah on 2/22/2016.

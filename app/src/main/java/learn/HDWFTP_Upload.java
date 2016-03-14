@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 /**
  * Created by daniah on 2/29/2016.
@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+
+import learn.SHA512;
+import learn.session;
 
 public class HDWFTP_Upload extends AsyncTask <String, Void, Long>{
 
@@ -67,7 +70,7 @@ public class HDWFTP_Upload extends AsyncTask <String, Void, Long>{
                 }
                 //ftpPrintFilesList("/"+session.userkey+"/");
 ///////////////create directory
-                if(!(ftpClient.changeWorkingDirectory("/htdocs/"+session.userkey+"/"))){
+                if(!(ftpClient.changeWorkingDirectory("/htdocs/"+ session.userkey+"/"))){
                     ftpClient.makeDirectory("/htdocs/"+session.userkey+"/");
                     ftpClient.changeWorkingDirectory("/htdocs/" + session.userkey + "/");
                 }
@@ -140,7 +143,7 @@ catch (CryptoException ex) {
                         documentName=Picture_File_name;
                         documentOwnerID=session.userkey;
                         documentURL="ftp.byethost4.com/htdocs/"+session.userkey+"/"+Picture_File_name+"/";
-                        messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
+                        messagedigest= SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
                         ///temp
                         document=new documents(null,messagedigest,ekey,documentURL,documentOwnerID,documentName);
                         documentAdapter=new documentsArrayAdapter(context){

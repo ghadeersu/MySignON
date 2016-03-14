@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,6 +17,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+
+import learn.R;
+import learn.User;
+import learn.UserAdapter;
 
 
 public class SettingActivity extends BaseActivity {

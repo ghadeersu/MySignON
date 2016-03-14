@@ -1,4 +1,4 @@
-package learn.navdrawbase;
+package learn;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,6 +36,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+
+import learn.R;
 
 public class IntroActivity extends FragmentActivity {
 
@@ -45,7 +47,7 @@ public class IntroActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
-        homeintent= new Intent(this,HomeActivity.class);
+        homeintent= new Intent(this, learn.HomeActivity.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -79,7 +81,7 @@ public class IntroActivity extends FragmentActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(IntroActivity.this, RigesterActivity.class));
+                        startActivity(new Intent(IntroActivity.this, learn.RigesterActivity.class));
 
                     }
 
@@ -88,11 +90,11 @@ public class IntroActivity extends FragmentActivity {
         );
     }
     public void storeSignatureButtonClick(View v){
-        startActivity(new Intent(IntroActivity.this, hash.class));
+        startActivity(new Intent(IntroActivity.this, learn.hash.class));
 
     }
     public void sha512ButtonClick(View v){
-        startActivity(new Intent(IntroActivity.this, SignatureSelectActivity.class));
+        startActivity(new Intent(IntroActivity.this, learn.SignatureSelectActivity.class));
 
 
     }
