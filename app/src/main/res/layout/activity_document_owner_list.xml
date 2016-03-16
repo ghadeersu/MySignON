@@ -65,13 +65,13 @@
             android:transcriptMode="alwaysScroll"
             />
 
-        <Button
+    <!--    <Button
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:text="Upload"
             android:id="@+id/documentownerlistUploadButton"
             android:layout_gravity="center_horizontal"/>
-
+    -->
 
     </LinearLayout>
 

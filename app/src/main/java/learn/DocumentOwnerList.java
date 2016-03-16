@@ -27,14 +27,6 @@ import com.firebase.client.ValueEventListener;
 
 import java.io.File;
 
-import learn.Pdftry;
-import learn.R;
-import learn.Request_Signture;
-import learn.User;
-import learn.documents;
-import learn.documentsArrayAdapter;
-import learn.session;
-
 
 /**
  * Created by Naseebah on 26/02/16.
@@ -108,11 +100,19 @@ public class DocumentOwnerList extends ListActivity {
             }
         };
     }
+
+    String DocURL , EncKey,DocName,DocOwner;
+    String Operation;
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         final documents currentdocuments;
         currentdocuments = (documents) getListAdapter().getItem(position);
         session.docKey = currentdocuments.getKey();
+        DocURL = currentdocuments.getDocumentURL();
+        EncKey = currentdocuments.getEkey();
+        DocName=currentdocuments.getDocumentName();
+        DocOwner=currentdocuments.getDocumentOwnerID();
 
 
 
@@ -121,17 +121,10 @@ public class DocumentOwnerList extends ListActivity {
         viewB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /// go to webview activity
-                // File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/DCIM/signon/DES.pdf");
-                // File file = new File(currentdocuments.getDocumentURL());
+                Operation = "View";
+                FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                new FTP_Download(DocumentOwnerList.this).execute(DocURL);
 
-                //////////////////////////// path from download
-                File file = new File("ftp.byethost4.com/htdocs/w.pdf/");
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);
             }
         });
 
@@ -140,11 +133,9 @@ public class DocumentOwnerList extends ListActivity {
         signB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// go to Mypdfviewer activity
-                String newPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/signon/word.pdf";
-                Intent i = new Intent(DocumentOwnerList.this, MyPdfViewerActivity.class);
-                i.putExtra(Pdftry.EXTRA_PDFFILENAME, newPath);
-                startActivity(i);
+                Operation = "Sign";
+                FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                new FTP_Download(DocumentOwnerList.this).execute(DocURL);
 
             }
         });
@@ -154,6 +145,12 @@ public class DocumentOwnerList extends ListActivity {
         requestB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Operation = "Request";
+                FTP_Download.iniate(DocName,EncKey,DocOwner,Operation);
+                new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+
+
                 ////// go to request Activity
                 // search for (documentId + session.userkey) in requests => if snapshot.exist() => cannot request
                 //                                                                              else => start request activity
@@ -169,7 +166,7 @@ public class DocumentOwnerList extends ListActivity {
                                 Toast toast = Toast.makeText(DocumentOwnerList.this, "you have already request signers to sign this document", Toast.LENGTH_LONG);
                                 toast.show();
                             } else {
-                                startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
+                                // startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
                             }
                         }
                     }
@@ -179,7 +176,7 @@ public class DocumentOwnerList extends ListActivity {
 
                     }
                 });
-                ////// go to request Activity
+
 
 
             }

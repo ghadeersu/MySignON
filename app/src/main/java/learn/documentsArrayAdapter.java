@@ -1,12 +1,13 @@
 package learn;
-
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -15,35 +16,32 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import learn.R;
-import learn.User;
-import learn.session;
-
 /**
  * Created by Naseebah on 26/02/16.
  */
-public class documentsArrayAdapter extends BaseAdapter implements ChildEventListener {
+public abstract class documentsArrayAdapter extends BaseAdapter implements ChildEventListener {
 
 
     private final LayoutInflater mInflater;
     public List<documents> mdocuments;
-    private List<documents> waitdocuments;
+
     private Firebase mFireBase;
     private Firebase userFire;
+    private Context currentContext;
 
     public documentsArrayAdapter(Context context) {
         Firebase.setAndroidContext(context);
         mInflater = LayoutInflater.from(context);
         mdocuments = new ArrayList<documents>();
-        waitdocuments = new ArrayList<documents>();
+
         mFireBase=new Firebase("https://torrid-heat-4458.firebaseio.com/documents");
         mFireBase.addChildEventListener(this);
+        currentContext=context;
 
     }
 
@@ -78,7 +76,7 @@ public class documentsArrayAdapter extends BaseAdapter implements ChildEventList
         newDocument.put("ekey", doc.getEkey());
         newDocument.put("messagedigest", doc.getMessagedigest());
         mFireBase.child(doc.getKey()).child("documentName").setValue(doc.getDocumentName());
-       // mFireBase.child(doc.getKey()).child("documentOwnerID").setValue(doc.getDocumentOwnerID());
+        // mFireBase.child(doc.getKey()).child("documentOwnerID").setValue(doc.getDocumentOwnerID());
         //mFireBase.child(doc.getKey()).child("documentURL").setValue(doc.getDocumentURL());
         mFireBase.child(doc.getKey()).child("ekey").setValue(doc.getEkey());
         mFireBase.child(doc.getKey()).child("messagedigest").setValue(doc.getMessagedigest());
@@ -108,7 +106,7 @@ public class documentsArrayAdapter extends BaseAdapter implements ChildEventList
         TextView childOwnertxt= (TextView)view.findViewById(R.id. docOwnertxt);
         childtxt.setText(child_doc.getDocumentName());
         childOwnertxt.setText(child_doc.getOwner().getUsername());
-        Button viewB= (Button)view.findViewById(R.id.docexviewbutton);
+       /* Button viewB= (Button)view.findViewById(R.id.docexviewbutton);
         Button signB= (Button)view.findViewById(R.id.docexsignbutton);
         Button requestB= (Button)view.findViewById(R.id.docexrequestbutton);
         viewB.setOnClickListener(new View.OnClickListener() {
@@ -130,13 +128,36 @@ public class documentsArrayAdapter extends BaseAdapter implements ChildEventList
             public void onClick(View v) {
 
                 ////// go to request Activity
+                // search for (documentId + session.userkey) in requests => if snapshot.exist() => cannot request
+                //                                                                              else => start request activity
+                Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
 
+                Query query = ref.orderByChild("requesterId").equalTo(session.userkey);
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                            if (snapshot.child("rDocumentId").equals("1")) {
+                                Toast.makeText(currentContext.getApplicationContext(), "you have already request signers to sign this document", Toast.LENGTH_SHORT).show();
+                            } else {
+                                currentContext.startActivity(new Intent(currentContext, Request_Signture.class));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
             }
-        });
+        });*/
         return view;
     }
     @Override
-    public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
+    public abstract void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName);
+    /*{
         final String Skey = dataSnapshot.getKey();
         final String documentName = dataSnapshot.child("documentName").getValue(String.class);
         final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
@@ -185,7 +206,7 @@ public class documentsArrayAdapter extends BaseAdapter implements ChildEventList
 
         notifyDataSetChanged();// update adapter
 
-    }
+    }*/
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {

@@ -63,6 +63,7 @@ public class HomeActivity extends BaseActivity {
         if(session.homecounter==0){
         Bundle extras = getIntent().getExtras();
         session.userkey = extras.getString("key");
+        session.userEmail = extras.getString("Email");
         session.homecounter=1;
         }
 

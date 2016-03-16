@@ -15,46 +15,58 @@
         android:text="Medium Text"
         android:id="@+id/docchildtxt" />
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:textColor="#bbb8b8"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:textSize="13dp"
+        android:id="@+id/docOwnertxt" />
+    <!--
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-            android:paddingRight="?android:attr/expandableListPreferredChildPaddingLeft"
-            android:textColor="#bbb8b8"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:textSize="13dp"
-            android:id="@+id/docOwnertxt" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+                android:paddingRight="?android:attr/expandableListPreferredChildPaddingLeft"
+                android:textColor="#bbb8b8"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:textSize="13dp"
+                android:id="@+id/docOwnertxt" />
 
-        <Button
-            android:layout_width="62dp"
-            android:layout_height="34dp"
-            android:text="View"
-            android:textSize="13sp"
-            android:id="@+id/docexviewbutton" />
+            <Button
+                android:layout_width="62dp"
+                android:layout_height="34dp"
+                android:text="View"
+                android:textSize="13sp"
+                android:id="@+id/docexviewbutton" />
 
-        <Button
-            android:layout_width="64dp"
-            android:layout_height="34dp"
-            android:text="Sign"
-            android:textSize="13sp"
-            android:id="@+id/docexsignbutton"
-            android:layout_gravity="center_horizontal" />
+            <Button
+                android:layout_width="64dp"
+                android:layout_height="34dp"
+                android:text="Sign"
+                android:textSize="13sp"
+                android:id="@+id/docexsignbutton"
+                android:layout_gravity="center_horizontal" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="34dp"
-            android:text="REQUEST"
-            android:textSize="13sp"
-            android:id="@+id/docexrequestbutton"
-            android:layout_gravity="right" />
-    </LinearLayout>
-
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:text="REQUEST"
+                android:textSize="13sp"
+                android:id="@+id/docexrequestbutton"
+                android:layout_gravity="right" />
+        </LinearLayout>
+    -->
 </LinearLayout>
