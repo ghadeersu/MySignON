@@ -37,7 +37,8 @@ public class AESencryptionSecond {
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES";
 
-    ///////////if we want to encryption store key in a text file as bytes ---> call this method with encryption
+//if we want to encryption store key in a text file as bytes
+// ---> call this method with encryption
     public static void storeKey (byte[] ekey)throws IOException
     {
         try {
@@ -55,7 +56,8 @@ public class AESencryptionSecond {
 
     }
 
-    ///////////if we want to read encryption key that was stored in a text file as bytes ---> call this method with decryption
+//if we want to read encryption key that was stored in a text file as bytes
+// ---> call this method with decryption
     public static byte[] ReadKey ()throws IOException
     {
         try {

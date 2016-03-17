@@ -70,8 +70,7 @@ public class ECDSA {
         String signPointString = signPoint.toHexString();
         return signPointString;
     }
-
-    //For checking A's signature in message m. signature is in hex string representation
+//For checking A's signature in message m. signature is in hex string representation
     //Returns true if the signature is valid, returns false if it is invalid
     public boolean checkSignature(String m, String signature){
         int len = signature.length();

@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class SHA512 {
     private static final String TAG = "SHA-512";
-
+    // get stored hash and file to check them
     public static boolean checkSHA512(String sha512, File updateFile) {
         if (TextUtils.isEmpty(sha512) || updateFile == null) {
             Log.e(TAG, "SHA-512 string empty or updateFile null");
@@ -35,7 +35,7 @@ public class SHA512 {
 
         return calculatedDigest.equalsIgnoreCase(sha512);
     }
-
+    // get file
     public static String calculateSHA512(File updateFile) {
         MessageDigest digest;
         try {
