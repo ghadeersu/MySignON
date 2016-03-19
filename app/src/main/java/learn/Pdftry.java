@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -189,14 +190,12 @@ public abstract class Pdftry extends Activity {
     private float mZoom;
     private File mTmpFile;
     private ProgressDialog progress;
-    public String signPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/letter.pdf";
+
+    public String signPath;
     public String newP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/l.pdf";
-    public String signaturePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/sign.png";
     public byte[] signatureByte;
-    File fileTosign = new File(signPath);
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Here we can change the path
-    public String newPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/word.pdf";
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -209,8 +208,7 @@ public abstract class Pdftry extends Activity {
 
     private Thread backgroundThread;
     private Handler uiHandler;
-    public String messagedigest="b1eb2c04b35cea4766c4f438fd983af0ce6098ba918d938e1d03fc4e39f11f46395e2a8e5b730c8f83935ca842230f964c1ea9690333f4a4feb234cda4ff0ac8";
-
+    public String messagedigest;
     @Override
     public Object onRetainNonConfigurationInstance() {
         // return a reference to the current instance
@@ -247,6 +245,9 @@ public abstract class Pdftry extends Activity {
         super.onCreate(savedInstanceState);
 
         Log.i(TAG, "onCreate");
+        Intent intentE = getIntent();
+        String path = intentE.getStringExtra("FullPath");
+        signPath=path;
         Firebase.setAndroidContext(this);
         //setContentView(R.layout.activity_view_document);
         //progress = ProgressDialog.show(PdfViewerActivity.this, "Loading", "Loading PDF Page");
@@ -983,7 +984,7 @@ public abstract class Pdftry extends Activity {
 
                     Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
                     Query queryRef = ref.orderByKey().equalTo(session.docKey);
-
+                    System.out.println(session.docKey);
                     ValueEventListener listener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -992,8 +993,9 @@ public abstract class Pdftry extends Activity {
                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                                         if (child.getKey().equals(session.docKey)) {
                                             messagedigest = child.child("messagedigest").getValue(String.class);
-
-                                            if (true) {
+                                            System.out.println(messagedigest + "      " + new File(signPath).getPath());
+                                            System.out.println(SHA512.calculateSHA512(new File(signPath)));
+                                            if (SHA512.checkSHA512(messagedigest,new File(signPath))) {
                                                 Matrix matrix = signature.getImageMatrix();
                                                 // Get the values of the matrix
                                                 float[] values = new float[9];
