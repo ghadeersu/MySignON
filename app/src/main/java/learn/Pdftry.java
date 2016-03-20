@@ -995,6 +995,17 @@ public abstract class Pdftry extends Activity {
                                             messagedigest = child.child("messagedigest").getValue(String.class);
                                             System.out.println(messagedigest + "      " + new File(signPath).getPath());
                                             System.out.println(SHA512.calculateSHA512(new File(signPath)));
+                                            if (session.docKey!= null)
+                                            {
+                                                System.out.println(session.docKey);
+                                                System.out.println("yes");
+
+                                            }
+                                            else
+                                            {
+                                                System.out.println("no it is null");
+
+                                            }
                                             if (SHA512.checkSHA512(messagedigest,new File(signPath))) {
                                                 Matrix matrix = signature.getImageMatrix();
                                                 // Get the values of the matrix
