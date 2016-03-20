@@ -1,5 +1,27 @@
 package learn;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.StrictMode;
+import android.util.Log;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+
+
 /**
  * Created by daniah on 2/29/2016.
  */
@@ -25,10 +47,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
-import learn.SHA512;
-import learn.session;
-
-public class HDWFTP_Upload extends AsyncTask <String, Void, Long>{
+public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
 
     private Context context;
 
@@ -70,18 +89,18 @@ public class HDWFTP_Upload extends AsyncTask <String, Void, Long>{
                 }
                 //ftpPrintFilesList("/"+session.userkey+"/");
 ///////////////create directory
-                if(!(ftpClient.changeWorkingDirectory("/htdocs/"+ session.userkey+"/"))){
+                if(!(ftpClient.changeWorkingDirectory("/htdocs/"+session.userkey+"/"))){
                     ftpClient.makeDirectory("/htdocs/"+session.userkey+"/");
                     ftpClient.changeWorkingDirectory("/htdocs/" + session.userkey + "/");
                 }
-              // ftpClient.changeToParentDirectory();
+                // ftpClient.changeToParentDirectory();
 //                int length=ftpClient.listNames().length;
-          //      System.out.println("length"+length);
+                //      System.out.println("length"+length);
 
-       //         String[] names=ftpClient.listNames();
+                //         String[] names=ftpClient.listNames();
 
                 String Picture_File_name = new File(FULL_PATH_TO_LOCAL_FILE[0]).getName();
-               // boolean exist=false;
+                // boolean exist=false;
              /*   for (String name : names) {
                     if (name.equals(Picture_File_name))
                         exist = true;
@@ -93,23 +112,23 @@ public class HDWFTP_Upload extends AsyncTask <String, Void, Long>{
                 //exist=checkName(new File(FULL_PATH_TO_LOCAL_FILE[0]));
 
 
-                   System.out.println("inside f");
+                System.out.println("inside f");
                 if (ftpClient.getReplyString().contains("250")) {
                     ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
                     //////////////////encrypt////////////////////////////
-try {
-    f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
-    ekey = AESencryptionSecond.getencryptioKey();
-    key = ekey.getBytes(Charset.forName("ASCII"));
-    AESencryptionSecond.encrypt(key, f, f);
-    System.out.println("enc suc");
-    System.out.println(ekey);
-}
-catch (CryptoException ex) {
-    System.out.println("enc not s");
-    System.out.println(ex.getMessage());
-    ex.printStackTrace();
-}
+                    try {
+                        f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
+                        ekey = AESencryptionSecond.getencryptioKey();
+                        key = ekey.getBytes(Charset.forName("ASCII"));
+                        AESencryptionSecond.encrypt(key, f, f);
+                        System.out.println("enc suc");
+                        System.out.println(ekey);
+                    }
+                    catch (CryptoException ex) {
+                        System.out.println("enc not s");
+                        System.out.println(ex.getMessage());
+                        ex.printStackTrace();
+                    }
 
 
 
@@ -136,38 +155,38 @@ catch (CryptoException ex) {
                     }
                     if(!exist){
 
-                    boolean result = ftpClient.storeFile(Picture_File_name, buffIn);
+                        boolean result = ftpClient.storeFile(Picture_File_name, buffIn);
 
-                    if (result) {
-                        System.out.println("Success");
-                        documentName=Picture_File_name;
-                        documentOwnerID=session.userkey;
-                        documentURL="ftp.byethost4.com/htdocs/"+session.userkey+"/"+Picture_File_name+"/";
-                        messagedigest= SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
-                        ///temp
-                        document=new documents(null,messagedigest,ekey,documentURL,documentOwnerID,documentName);
-                        documentAdapter=new documentsArrayAdapter(context){
-                            public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName){}
+                        if (result) {
+                            System.out.println("Success");
+                            documentName=Picture_File_name;
+                            documentOwnerID=session.userkey;
+                            documentURL="ftp.byethost4.com/htdocs/"+session.userkey+"/"+Picture_File_name+"/";
+                            messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
+                            ///temp
+                            document=new documents(null,messagedigest,ekey,documentURL,documentOwnerID,documentName);
+                            documentAdapter=new documentsArrayAdapter(context){
+                                public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName){}
 
-                        };
-                        documentAdapter.addItem(document);
+                            };
+                            documentAdapter.addItem(document);
+                        }
+
+
+                        System.out.println("File saved");
+
+
+                        ftpClient.logout();
+                        ftpClient.disconnect();
+                        try {
+                            AESencryptionSecond.decrypt(key, f, f);
+                        }
+                        catch (CryptoException ex) {
+                            System.out.println(ex.getMessage());
+                            ex.printStackTrace();
+                        }
+
                     }
-
-
-                    System.out.println("File saved");
-
-
-                    ftpClient.logout();
-                    ftpClient.disconnect();
-                    try {
-                        AESencryptionSecond.decrypt(key, f, f);
-                    }
-                    catch (CryptoException ex) {
-                        System.out.println(ex.getMessage());
-                        ex.printStackTrace();
-                    }
-
-                }
                     else{
 
                         context.startActivity(new Intent(context, alertDialog.class));
@@ -239,14 +258,14 @@ catch (CryptoException ex) {
              * EBCDIC_FILE_TYPE .etc. Here, I use BINARY_FILE_TYPE
              * for transferring text, image, and compressed files.
              */
-              mFTPClient.enterLocalPassiveMode();
+                mFTPClient.enterLocalPassiveMode();
                 FTPFile[] ftpFiles = mFTPClient.listFiles("/htdocs/"+session.userkey+"/");
                 int length = ftpFiles.length;
                 Log.i(TAG, "connection : " + length);
                 for (int i = 0; i < length; i++) {
                     String name = ftpFiles[i].getName();
                     if(name.equals(f.getName()))
-                    return true;
+                        return true;
 
                 }
                 return false;

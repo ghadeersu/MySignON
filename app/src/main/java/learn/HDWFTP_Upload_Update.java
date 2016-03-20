@@ -24,10 +24,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
-import learn.documents;
-import learn.SHA512;
-import learn.session;
-
 public class HDWFTP_Upload_Update extends AsyncTask <String, Void, Long>{
 
     private Context context;
@@ -36,8 +32,8 @@ public class HDWFTP_Upload_Update extends AsyncTask <String, Void, Long>{
     documentsArrayAdapter documentAdapter;
     File f ;
     byte[] key;
-    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+ session.docKey+"/");
-String originalOwner;
+    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+session.docKey+"/");
+    String originalOwner;
 
 
     HDWFTP_Upload_Update(Context context){
@@ -62,7 +58,7 @@ String originalOwner;
                 }
             });
             //Query q =ref.orderByChild("documentOwnerID");
-           // q.
+            // q.
 
             FTPClient ftpClient = new FTPClient();
             int reply;
@@ -85,7 +81,7 @@ String originalOwner;
                 }
 ///////////////create directory
 
-                    ftpClient.changeWorkingDirectory("/htdocs/" + originalOwner + "/");
+                ftpClient.changeWorkingDirectory("/htdocs/" + originalOwner + "/");
                 System.out.println("ASS:" + "/htdocs/" + originalOwner + "/");
                 String Picture_File_name = new File(FULL_PATH_TO_LOCAL_FILE[0]).getName();
                 System.out.println("ASS:" + Picture_File_name);
@@ -93,18 +89,18 @@ String originalOwner;
                 if (ftpClient.getReplyString().contains("250")) {
                     ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
                     //////////////////encrypt////////////////////////////
-try {
-    f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
-    ekey = AESencryptionSecond.getencryptioKey();
-    key = ekey.getBytes(Charset.forName("ASCII"));
-    AESencryptionSecond.encrypt(key, f, f);
-    System.out.println("enc suc");
-    System.out.println(ekey);
-}
-catch (CryptoException ex) {
-    System.out.println(ex.getMessage());
-    ex.printStackTrace();
-}
+                    try {
+                        f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
+                        ekey = AESencryptionSecond.getencryptioKey();
+                        key = ekey.getBytes(Charset.forName("ASCII"));
+                        AESencryptionSecond.encrypt(key, f, f);
+                        System.out.println("enc suc");
+                        System.out.println(ekey);
+                    }
+                    catch (CryptoException ex) {
+                        System.out.println(ex.getMessage());
+                        ex.printStackTrace();
+                    }
 
 
 
@@ -131,7 +127,7 @@ catch (CryptoException ex) {
 
                         documentURL="ftp.byethost4.com/htdocs/"+originalOwner+"/"+Picture_File_name+"/";
                         System.out.println("ftp.byethost4.com/htdocs/"+originalOwner+"/"+Picture_File_name+"/");
-                        messagedigest= SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
+                        messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
                         System.out.println(messagedigest);
                         System.out.println(ekey);
                         ///temp

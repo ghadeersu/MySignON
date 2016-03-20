@@ -42,6 +42,7 @@ import com.firebase.client.ValueEventListener;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.sun.pdfview.PDFFile;
@@ -130,6 +131,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
+import java.util.Map;
 
 import learn.SignatureSelectActivity;
 import learn.session;
@@ -209,6 +212,7 @@ public abstract class Pdftry extends Activity {
     private Thread backgroundThread;
     private Handler uiHandler;
     public String messagedigest;
+    private  String RequestID;
     @Override
     public Object onRetainNonConfigurationInstance() {
         // return a reference to the current instance
@@ -988,25 +992,22 @@ public abstract class Pdftry extends Activity {
                     ValueEventListener listener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(counter==0){
+                            if (counter == 0) {
                                 if (dataSnapshot.exists()) {
                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                                         if (child.getKey().equals(session.docKey)) {
                                             messagedigest = child.child("messagedigest").getValue(String.class);
                                             System.out.println(messagedigest + "      " + new File(signPath).getPath());
                                             System.out.println(SHA512.calculateSHA512(new File(signPath)));
-                                            if (session.docKey!= null)
-                                            {
+                                            if (session.docKey != null) {
                                                 System.out.println(session.docKey);
                                                 System.out.println("yes");
 
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 System.out.println("no it is null");
 
                                             }
-                                            if (SHA512.checkSHA512(messagedigest,new File(signPath))) {
+                                            if (SHA512.checkSHA512(messagedigest, new File(signPath))) {
                                                 Matrix matrix = signature.getImageMatrix();
                                                 // Get the values of the matrix
                                                 float[] values = new float[9];
@@ -1038,8 +1039,8 @@ public abstract class Pdftry extends Activity {
                                                 //documentAdapter=new documentsArrayAdapter(Pdftry.this);
                                                 //fileTosign=new File(newP);
                                                 //documentAdapter.updateItem(documentToUpdate);
-                                                System.out.println("path "+f2.getPath());
-                                                File ff=new File(signPath);
+                                                System.out.println("path " + f2.getPath());
+                                                File ff = new File(signPath);
 
                                                 f2.renameTo(ff);
                                                 new HDWFTP_Upload_Update(Pdftry.this).execute(ff.getPath());
@@ -1082,8 +1083,12 @@ public abstract class Pdftry extends Activity {
 
             });
             hl.addView(sign);
+            DigitalS();
 
 
+
+            DigitalSignatureSignAndVerfiy ECDSAapp ;
+            // TODO digital signature
 
             // send button
 			/*send=new Button(context);
@@ -1729,6 +1734,64 @@ android:layout_gravity="bottom">
         queryRef.addValueEventListener(listener);
 
 
+    }
+
+    private void DigitalS(){
+      // check if ownerID is digital
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+        Query queryref = ref.orderByValue();
+        // omaimah
+
+    /*    Request request;
+        request = new Request(null, session.userEmail, "", session.userkey,"1", "waiting", "");
+        RequestID = request.getKey();
+        CheckEmail(request);
+        AddRequest(request); */
+    }
+    private void AddRequest(Request request) {
+        Firebase reqRef = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+        Map<String, String> newRequest = new HashMap<String, String>();
+        newRequest.put("SignerEmail", request.getSignerEmail());
+        newRequest.put("rDocumentId", "");
+        newRequest.put("requesterID", request.getRequesterID());
+        newRequest.put("signingSeq", request.getOrder());
+        newRequest.put("status", request.getStatus());
+        newRequest.put("signature",request.getSignature());
+        reqRef.push().setValue(newRequest);
+        Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
+        counter++;
+
+
+    }
+
+
+    private void CheckEmail(final Request request) {
+        Firebase.setAndroidContext(getApplicationContext());
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users");
+        final Query queryRef = ref.orderByChild("Email").equalTo(request.getSignerEmail());
+
+        final ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        AddRequest(request);
+                        break;
+                    }
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "email not found", Toast.LENGTH_LONG);
+                    toast.show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+
+        };
+        queryRef.addListenerForSingleValueEvent(listener);
     }
     ////////////////////////////////////////////////////////////////////////////////////////
 }
