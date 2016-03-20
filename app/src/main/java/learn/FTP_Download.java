@@ -68,6 +68,8 @@ public class FTP_Download extends AsyncTask <String, Void, Long>{
 
             // APPROACH #1: using retrieveFile(String, OutputStream)
             String remoteFile1 = "/htdocs/" + DocOwner + "/" + DocName;
+            File SignonDirectory = new File(Environment.getExternalStorageDirectory()+File.separator+"signon"+File.separator+"download");
+            SignonDirectory.mkdirs();
             String FullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/download/" + DocName;
             File downloadFile1 = new File(FullPath);
             OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
