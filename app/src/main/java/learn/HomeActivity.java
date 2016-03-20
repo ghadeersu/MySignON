@@ -112,7 +112,80 @@ public class HomeActivity extends BaseActivity {
 
     }
 
-// on activity result removed
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == RESULT_OK) {
+                    // Get the Uri of the selected file
+                    try{
+                        Uri uri = data.getData();
+                        Log.d(TAG, "File Uri: " + uri.toString());
+                        // Get the path
+
+                        String uriString=uri.getPath();
+                        Log.d(TAG, "String Path: " + uriString);
+                        String path = FileUtils.getPath(this, uri);
+
+                        Log.d(TAG, "File Path: " + path);
+                      /*  pathToUpload=path;
+                        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
+                        Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
+                       // Query q2=queryRef.orderByChild("documentName").equalTo(new File(pathToUpload).getName());
+                        ValueEventListener listener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child: dataSnapshot.getChildren()) {
+
+                                   System.out.println("path: "+pathToUpload);
+                                    if(child.child("documentName").getValue(String.class).equals((new File(pathToUpload)).getName()))
+                                    {
+                                        System.out.println("inside");
+                                        exist=true;
+                                    }*/
+                        // if(!exist){
+
+                        new HDWFTP_Upload(HomeActivity.this).execute(path);
+                        //}
+                        //else{
+                        //  AlertDialog alert = new AlertDialog.Builder(HomeActivity.this).setMessage("A file with the same name already exist").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        //    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        //  }
+                        //}).show();}
+                        // }
+                        //}
+
+                        //@Override
+                        //public void onCancelled(FirebaseError firebaseError) {
+
+                        //   }
+                        //};
+
+                        //queryRef.addValueEventListener(listener);
+
+
+
+
+
+
+                        // Get the file instance
+
+
+                        // File file = new File(path);
+                        // Initiate the upload
+                    }
+                    catch (URISyntaxException e){
+                        Toast.makeText(this, "Please install a File Manager.",
+                                Toast.LENGTH_SHORT).show();}
+
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
 
 
     public void testOn2(View v){
