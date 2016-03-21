@@ -68,6 +68,18 @@ public class DocumentWaitingList extends ListActivity {
                                 if (child.child("SignerEmail").getValue().equals(session.userEmail))
                                     if (child.child("status").getValue().equals("waiting")) {
                                         System.out.println(" 2 signer Email + status waiting ");
+
+                                       // String RequestID = child.getKey();
+
+                                        /////////////////////////////////////////
+
+                                       // Pdftry.RequestInfo(RequestID);
+                                        /*
+                                            static String RID;
+                                            public static void RequestInfo (String RKey) {RID = RKey; }
+                                        */
+                                        /////////////////////////////////////////
+
                                         Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + child.child("requesterID").getValue() + "/");
                                         Query qUser = userFire.orderByValue();
                                         ValueEventListener listener3 = new ValueEventListener() {

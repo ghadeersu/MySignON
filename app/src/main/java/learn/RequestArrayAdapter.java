@@ -53,11 +53,11 @@ public class RequestArrayAdapter extends BaseAdapter implements ChildEventListen
     public void addItem(Request request) {
         //TODO: Push new data to Firebase
         Map<String, String> rq = new HashMap<String, String>();
-        rq.put("rDocumentId","");
+        rq.put("rDocumentId",session.docKey);
         rq.put("signingSeq",request.getOrder());
         rq.put("SignerEmail",request.getSignerEmail());
         rq.put("status","waiting");
-        rq.put("requesterID","");
+        rq.put("requesterID",session.userkey);
         mFirebase.push().setValue(rq);
     }
 
