@@ -153,7 +153,7 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                     }
                     if (!exist) {
                         //////////size limit/////////////
-                        if (size < 100000000) {
+                        if (size < 20000000) {
 
 
                         boolean result = ftpClient.storeFile(Picture_File_name, buffIn);
