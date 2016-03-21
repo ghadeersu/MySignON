@@ -123,16 +123,11 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                         AESencryptionSecond.encrypt(key, f, f);
                         System.out.println("enc suc");
                         System.out.println(ekey);
-                    }
-                    catch (CryptoException ex) {
+                    } catch (CryptoException ex) {
                         System.out.println("enc not s");
                         System.out.println(ex.getMessage());
                         ex.printStackTrace();
                     }
-
-
-
-
 
 
                     BufferedInputStream buffIn = null;
@@ -143,30 +138,37 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                     ftpClient.enterLocalPassiveMode();
 
                     System.out.println("Entered binary and passive modes");
+                    long size = 0;
 
-                    FTPFile[] ftpFiles =ftpClient.listFiles();
-                    System.out.println("CHECK ME "+ftpFiles.length);
-                    for (int x=0;x<ftpFiles.length;x++) {
-                        //  System.out.println("Check me"+ftpFiles[x].getName() + exist);
-                        if ((ftpFiles[x].getName()).equals(Picture_File_name)){
+                    FTPFile[] ftpFiles = ftpClient.listFiles();
+
+                    for (int x = 0; x < ftpFiles.length; x++) {
+                        try{
+                            size +=getFileSize(ftpClient,ftpFiles[x].getName());}catch (Exception e){System.out.println("error from getsize");}
+                        System.out.println("Folder size :" + size);
+                        if ((ftpFiles[x].getName()).equals(Picture_File_name)) {
                             exist = true;
                         }
 
                     }
-                    if(!exist){
+                    if (!exist) {
+                        //////////size limit/////////////
+                        if (size < 100000000) {
+
 
                         boolean result = ftpClient.storeFile(Picture_File_name, buffIn);
 
                         if (result) {
                             System.out.println("Success");
-                            documentName=Picture_File_name;
-                            documentOwnerID=session.userkey;
-                            documentURL="ftp.byethost4.com/htdocs/"+session.userkey+"/"+Picture_File_name+"/";
-                            messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
+                            documentName = Picture_File_name;
+                            documentOwnerID = session.userkey;
+                            documentURL = "ftp.byethost4.com/htdocs/" + session.userkey + "/" + Picture_File_name + "/";
+                            messagedigest = SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
                             ///temp
-                            document=new documents(null,messagedigest,ekey,documentURL,documentOwnerID,documentName);
-                            documentAdapter=new documentsArrayAdapter(context){
-                                public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName){}
+                            document = new documents(null, messagedigest, ekey, documentURL, documentOwnerID, documentName);
+                            documentAdapter = new documentsArrayAdapter(context) {
+                                public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
+                                }
 
                             };
                             documentAdapter.addItem(document);
@@ -180,13 +182,14 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                         ftpClient.disconnect();
                         try {
                             AESencryptionSecond.decrypt(key, f, f);
-                        }
-                        catch (CryptoException ex) {
+                        } catch (CryptoException ex) {
                             System.out.println(ex.getMessage());
                             ex.printStackTrace();
                         }
 
                     }
+                        else {System.out.println("Size overlimit");}
+                }
                     else{
 
                         context.startActivity(new Intent(context, alertDialog.class));
@@ -297,4 +300,13 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
         };
         thread.start();
     }*/
+   private long getFileSize(FTPClient ftp, String filePath) throws Exception {
+       long fileSize = 0;
+       FTPFile[] files = ftp.listFiles(filePath);
+       if (files.length == 1 && files[0].isFile()) {
+           fileSize = files[0].getSize();
+       }
+       Log.i(TAG, "File size = " + fileSize);
+       return fileSize;
+   }
 }
