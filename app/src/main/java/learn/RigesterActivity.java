@@ -110,6 +110,13 @@ public class RigesterActivity extends AppCompatActivity {
             MSG = Toast.makeText(RigesterActivity.this, msg, Toast.LENGTH_SHORT);
             MSG.show();
         }
+        else if((password.length() < 6))
+        {
+            msg = "password is too short";
+            MSG = Toast.makeText(RigesterActivity.this, msg, Toast.LENGTH_SHORT);
+            MSG.show();
+
+        }
         else
         {
             Firebase.setAndroidContext(this);
