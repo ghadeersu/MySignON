@@ -111,9 +111,9 @@ public class FTP_Download extends AsyncTask <String, Void, Long>{
                         i.putExtra(Pdftry.EXTRA_PDFFILENAME, FullPath.toString());
                         context.startActivity(i);
                         break;
-                    case "Request":
+                 /*   case "Request":
                         context.startActivity(new Intent(context, Request_Signture.class));
-                        break;
+                        break;*/
                     default:
                         break;
                 }

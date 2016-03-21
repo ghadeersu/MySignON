@@ -40,7 +40,7 @@ public class Request_Signture extends ListActivity {
             Button btnAdd = (Button) findViewById(R.id.add_signer_button);
             btnAdd.setEnabled(false);
             Toast.makeText(Request_Signture.this, "you are only allowed to request 3 signers at most for each document", Toast.LENGTH_SHORT).show();
-            finish();
+           // finish();
 
         }
         if (flag)
@@ -63,11 +63,11 @@ public class Request_Signture extends ListActivity {
                     Request request;
                     if (counter > 1)
                     {
-                        request = new Request(null, email, "", session.userkey, String.valueOf(counter), "waiting2", "");
+                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2", "");
                     }
                     else
                     {
-                        request = new Request(null, email, "", session.userkey, String.valueOf(counter), "waiting", "");
+                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting", "");
                         session.requesterID = request.getRequesterID();
                     }
                     CheckEmail(request);
@@ -117,7 +117,7 @@ public class Request_Signture extends ListActivity {
         Firebase reqRef = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
         Map<String, String> newRequest = new HashMap<String, String>();
         newRequest.put("SignerEmail", request.getSignerEmail());
-        newRequest.put("rDocumentId", "");
+        newRequest.put("rDocumentId", session.docKey);
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
