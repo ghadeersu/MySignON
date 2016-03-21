@@ -190,19 +190,19 @@ public class HomeActivity extends BaseActivity {
 
     public void testOn2(View v){
         // startActivity(new Intent(HomeActivity.this, CaptureSignatureActivity.class));
-        startActivity(new Intent(HomeActivity.this, DocumentOwnerList.class));
+        startActivity(new Intent(HomeActivity.this, CaptureSignatureActivity.class));
 
 
     }
 
     public void testOn3(View v){
         //  startActivity(new Intent(HomeActivity.this, SettingActivity.class));
-        startActivity(new Intent(HomeActivity.this, DocumentSignedList.class));
+     ///   startActivity(new Intent(HomeActivity.this, SettingActivity.class));
 
     }
 
     public void testOn4(View v){
-       // startActivity(new Intent(HomeActivity.this, Request_Signture.class));
+      //  startActivity(new Intent(HomeActivity.this, Request_Signture.class));
 
 
     }
