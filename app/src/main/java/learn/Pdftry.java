@@ -245,9 +245,17 @@ public abstract class Pdftry extends Activity {
         super.onCreate(savedInstanceState);
 
         Log.i(TAG, "onCreate");
-        Intent intentE = getIntent();
-        String path = intentE.getStringExtra("FullPath");
-        signPath=path;
+        Bundle extras = getIntent().getExtras();
+     //   Intent intentE = getIntent();
+     //   String FullPath = extras.getString("FullPath");
+        String value;
+        if (extras != null) {
+            value = extras.getString(Pdftry.EXTRA_PDFFILENAME,"FullPath");
+            signPath= value;
+
+        }
+
+
         Firebase.setAndroidContext(this);
         //setContentView(R.layout.activity_view_document);
         //progress = ProgressDialog.show(PdfViewerActivity.this, "Loading", "Loading PDF Page");
@@ -979,11 +987,13 @@ public abstract class Pdftry extends Activity {
             sign.setText("SIGN");
             sign.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
+                    final File test = new File (signPath);
 
                     ////////////////check hash//////////////////////////////
 
                     Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
                     Query queryRef = ref.orderByKey().equalTo(session.docKey);
+
                     System.out.println(session.docKey);
                     ValueEventListener listener = new ValueEventListener() {
                         @Override
@@ -993,20 +1003,20 @@ public abstract class Pdftry extends Activity {
                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                                         if (child.getKey().equals(session.docKey)) {
                                             messagedigest = child.child("messagedigest").getValue(String.class);
-                                            System.out.println(messagedigest + "      " + new File(signPath).getPath());
-                                            System.out.println(SHA512.calculateSHA512(new File(signPath)));
+                                            System.out.println(messagedigest + "      " + "message Di");
+                                            System.out.println("now     "+SHA512.calculateSHA512(test));
                                             if (session.docKey!= null)
                                             {
-                                                System.out.println(session.docKey);
+                                        //        System.out.println(session.docKey);
                                                 System.out.println("yes");
 
                                             }
                                             else
                                             {
-                                                System.out.println("no it is null");
+                                                System.out.println("no ");
 
                                             }
-                                            if (SHA512.checkSHA512(messagedigest,new File(signPath))) {
+                                            if (SHA512.checkSHA512(messagedigest,test)) {
                                                 Matrix matrix = signature.getImageMatrix();
                                                 // Get the values of the matrix
                                                 float[] values = new float[9];
@@ -1041,8 +1051,8 @@ public abstract class Pdftry extends Activity {
                                                 System.out.println("path "+f2.getPath());
                                                 File ff=new File(signPath);
 
-                                                f2.renameTo(ff);
-                                                new HDWFTP_Upload_Update(Pdftry.this).execute(ff.getPath());
+                                                f2.renameTo(test);
+                                                new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
 
                                             } else {
                                                 AlertDialog alert = new AlertDialog.Builder(Pdftry.this).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

@@ -86,12 +86,14 @@ String originalOwner;
 ///////////////create directory
 
                     ftpClient.changeWorkingDirectory("/htdocs/" + originalOwner + "/");
-                System.out.println("ASS:" + "/htdocs/" + originalOwner + "/");
+                System.out.println( "/htdocs/" + originalOwner + "/");
                 String Picture_File_name = new File(FULL_PATH_TO_LOCAL_FILE[0]).getName();
-                System.out.println("ASS:" + Picture_File_name);
+                System.out.println(Picture_File_name);
 
                 if (ftpClient.getReplyString().contains("250")) {
                     ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
+                    messagedigest= SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
+//message digest changed
                     //////////////////encrypt////////////////////////////
 try {
     f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
@@ -131,7 +133,6 @@ catch (CryptoException ex) {
 
                         documentURL="ftp.byethost4.com/htdocs/"+originalOwner+"/"+Picture_File_name+"/";
                         System.out.println("ftp.byethost4.com/htdocs/"+originalOwner+"/"+Picture_File_name+"/");
-                        messagedigest= SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
                         System.out.println(messagedigest);
                         System.out.println(ekey);
                         ///temp
