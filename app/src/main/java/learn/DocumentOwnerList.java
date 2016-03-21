@@ -146,9 +146,8 @@ public class DocumentOwnerList extends ListActivity {
             @Override
             public void onClick(View v) {
 
-                Operation = "Request";
-                FTP_Download.iniate(DocName,EncKey,DocOwner,Operation);
-                new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+            //    Operation = "Request";
+
 
 
                 ////// go to request Activity
@@ -162,11 +161,13 @@ public class DocumentOwnerList extends ListActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                            if (snapshot.child("rDocumentId").equals("1")) {
+                            if (snapshot.child("rDocumentId").equals(session.docKey)) {
                                 Toast toast = Toast.makeText(DocumentOwnerList.this, "you have already request signers to sign this document", Toast.LENGTH_LONG);
                                 toast.show();
                             } else {
-                                // startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
+                               // FTP_Download.iniate(DocName,EncKey,DocOwner,Operation);
+                               // new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+                                 startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
                             }
                         }
                     }

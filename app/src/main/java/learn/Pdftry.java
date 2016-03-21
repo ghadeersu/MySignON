@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -25,72 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFImage;
-import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PDFPaint;
-import com.sun.pdfview.decrypt.PDFAuthenticationFailureException;
-import com.sun.pdfview.decrypt.PDFPassword;
-import com.sun.pdfview.font.PDFFont;
-
-import net.sf.andpdf.nio.ByteBuffer;
-import net.sf.andpdf.pdfviewer.gui.FullScrollView;
-import net.sf.andpdf.refs.HardReference;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.PointF;
-import android.graphics.RectF;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.util.Base64;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -130,9 +63,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
-
-import learn.SignatureSelectActivity;
-import learn.session;
+import java.util.HashMap;
+import java.util.Map;
 
 //////////////////////////////////////Editing to PDF Viewer library.java/////////////////////////////
 
@@ -209,6 +141,7 @@ public abstract class Pdftry extends Activity {
     private Thread backgroundThread;
     private Handler uiHandler;
     public String messagedigest;
+    private  String RequestID;
     @Override
     public Object onRetainNonConfigurationInstance() {
         // return a reference to the current instance
@@ -356,7 +289,7 @@ public abstract class Pdftry extends Activity {
         if (backgroundThread != null)
             return;
 
-        mGraphView.showText("reading page "+ page+", zoom:"+zoom);
+        mGraphView.showText("reading page " + page + ", zoom:" + zoom);
         //progress = ProgressDialog.show(PdfViewerActivity.this, "Loading", "Loading PDF Page");
         backgroundThread = new Thread(new Runnable() {
             public void run() {
@@ -1093,7 +1026,7 @@ public abstract class Pdftry extends Activity {
             });
             hl.addView(sign);
 
-
+            DigitalS();
 
             // send button
 			/*send=new Button(context);
@@ -1737,6 +1670,51 @@ android:layout_gravity="bottom">
             }
         };
         queryRef.addValueEventListener(listener);
+
+
+    }
+    private void DigitalS(){
+        // check if ownerID is digital
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents ");
+        Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
+        final ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Request request = new Request(null, session.userEmail, session.docKey, session.userkey,"1", "done", "");
+                        RequestID = request.getKey();
+                        AddRequest(request);
+                        break;
+                    }
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "you cannot sign this document", Toast.LENGTH_LONG);
+                    toast.show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+
+        };
+        queryRef.addListenerForSingleValueEvent(listener);}
+        // omaimah
+
+    private void AddRequest(Request request) {
+        Firebase reqRef = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+        Map<String, String> newRequest = new HashMap<String, String>();
+        newRequest.put("SignerEmail", request.getSignerEmail());
+        newRequest.put("rDocumentId", "");
+        newRequest.put("requesterID", request.getRequesterID());
+        newRequest.put("signingSeq", request.getOrder());
+        newRequest.put("status", request.getStatus());
+        newRequest.put("signature",request.getSignature());
+        reqRef.push().setValue(newRequest);
+        Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
+        counter++;
 
 
     }

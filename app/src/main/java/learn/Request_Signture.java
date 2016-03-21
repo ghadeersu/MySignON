@@ -17,28 +17,6 @@ import com.firebase.client.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.app.Dialog;
-import android.app.ListActivity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import learn.R;
-import learn.RequestArrayAdapter;
-import learn.session;
-
 public class Request_Signture extends ListActivity {
 
     private RequestArrayAdapter mAdapter;
@@ -62,7 +40,7 @@ public class Request_Signture extends ListActivity {
             Button btnAdd = (Button) findViewById(R.id.add_signer_button);
             btnAdd.setEnabled(false);
             Toast.makeText(Request_Signture.this, "you are only allowed to request 3 signers at most for each document", Toast.LENGTH_SHORT).show();
-            finish();
+           // finish();
 
         }
         if (flag)
@@ -85,11 +63,11 @@ public class Request_Signture extends ListActivity {
                     Request request;
                     if (counter > 1)
                     {
-                        request = new Request(null, email, "", session.userkey, String.valueOf(counter), "waiting2", "");
+                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2", "");
                     }
                     else
                     {
-                        request = new Request(null, email, "", session.userkey, String.valueOf(counter), "waiting", "");
+                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting", "");
                         session.requesterID = request.getRequesterID();
                     }
                     CheckEmail(request);
@@ -111,7 +89,6 @@ public class Request_Signture extends ListActivity {
         Firebase.setAndroidContext(getApplicationContext());
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users");
         final Query queryRef = ref.orderByChild("Email").equalTo(request.getSignerEmail());
-
         final ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -140,7 +117,7 @@ public class Request_Signture extends ListActivity {
         Firebase reqRef = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
         Map<String, String> newRequest = new HashMap<String, String>();
         newRequest.put("SignerEmail", request.getSignerEmail());
-        newRequest.put("rDocumentId", "");
+        newRequest.put("rDocumentId", session.docKey);
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
