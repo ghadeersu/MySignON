@@ -12,7 +12,7 @@
         android:textColor="#8133d0"
         android:paddingTop="20dp"
         android:paddingBottom="10dp"
-        android:text="Waiting Documents To Sign"
+        android:text="Pending Documents"
         android:id="@+id/selectdocumentwait" />
 
     <ListView
