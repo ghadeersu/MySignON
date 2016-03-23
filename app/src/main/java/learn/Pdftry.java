@@ -105,6 +105,7 @@ public abstract class Pdftry extends Activity {
     private final static int MENU_BACK      = 6;
     private final static int MENU_CLEANUP   = 7;
     private final static int MENU_SIGNATURE =8;
+    private final static int MENU_Share =9;
     private final static int DIALOG_PAGENUM = 1;
 
     public int counter=0;
@@ -349,6 +350,7 @@ public abstract class Pdftry extends Activity {
         menu.add(Menu.NONE, MENU_ZOOM_OUT, Menu.NONE, "Zoom Out").setIcon(getZoomOutImageResource());
         menu.add(Menu.NONE, MENU_ZOOM_IN, Menu.NONE, "Zoom In").setIcon(getZoomInImageResource());
         menu.add(Menu.NONE, MENU_SIGNATURE,Menu.NONE,"Select signature").setIcon(getSelectSignatureImageResource());
+        menu.add(Menu.NONE, MENU_Share,Menu.NONE,"Share Document").setIcon(getShareDocumentImageResource());
         if (HardReference.sKeepCaches)
             menu.add(Menu.NONE, MENU_CLEANUP, Menu.NONE, "Clear Caches");
 
@@ -393,9 +395,10 @@ public abstract class Pdftry extends Activity {
             case MENU_SIGNATURE:{
 
                 selectSignature();
-
-
-
+                break;
+            }
+            case MENU_Share:{
+                shareDocument();
                 break;
             }
         }
@@ -485,7 +488,20 @@ public abstract class Pdftry extends Activity {
             }
         }
     }
+private void  shareDocument(){
+    Intent intent=new Intent(Intent.ACTION_SEND);
+    intent.setType("application/pdf");
+    Uri uri=Uri.parse("file://"+signPath);
+    intent.putExtra(Intent.EXTRA_STREAM,uri);
+    try{
+        startActivity(Intent.createChooser(intent,"Share File"));
+    }catch(Exception e){Toast.makeText(Pdftry.this,"Error sending the file",Toast.LENGTH_LONG);}
 
+
+
+
+
+}
     private void gotoPage() {
         if (mPdfFile != null) {
             showDialog(DIALOG_PAGENUM);
@@ -559,7 +575,7 @@ public abstract class Pdftry extends Activity {
         ImageButton bZoomOut;
         ImageButton bZoomIn;
         ImageButton bSelect;
-
+        ImageButton share;
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         //private Fragment sign_bar;
         private Button send;
@@ -1053,6 +1069,19 @@ public abstract class Pdftry extends Activity {
                 }
             });
             hl.addView(bSelect);
+            //share button
+
+            share=new ImageButton(context);
+            share.setBackgroundDrawable(null);
+            share.setLayoutParams(lpChild1);
+            share.setImageResource(getShareDocumentImageResource());
+            share.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    //signature select function
+                    shareDocument();
+                }
+            });
+            hl.addView(share);
             // zoom out button
             bZoomOut=new ImageButton(context);
             bZoomOut.setBackgroundDrawable(null);
@@ -1514,6 +1543,7 @@ android:layout_gravity="bottom">
     public abstract int getZoomInImageResource(); // R.drawable.zoom_int
     public abstract int getZoomOutImageResource(); // R.drawable.zoom_out
     public abstract int getSelectSignatureImageResource();//R.drawable.select_signature
+    public abstract int getShareDocumentImageResource();//R.drawable.share
     public abstract int getPdfPasswordLayoutResource(); // R.layout.pdf_file_password
     public abstract int getPdfPageNumberResource(); // R.layout.dialog_pagenumber
 
