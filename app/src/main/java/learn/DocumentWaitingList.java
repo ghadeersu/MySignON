@@ -155,8 +155,8 @@ public class DocumentWaitingList extends ListActivity {
         DocName=currentdocuments.getDocumentName();
         DocOwner=currentdocuments.getDocumentOwnerID();
 
-        Button viewB = (Button) findViewById(R.id.docWlistviewButton);
-
+        final Button viewB = (Button) findViewById(R.id.docWlistviewButton);
+        final Button signB= (Button)findViewById(R.id.docWlistsignButton);
         viewB.setEnabled(true);
         viewB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,11 +164,12 @@ public class DocumentWaitingList extends ListActivity {
                 Operation = "View";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentWaitingList.this).execute(DocURL);
+                v.setEnabled(false);
+                signB.setEnabled(false);
 
             }
         });
 
-        Button signB= (Button)findViewById(R.id.docWlistsignButton);
         signB.setEnabled(true);
         signB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +177,8 @@ public class DocumentWaitingList extends ListActivity {
                 Operation = "Sign";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentWaitingList.this).execute(DocURL);
+                v.setEnabled(false);
+                viewB.setEnabled(false);
 
 
             }

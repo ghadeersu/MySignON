@@ -116,7 +116,9 @@ public class DocumentOwnerList extends ListActivity {
 
 
 
-        Button viewB = (Button) findViewById(R.id.docOviewbutton);
+        final Button viewB = (Button) findViewById(R.id.docOviewbutton);
+        final Button signB = (Button) findViewById(R.id.docOsignbutton);
+        final Button requestB = (Button) findViewById(R.id.docOrequestbutton);
         viewB.setEnabled(true);
         viewB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,11 +126,13 @@ public class DocumentOwnerList extends ListActivity {
                 Operation = "View";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentOwnerList.this).execute(DocURL);
-
+                v.setEnabled(false);
+                signB.setEnabled(false);
+                requestB.setEnabled(false);
             }
         });
 
-        Button signB = (Button) findViewById(R.id.docOsignbutton);
+
         signB.setEnabled(true);
         signB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,11 +140,13 @@ public class DocumentOwnerList extends ListActivity {
                 Operation = "Sign";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentOwnerList.this).execute(DocURL);
-
+                v.setEnabled(false);
+                viewB.setEnabled(false);
+                requestB.setEnabled(false);
             }
         });
 
-        Button requestB = (Button) findViewById(R.id.docOrequestbutton);
+
         requestB.setEnabled(true);
         requestB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,7 +184,9 @@ public class DocumentOwnerList extends ListActivity {
                     }
                 });
 
-
+                v.setEnabled(false);
+                signB.setEnabled(false);
+                viewB.setEnabled(false);
 
             }
         });

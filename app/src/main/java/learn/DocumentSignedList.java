@@ -135,9 +135,12 @@ public class DocumentSignedList extends ListActivity {
         viewB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Operation = "View";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentSignedList.this).execute(DocURL);
+                v.setEnabled(false);
+
 
             }
         });
