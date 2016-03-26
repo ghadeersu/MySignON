@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class Request_Signture extends ListActivity {
 
-    private RequestArrayAdapter mAdapter;
+    //private RequestArrayAdapter mAdapter;
     boolean flag = true;
     static int counter;
 
@@ -27,8 +27,8 @@ public class Request_Signture extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_request_signature);
-        mAdapter = new RequestArrayAdapter(this);
-        setListAdapter(mAdapter);
+        //mAdapter = new RequestArrayAdapter(this);
+        //setListAdapter(mAdapter);
         counter=1;
 
     }
@@ -39,7 +39,7 @@ public class Request_Signture extends ListActivity {
             flag = false;
             Button btnAdd = (Button) findViewById(R.id.add_signer_button);
             btnAdd.setEnabled(false);
-            Toast.makeText(Request_Signture.this, "you are only allowed to request 3 signers at most for each document", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Request_Signture.this, "you need to wait untill the requested signers sign the document", Toast.LENGTH_SHORT).show();
            // finish();
 
         }
