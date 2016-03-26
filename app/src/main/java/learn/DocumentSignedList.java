@@ -44,7 +44,7 @@ public class DocumentSignedList extends ListActivity {
                 final String ekey = dataSnapshot.child("ekey").getValue(String.class);
                 final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
                 final Firebase requestFire = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/");
-                Query qDocID = requestFire.orderByChild("rDocumentID").equalTo(dataSnapshot.getKey().toString());
+                Query qDocID = requestFire.orderByChild("rDocumentId").equalTo(dataSnapshot.getKey().toString());
                 ValueEventListener listener0 = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot DocID) {
@@ -54,7 +54,7 @@ public class DocumentSignedList extends ListActivity {
                                 System.out.println(" 2 find Same Doc ID child ");
                                 System.out.println(" 2 find Same Doc ID child" + child.child("SignerEmail").getValue() + "  " + child.child("status").getValue() + "  " + child.child("SignerEmail").getKey() + "");
                                 if (child.child("SignerEmail").getValue().equals(session.userEmail))
-                                    if (child.child("status").getValue().equals("DONE")) {
+                                    if (child.child("status").getValue().equals("done")) {
                                         System.out.println(" 2 signer Email + status DONE ");
                                         Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + child.child("requesterID").getValue() + "/");
                                         Query qUser = userFire.orderByValue();
