@@ -3,13 +3,20 @@ package learn;
 /**
  * Created by Naseebah on 06/03/16.
  */
-
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -18,6 +25,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.io.File;
+
 
 /**
  * Created by Naseebah on 26/02/16.
@@ -25,9 +34,6 @@ import com.firebase.client.ValueEventListener;
 public class DocumentOwnerList extends ListActivity {
     private documentsArrayAdapter mAdapter;
     boolean checked = false;
-    boolean[] canRequest;
-    boolean request=true;
-    int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +113,12 @@ public class DocumentOwnerList extends ListActivity {
         EncKey = currentdocuments.getEkey();
         DocName=currentdocuments.getDocumentName();
         DocOwner=currentdocuments.getDocumentOwnerID();
-        i=0;
-        canRequest = new boolean[3];
 
 
-        Button viewB = (Button) findViewById(R.id.docOviewbutton);
+
+        final Button viewB = (Button) findViewById(R.id.docOviewbutton);
+        final Button signB = (Button) findViewById(R.id.docOsignbutton);
+        final Button requestB = (Button) findViewById(R.id.docOrequestbutton);
         viewB.setEnabled(true);
         viewB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,11 +126,13 @@ public class DocumentOwnerList extends ListActivity {
                 Operation = "View";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentOwnerList.this).execute(DocURL);
-
+                v.setEnabled(false);
+                signB.setEnabled(false);
+                requestB.setEnabled(false);
             }
         });
 
-        Button signB = (Button) findViewById(R.id.docOsignbutton);
+
         signB.setEnabled(true);
         signB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,77 +140,58 @@ public class DocumentOwnerList extends ListActivity {
                 Operation = "Sign";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+                v.setEnabled(false);
+                viewB.setEnabled(false);
+                requestB.setEnabled(false);
+            }
+        });
+
+
+        requestB.setEnabled(true);
+        requestB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            //    Operation = "Request";
+
+
+
+                ////// go to request Activity
+                // search for (documentId + session.userkey) in requests => if snapshot.exist() => cannot request
+                //                                                                              else => start request activity
+                Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+
+                Query query = ref.orderByChild("requesterId").equalTo(session.userkey);
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                            if (snapshot.child("rDocumentId").equals(session.docKey)) {
+                                Toast toast = Toast.makeText(DocumentOwnerList.this, "you have already request signers to sign this document", Toast.LENGTH_LONG);
+                                toast.show();
+                            } else {
+                               // FTP_Download.iniate(DocName,EncKey,DocOwner,Operation);
+                               // new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+                                 startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+                v.setEnabled(false);
+                signB.setEnabled(false);
+                viewB.setEnabled(false);
 
             }
         });
 
-        final Button requestB = (Button) findViewById(R.id.docOrequestbutton);
-        requestB.setEnabled(true);
-        requestB.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-
-                                            //    Operation = "Request";
-
-
-                                            ////// go to request Activity
-                                            // search for (documentId + session.userkey) in requests => if snapshot.exist() => cannot request
-                                            //
-                                            //                                                                           else => start request activity
-                                            i=0;
-                                            request=true;
-                                            canRequest = new boolean[3];
-                                            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
-                                            Query query = ref.orderByChild("requesterID").equalTo(session.userkey);
-                                            query.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                        if (i < 3) {
-                                                            if (dataSnapshot.exists()) {
-                                                                if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey)) {
-                                                                    if (!snapshot.child("status").getValue().toString().equals("done")) {
-                                                                        Toast.makeText(DocumentOwnerList.this, "please wait untill requests are finished  ", Toast.LENGTH_SHORT).show();
-                                                                        request=false;
-                                                                        canRequest[i] = false;
-                                                                        i++;
-                                                                    } else {
-                                                                        canRequest[i] = true;
-                                                                        i++;
-                                                                    }
-                                                                } else {
-                                                                    canRequest[i]=true;
-                                                                }
-                                                            } else {
-                                                                canRequest[0] = true;
-                                                                canRequest[1] = true;
-                                                                canRequest[2] = true;
-                                                                i=3;
-                                                            }
-                                                            /*if (dataSnapshot.exists() && snapshot.child("rDocumentId").getValue().toString().equals(session.docKey) && !snapshot.child("status").getValue().toString().equals("done") && (snapshot.child("status").getValue().toString().equals("waiting") || snapshot.child("status").getValue().toString().equals("waiting2"))) {
-                                                                Toast.makeText(DocumentOwnerList.this, "please wait untill requests are finished  ", Toast.LENGTH_SHORT).show();
-                                                                canRequest[i] = false;
-                                                                i++;
-                                                            }*/
-                                                        }
-                                                    }
-                                                    if (request) {
-                                                        startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
-                                                    }
-                                                    i = 0;
-                                                }
-
-                                                @Override
-                                                public void onCancelled(FirebaseError firebaseError) {
-
-                                                }
-                                            });
-                                        }
-                                    }
-
-        );
-
-            super.onListItemClick(l, v, position, id);
-        }
+        super.onListItemClick(l, v, position, id);
     }
+}
 

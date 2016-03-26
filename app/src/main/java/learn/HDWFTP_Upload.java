@@ -115,6 +115,7 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                 System.out.println("inside f");
                 if (ftpClient.getReplyString().contains("250")) {
                     ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
+                    messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
                     //////////////////encrypt////////////////////////////
                     try {
                         f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
@@ -163,7 +164,7 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                             documentName = Picture_File_name;
                             documentOwnerID = session.userkey;
                             documentURL = "ftp.byethost4.com/htdocs/" + session.userkey + "/" + Picture_File_name + "/";
-                            messagedigest = SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
+
                             ///temp
                             document = new documents(null, messagedigest, ekey, documentURL, documentOwnerID, documentName);
                             documentAdapter = new documentsArrayAdapter(context) {

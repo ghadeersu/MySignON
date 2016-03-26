@@ -80,7 +80,7 @@ public class MyPdfViewerActivity extends Pdftry {//implements View.OnTouchListen
     /////////////////////////////////////////////////////////////////////////
     public int getsignatureImageReasource(){return R.drawable.signature;}
     /////////////////////////////////////////////////////////////////////////
-
+    public int getShareDocumentImageResource(){return R.drawable.share;}
 
     // @Override
     // public int getNextPageImageResource() {

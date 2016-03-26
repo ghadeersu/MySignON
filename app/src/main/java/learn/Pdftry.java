@@ -105,6 +105,7 @@ public abstract class Pdftry extends Activity {
     private final static int MENU_BACK      = 6;
     private final static int MENU_CLEANUP   = 7;
     private final static int MENU_SIGNATURE =8;
+    private final static int MENU_Share =9;
     private final static int DIALOG_PAGENUM = 1;
 
     public int counter=0;
@@ -135,7 +136,7 @@ public abstract class Pdftry extends Activity {
     private Handler closeNavigationHandler;
     private Thread closeNavigationThread;*/
 
-
+    private boolean touchcheck =false;
     private PDFPage mPdfPage;
 
     private Thread backgroundThread;
@@ -172,15 +173,17 @@ public abstract class Pdftry extends Activity {
 
     /** Called when the activity is first created. */
 
+    LinearLayout Rlayout;
+    Button sign;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_pdfviewer);
         Log.i(TAG, "onCreate");
         Bundle extras = getIntent().getExtras();
-     //   Intent intentE = getIntent();
-     //   String FullPath = extras.getString("FullPath");
+        //   Intent intentE = getIntent();
+        //   String FullPath = extras.getString("FullPath");
         String value;
         if (extras != null) {
             value = extras.getString(Pdftry.EXTRA_PDFFILENAME,"FullPath");
@@ -188,7 +191,7 @@ public abstract class Pdftry extends Activity {
 
         }
 
-
+        Rlayout = (LinearLayout)findViewById(R.id.Rlayout);
         Firebase.setAndroidContext(this);
         //setContentView(R.layout.activity_view_document);
         //progress = ProgressDialog.show(PdfViewerActivity.this, "Loading", "Loading PDF Page");
@@ -224,7 +227,8 @@ public abstract class Pdftry extends Activity {
             mOldGraphView = null;
             mGraphView.mImageView.setImageBitmap(mGraphView.mBi);
             mGraphView.updateTexts();
-            setContentView(mGraphView);
+
+            Rlayout.addView(mGraphView);
         }
         else {
             mGraphView = new GraphView(this);
@@ -255,6 +259,54 @@ public abstract class Pdftry extends Activity {
             mZoom = STARTZOOM;
 
             setContent(null);
+            /////////////////////////////////////////////////////////////////////////////////////////////////////
+            //signature ImageButton
+            Button signatureIB=(Button)findViewById(R.id.signimage);
+
+            signatureIB.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    touchcheck = !touchcheck;
+                }
+            });
+
+            // sign button
+            sign=(Button)findViewById(R.id.pdfVsignbutton);
+            // sign.setEnabled(false);
+            sign.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mGraphView.signature.getVisibility()==ImageView.VISIBLE)
+                    {
+                        mGraphView.setsignbutton();
+                    }
+                    else
+                    {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Put the signature on the page to sign", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
+
+                }
+            });
+
+            //select signature button
+            ImageButton bSelect=(ImageButton)findViewById(R.id.pdfVselectsignimageButton);
+            bSelect.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //signature select function
+                    selectSignature();
+                }
+            });
+
+            //share button
+            ImageButton share=(ImageButton)findViewById(R.id.pdfVshareimageButton);
+            share.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //signature select function
+                    shareDocument();
+                }
+            });
+
 
         }
     }
@@ -264,7 +316,8 @@ public abstract class Pdftry extends Activity {
     private void setContent(String password) {
         try {
             parsePDF(pdffilename, password);
-            setContentView(mGraphView);
+            // setContentView(mGraphView);
+            Rlayout.addView(mGraphView);
             startRenderThread(mPage, mZoom);
         }
         catch (PDFAuthenticationFailureException e) {
@@ -349,6 +402,7 @@ public abstract class Pdftry extends Activity {
         menu.add(Menu.NONE, MENU_ZOOM_OUT, Menu.NONE, "Zoom Out").setIcon(getZoomOutImageResource());
         menu.add(Menu.NONE, MENU_ZOOM_IN, Menu.NONE, "Zoom In").setIcon(getZoomInImageResource());
         menu.add(Menu.NONE, MENU_SIGNATURE,Menu.NONE,"Select signature").setIcon(getSelectSignatureImageResource());
+        menu.add(Menu.NONE, MENU_Share,Menu.NONE,"Share Document").setIcon(getShareDocumentImageResource());
         if (HardReference.sKeepCaches)
             menu.add(Menu.NONE, MENU_CLEANUP, Menu.NONE, "Clear Caches");
 
@@ -393,9 +447,10 @@ public abstract class Pdftry extends Activity {
             case MENU_SIGNATURE:{
 
                 selectSignature();
-
-
-
+                break;
+            }
+            case MENU_Share:{
+                shareDocument();
                 break;
             }
         }
@@ -485,7 +540,20 @@ public abstract class Pdftry extends Activity {
             }
         }
     }
+    private void  shareDocument(){
+        Intent intent=new Intent(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+        Uri uri=Uri.parse("file://"+signPath);
+        intent.putExtra(Intent.EXTRA_STREAM,uri);
+        try{
+            startActivity(Intent.createChooser(intent,"Share File"));
+        }catch(Exception e){Toast.makeText(Pdftry.this,"Error sending the file",Toast.LENGTH_LONG);}
 
+
+
+
+
+    }
     private void gotoPage() {
         if (mPdfFile != null) {
             showDialog(DIALOG_PAGENUM);
@@ -559,7 +627,7 @@ public abstract class Pdftry extends Activity {
         ImageButton bZoomOut;
         ImageButton bZoomIn;
         ImageButton bSelect;
-
+        ImageButton share;
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         //private Fragment sign_bar;
         private Button send;
@@ -649,7 +717,7 @@ public abstract class Pdftry extends Activity {
 				*/
 
 
-            setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, 100));
+            setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 100));
             setBackgroundColor(Color.LTGRAY);
             setHorizontalScrollBarEnabled(true);
             setHorizontalFadingEdgeEnabled(true);
@@ -670,14 +738,14 @@ public abstract class Pdftry extends Activity {
 			vl.addView(sign);*/
 
             // coordinate
-            Coord=new TextView(context);
+         /*   Coord=new TextView(context);
             Coord.setLayoutParams(lpWrap1);
             Coord.setText("SIGN");
             vl.addView(Coord);
             Coordx=new TextView(context);
             Coordx.setLayoutParams(lpWrap1);
             Coordx.setText("x");
-            vl.addView(Coordx);
+            vl.addView(Coordx);*/
 
             // send button
 		/*	send=new Button(context);
@@ -699,12 +767,12 @@ public abstract class Pdftry extends Activity {
             changeImageView();
             //signature.setImageResource(getsignatureImageReasource());
             signature.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            signature.setVisibility(ImageView.GONE);
             vl.addView(signature);
             /////////////////////////////////////////////////////////////////////////////////////////
-
-
             addSpace(vl, 20, 20);
             addView(vl);
+
 
         }
 
@@ -761,46 +829,49 @@ public abstract class Pdftry extends Activity {
         private Matrix savedMatrix = new Matrix();*/
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            mImageView.getParent().requestDisallowInterceptTouchEvent(true);
-            // Get the values of the matrix
+            if(touchcheck)
+            {
+                mImageView.getParent().requestDisallowInterceptTouchEvent(true);
+                // Get the values of the matrix
 
 		/*	float[] values = new float[9];
 			Drawable drawable = mImageView.getDrawable();
 			matrix.getValues(values);*/
 
-            //View v = (ImageView) mImageView;
-            //mImageView.getMatrix();
-            // values[2] and values[5] are the x,y coordinates of the top left corner of the drawable image, regardless of the zoom factor.
-            // values[0] and values[4] are the zoom factors for the image's width and height respectively. If you zoom at the same factor, these should both be the same value.
+                //View v = (ImageView) mImageView;
+                //mImageView.getMatrix();
+                // values[2] and values[5] are the x,y coordinates of the top left corner of the drawable image, regardless of the zoom factor.
+                // values[0] and values[4] are the zoom factors for the image's width and height respectively. If you zoom at the same factor, these should both be the same value.
 
-            // event is the touch event for MotionEvent.ACTION_UP
-            //if (mImageView.>)
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    //		flaoat startX = (int) event.getX();
-                    //		startY = (int) event.getY();
-
-                    moving = true;
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if(moving)
-                    {
-                        x = event.getRawX()-(mPage/(mImageView.getHeight()*mZoom));//- mImageView.getWidth()/2;
-                        y = event.getRawY()-(mPage/(mImageView.getWidth()*mZoom));//- mImageView.getHeight()*3/2;
-                        signature.setX(x);
-                        signature.setY(y);
-                        Coord.setText(Float.toString(y));
-                        Coordx.setText(Float.toString(x));
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
+                // event is the touch event for MotionEvent.ACTION_UP
+                //if (mImageView.>)
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        //		flaoat startX = (int) event.getX();
+                        //		startY = (int) event.getY();
+                        signature.setVisibility(ImageView.VISIBLE);
+                        moving = true;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if(moving)
+                        {
+                            x = event.getRawX()-(mPage/(mImageView.getHeight()*mZoom));//- mImageView.getWidth()/2;
+                            y = event.getRawY()-(mPage/(mImageView.getWidth()*mZoom));//- mImageView.getHeight()*3/2;
+                            signature.setX(x);
+                            signature.setY(y);
+                            // Coord.setText(Float.toString(y));
+                            // Coordx.setText(Float.toString(x));
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
 						/*relativeX = (event.getX() - values[2]) / values[0];
 						relativeY = (event.getY() - values[5]) / values[4];
 						signature.setX(relativeX);
 						signature.setY(relativeY);*/
-                    moving = false;
-                    break;
-            }
+                        moving = false;
+                        break;
+                }
+            }else {mImageView.getParent().requestDisallowInterceptTouchEvent(false);}
             return true;
         }
 
@@ -898,7 +969,104 @@ public abstract class Pdftry extends Activity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        public void setsignbutton(){
+            final File test = new File(signPath);
 
+            ////////////////check hash//////////////////////////////
+
+            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
+            Query queryRef = ref.orderByKey().equalTo(session.docKey);
+
+            System.out.println(session.docKey);
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (counter == 0) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                if (child.getKey().equals(session.docKey)) {
+                                    messagedigest = child.child("messagedigest").getValue(String.class);
+                                    System.out.println(messagedigest + "      " + "message Di");
+                                    System.out.println("now     " + SHA512.calculateSHA512(test));
+                                    if (session.docKey != null) {
+                                        //        System.out.println(session.docKey);
+                                        System.out.println("yes");
+
+                                    } else {
+                                        System.out.println("no ");
+
+                                    }
+                                    if (SHA512.checkSHA512(messagedigest, test)) {
+                                        Matrix matrix = signature.getImageMatrix();
+                                        // Get the values of the matrix
+                                        float[] values = new float[9];
+                                        matrix.getValues(values);
+                                        // values[2] and values[5] are the x,y coordinates of the top left corner of the drawable image, regardless of the zoom factor.
+                                        // values[0] and values[4] are the zoom factors for the image's width and height respectively. If you zoom at the same factor, these should both be the same value.
+                                        values[0] = mZoom;
+                                        values[4] = mZoom;
+                                        // event is the touch event for MotionEvent.ACTION_UP
+                                        float relativeX = (signature.getX() - values[2]) / values[0];
+                                        float relativeY = (signature.getY() - values[5]) / values[4];
+                                        //////////////////////////option for signing//////////////////////
+                                        if (mPdfFile.getNumPages() > 1) {
+                                            displayAlertDialog();
+                                            if (allOrNot) {
+
+                                                /////////////////////////////////////////////////////////////////
+                                                ///////////////////zoom coordinates///////////////////////
+
+                                                merge(relativeX, relativeY, -1);
+                                            } else
+                                                merge(relativeX, relativeY, mPage);
+                                        } else
+                                            merge(relativeX, relativeY, 1);
+                                        File f2 = new File(newP);
+
+                                        //PdfChecksum = SHA512.calculateSHA512(f2);
+                                        //documentToUpdate=new documents(session.docKey,PdfChecksum,child.child("ekey").getValue(String.class),"ftp.byethost4.com/htdocs/"+session.userkey+"/"+f2.getName()+"/",child.child("documentOwnerID").getValue(String.class),child.child("documentName").getValue(String.class));
+                                        //documentAdapter=new documentsArrayAdapter(Pdftry.this);
+                                        //fileTosign=new File(newP);
+                                        //documentAdapter.updateItem(documentToUpdate);
+                                        System.out.println("path " + f2.getPath());
+                                        File ff = new File(signPath);
+
+                                        f2.renameTo(test);
+                                        new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
+
+                                    } else {
+                                        AlertDialog alert = new AlertDialog.Builder(Pdftry.this).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // do nothing
+                                            }
+                                        }).show();
+                                    }
+                                }
+                                break;
+
+
+                            }
+                        }
+                        counter++;
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+
+            };
+            queryRef.addValueEventListener(listener);
+
+
+            //Toast.makeText(Pdftry.this,messagedigest,Toast.LENGTH_LONG);
+            //Toast.makeText(Pdftry.this,SHA512.calculateSHA512(f), Toast.LENGTH_LONG);
+
+
+            /////////////////////firebase////////////////////////////
+            DigitalS();
+        }
 
         private void addNavButtons(ViewGroup vg) {
 
@@ -913,146 +1081,7 @@ public abstract class Pdftry extends Activity {
             hl.setOrientation(LinearLayout.HORIZONTAL);
 
 
-            /////////////////////////////////////////////////////////////////////////////////////////////////////
-            // sign button
-            sign=new Button(context);
-            sign.setLayoutParams(lpChild1);
-            sign.setText("SIGN");
-            sign.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    final File test = new File (signPath);
 
-                    ////////////////check hash//////////////////////////////
-
-                    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
-                    Query queryRef = ref.orderByKey().equalTo(session.docKey);
-
-                    System.out.println(session.docKey);
-                    ValueEventListener listener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(counter==0){
-                                if (dataSnapshot.exists()) {
-                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                        if (child.getKey().equals(session.docKey)) {
-                                            messagedigest = child.child("messagedigest").getValue(String.class);
-                                            System.out.println(messagedigest + "      " + "message Di");
-                                            System.out.println("now     "+SHA512.calculateSHA512(test));
-                                            if (session.docKey!= null)
-                                            {
-                                        //        System.out.println(session.docKey);
-                                                System.out.println("yes");
-
-                                            }
-                                            else
-                                            {
-                                                System.out.println("no ");
-
-                                            }
-                                            if (SHA512.checkSHA512(messagedigest,test)) {
-                                                Matrix matrix = signature.getImageMatrix();
-                                                // Get the values of the matrix
-                                                float[] values = new float[9];
-                                                matrix.getValues(values);
-                                                // values[2] and values[5] are the x,y coordinates of the top left corner of the drawable image, regardless of the zoom factor.
-                                                // values[0] and values[4] are the zoom factors for the image's width and height respectively. If you zoom at the same factor, these should both be the same value.
-                                                values[0] = mZoom;
-                                                values[4] = mZoom;
-                                                // event is the touch event for MotionEvent.ACTION_UP
-                                                float relativeX = (signature.getX() - values[2]) / values[0];
-                                                float relativeY = (signature.getY() - values[5]) / values[4];
-                                                //////////////////////////option for signing//////////////////////
-                                                if (mPdfFile.getNumPages() > 1) {
-                                                    displayAlertDialog();
-                                                    if (allOrNot) {
-
-                                                        /////////////////////////////////////////////////////////////////
-                                                        ///////////////////zoom coordinates///////////////////////
-
-                                                        merge(relativeX, relativeY, -1);
-                                                    } else
-                                                        merge(relativeX, relativeY, mPage);
-                                                } else
-                                                    merge(relativeX, relativeY, 1);
-                                                File f2 = new File(newP);
-
-                                                //PdfChecksum = SHA512.calculateSHA512(f2);
-                                                //documentToUpdate=new documents(session.docKey,PdfChecksum,child.child("ekey").getValue(String.class),"ftp.byethost4.com/htdocs/"+session.userkey+"/"+f2.getName()+"/",child.child("documentOwnerID").getValue(String.class),child.child("documentName").getValue(String.class));
-                                                //documentAdapter=new documentsArrayAdapter(Pdftry.this);
-                                                //fileTosign=new File(newP);
-                                                //documentAdapter.updateItem(documentToUpdate);
-                                                System.out.println("path "+f2.getPath());
-                                                File ff=new File(signPath);
-
-                                                f2.renameTo(test);
-                                                new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
-
-                                            } else {
-                                                AlertDialog alert = new AlertDialog.Builder(Pdftry.this).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        // do nothing
-                                                    }
-                                                }).show();
-                                            }
-                                        }
-                                        break;
-
-
-                                    }
-                                }
-                                counter++;
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-
-                    };
-                    queryRef.addValueEventListener(listener);
-
-
-                    //Toast.makeText(Pdftry.this,messagedigest,Toast.LENGTH_LONG);
-                    //Toast.makeText(Pdftry.this,SHA512.calculateSHA512(f), Toast.LENGTH_LONG);
-
-
-                    /////////////////////firebase////////////////////////////
-
-
-                }
-
-
-            });
-            hl.addView(sign);
-
-            DigitalS();
-
-            // send button
-			/*send=new Button(context);
-			send.setLayoutParams(lpChild1);
-			send.setText("SEND");
-			send.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-
-				}
-			});
-			hl.addView(send);*/
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////
-            //select signature button
-            bSelect=new ImageButton(context);
-            bSelect.setBackgroundDrawable(null);
-            bSelect.setLayoutParams(lpChild1);
-            bSelect.setImageResource(getSelectSignatureImageResource());
-            bSelect.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    //signature select function
-                    selectSignature();
-                }
-            });
-            hl.addView(bSelect);
             // zoom out button
             bZoomOut=new ImageButton(context);
             bZoomOut.setBackgroundDrawable(null);
@@ -1146,67 +1175,6 @@ public abstract class Pdftry extends Activity {
 
 
 
-		/*private void addsignBar(ViewGroup vg) {
-
-
-
-			// sign button
-			sign=new Button(this);
-			sign.setLayoutParams(lpChild1);
-			sign.setText("sign");
-			sign.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-
-				}
-			});
-			vg.addView(sign);
-
-			// send button
-			send=new Button(context);
-			send.setLayoutParams(lpChild1);
-			send.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-
-				}
-			});
-			h2.addView(send);
-
-			// sign Image
-			signature=new ImageView(context);
-			signature.setLayoutParams(lpChild1);
-			//bNext.setText(">");
-			//bNext.setWidth(40);
-			signature.setImageResource(getsignatureImageReasource());
-			signature.setOnTouchListener(new OnTouchListener() {
-				public boolean onTouch(View arg0, MotionEvent arg1) {
-				float x,y=0.0f;
-				boolean moving = false;
-				 {
-					switch (arg1.getAction()){
-						case MotionEvent.ACTION_DOWN:
-							moving = true;
-							break;
-						case MotionEvent.ACTION_MOVE:
-							if (moving){x=arg1.getRawX()-signature.getWidth()/2;
-								y=arg1.getRawY()-signature.getHeight()*3/2;
-								signature.setX(x);
-								signature.setY(y);}
-							break;
-						case MotionEvent.ACTION_UP:
-							moving = false;
-							break;
-
-
-					}
-					return true;
-				}
-				}
-			});
-			h2.addView(signature);
-
-			addSpace(h2, 20, 20);
-		}*/
-
 
         private void addSpace(ViewGroup vg, int width, int height) {
             TextView tvSpacer=new TextView(vg.getContext());
@@ -1218,66 +1186,6 @@ public abstract class Pdftry extends Activity {
 
         }
 
-        /*
-
-         <fragment
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:name="com.signononlinesignatureapp.signon.SignFragment"
-        android:id="@+id/fragment"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        tools:layout="@layout/sign_bar_fragment" />
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="vertical"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:background="#e8e8e8"
-android:layout_gravity="bottom">
-
-
-<TableRow
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:background="#979797">
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send"
-        android:id="@+id/button2"
-        android:background="#7724cc"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="20dp"
-        android:layout_column="0"
-        android:layout_gravity="left"/>
-    <ImageView
-        android:layout_width="90dp"
-        android:layout_height="50dp"
-        android:id="@+id/signimage"
-        android:src="@drawable/signature"
-        android:scaleType="fitCenter"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_column="1"
-        android:layout_gravity="center_horizontal"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign"
-        android:id="@+id/button"
-        android:background="#7724cc"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_column="2"
-        android:layout_gravity="right"/>
-
-</TableRow>
-</LinearLayout>*/
         private void showText(String text) {
             Log.i(TAG, "ST='"+text+"'");
             //mText = text;
@@ -1409,7 +1317,7 @@ android:layout_gravity="bottom">
             throw e;
         } catch (Throwable e) {
             e.printStackTrace();
-            mGraphView.showText("Exception: "+e.getMessage());
+            mGraphView.showText("Exception: " + e.getMessage());
         }
         //long stopTime = System.currentTimeMillis();
         //mGraphView.fileMillis = stopTime-startTime;
@@ -1514,6 +1422,7 @@ android:layout_gravity="bottom">
     public abstract int getZoomInImageResource(); // R.drawable.zoom_int
     public abstract int getZoomOutImageResource(); // R.drawable.zoom_out
     public abstract int getSelectSignatureImageResource();//R.drawable.select_signature
+    public abstract int getShareDocumentImageResource();//R.drawable.share
     public abstract int getPdfPasswordLayoutResource(); // R.layout.pdf_file_password
     public abstract int getPdfPageNumberResource(); // R.layout.dialog_pagenumber
 
@@ -1701,7 +1610,7 @@ android:layout_gravity="bottom">
 
         };
         queryRef.addListenerForSingleValueEvent(listener);}
-        // omaimah
+    // omaimah
 
     private void AddRequest(Request request) {
         Firebase reqRef = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
@@ -1718,6 +1627,5 @@ android:layout_gravity="bottom">
 
 
     }
-    ////////////////////////////////////////////////////////////////////////////////////////
 }
 
