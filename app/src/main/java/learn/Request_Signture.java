@@ -2,6 +2,7 @@ package learn;
 
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +30,6 @@ public class Request_Signture extends ListActivity {
         setContentView(R.layout.main_request_signature);
         mAdapter = new RequestArrayAdapter(this);
         setListAdapter(mAdapter);
-        //counter=1;
 
     }
 
@@ -80,8 +80,7 @@ public class Request_Signture extends ListActivity {
 
     public void DoneButtonOnClick (View view)
     {
-        finish();
-
+        startActivity(new Intent(Request_Signture.this, DocumentOwnerList.class));
     }
 
 

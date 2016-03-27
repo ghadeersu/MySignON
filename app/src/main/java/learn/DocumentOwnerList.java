@@ -163,7 +163,7 @@ public class DocumentOwnerList extends ListActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            if (i < 3) {
+                            if (i < 3 ) {
                                 if (dataSnapshot.exists()) {
                                     if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey)) {
                                         if (!snapshot.child("status").getValue().toString().equals("done")) {
