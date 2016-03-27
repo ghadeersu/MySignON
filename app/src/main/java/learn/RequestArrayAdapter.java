@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import learn.session;
-
 public class RequestArrayAdapter extends BaseAdapter implements ChildEventListener {
 
 
@@ -90,9 +88,10 @@ public class RequestArrayAdapter extends BaseAdapter implements ChildEventListen
         }
         TextView OrderTextView = (TextView) view.findViewById(android.R.id.text2);
         Request request = getItem(position);
-        OrderTextView.setText("Order: "+request.getOrder());
+        OrderTextView.setText("Order: "+request.getOrder() +"   Status: "+request.getStatus());
         TextView EmailTextView = (TextView) view.findViewById(android.R.id.text1);
         EmailTextView.setText(request.getSignerEmail());
+
         return view;
     }
 

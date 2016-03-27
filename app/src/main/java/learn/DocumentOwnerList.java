@@ -191,7 +191,7 @@ public class DocumentOwnerList extends ListActivity {
                         if (request) {
                             startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
                         }
-                        i = 0;
+                        //i = 0;
                     }
 
                     @Override
