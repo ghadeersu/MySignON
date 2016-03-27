@@ -103,23 +103,6 @@
                 android:password="true"
                 android:singleLine="true" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Email :"
-                android:id="@+id/textView17"
-                android:layout_marginLeft="10dp" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:id="@+id/EmailEditText"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:singleLine="true"
-                android:inputType="textWebEmailAddress" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -129,13 +112,29 @@
                 android:id="@+id/textView18"
                 android:layout_marginLeft="10dp" />
 
-            <EditText
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
+                android:layout_height="49dp"
+                android:layout_weight="0.06">
+            <EditText
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/BirthdayEditText"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:editable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+
+            <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="set Date"
+            android:id="@+id/button7"
+            android:onClick="setDate"/>
+                </LinearLayout>
 
             <Button
                 android:layout_width="wrap_content"
@@ -143,7 +142,8 @@
                 android:text="Edit Signature"
                 android:id="@+id/settingEditSignature"
                 android:layout_gravity="center_horizontal"
-                android:onClick="editSignatures"/>
+                android:onClick="editSignatures"
+                android:layout_marginBottom="25dp" />
         </LinearLayout>
     </LinearLayout>
 

@@ -171,7 +171,7 @@ public class DocumentOwnerList extends ListActivity {
                                             request = false;
                                             canRequest[i] = false;
                                             i++;
-                                        } 
+                                        }
                                     } else {
                                         canRequest[i] = true;
                                     }
