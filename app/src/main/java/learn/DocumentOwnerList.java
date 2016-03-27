@@ -157,13 +157,13 @@ public class DocumentOwnerList extends ListActivity {
                 i = 0;
                 request = true;
                 canRequest = new boolean[3];
-                Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+                final Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
                 Query query = ref.orderByChild("requesterID").equalTo(session.userkey);
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            if (i < 3 ) {
+                            if (i < 3) {
                                 if (dataSnapshot.exists()) {
                                     if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey)) {
                                         if (!snapshot.child("status").getValue().toString().equals("done")) {
@@ -189,6 +189,7 @@ public class DocumentOwnerList extends ListActivity {
                             }
                         }
                         if (request) {
+                            ref.removeEventListener(this);
                             startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
                         }
                         //i = 0;
