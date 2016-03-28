@@ -188,33 +188,6 @@ public class HomeActivity extends BaseActivity {
 
 
 private void callDelete(){
-    ///////////////////delete button code////////////////////////
-
-    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
-    Query queryRef = ref.orderByKey().equalTo(session.docKey);
-    ValueEventListener listener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot.exists()) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if (child.getKey().equals(session.docKey)) {
-                        String fileName;
-                        fileName = child.child("documentName").getValue(String.class);
-                        System.out.println("name"+fileName);
-                        new HDWFTP_Delete().execute(fileName);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-
-        }
-
-    };
-    queryRef.addValueEventListener(listener);
-////////////////delete end///////////////////////////////////////
 
 }
     public void testOn2(View v) {
@@ -335,11 +308,35 @@ private void callDelete(){
 
     }
     @Override
+    public void onBackPressed(){
+        new AlertDialog.Builder(this).setTitle("Log out").setMessage("Are you sure you want to log out?").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ////////logout//////////////////////
+                session.homecounter=0;
+                session.base64=null;
+                session.docKey=null;
+                session.requesterID=null;
+                session.userEmail=null;
+                session.userkey=null;
+                finish();
+                new Intent(HomeActivity.this, IntroActivity.class);
+            }
+        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //do nothing
+            }
+        }).show();
+
+    }
+    @Override
     public void onResume(){
        changeImageView();
         super.onResume();
 
     }
+
     public void changeImageView(){
         final ImageView test=(ImageView)findViewById(R.id.homeSignatureImageView);
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/signature");

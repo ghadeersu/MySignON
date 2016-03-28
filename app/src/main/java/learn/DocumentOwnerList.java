@@ -28,6 +28,8 @@ public class DocumentOwnerList extends ListActivity {
     int i;
     boolean[] canRequest;
     boolean request;
+    boolean canDelete=true;
+    private Firebase mFirebase ;// = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/"+session.userkey) ; //= new Firebase("");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,11 +113,19 @@ public class DocumentOwnerList extends ListActivity {
         canRequest = new boolean[3];
         request=true;
 
+          //***********************************FireBase RequesterID**************************
+        /////////////////////////////////////////////////////////////////////////////////
 
+
+//***************PRINT********************
+
+//-------------------
 
         final Button viewB = (Button) findViewById(R.id.docOviewbutton);
         final Button signB = (Button) findViewById(R.id.docOsignbutton);
         final Button requestB = (Button) findViewById(R.id.docOrequestbutton);
+        final Button deleteB = (Button) findViewById(R.id.docOdelete);
+
         viewB.setEnabled(true);
         viewB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +153,86 @@ public class DocumentOwnerList extends ListActivity {
             }
         });
 
+        /////////////////////////////Delete Button/////////////////
+        deleteB.setEnabled(true);
+        deleteB.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
 
+                                           Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+                                           Query queryRef = ref.orderByChild("rDocumentId").equalTo(session.docKey);
+
+                                           queryRef.addValueEventListener(new ValueEventListener() {
+                                               @Override
+                                               public void onDataChange(DataSnapshot dataSnapshot) {
+                                                   //    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+                                                   for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                       if (dataSnapshot.exists()) {
+
+                                                           if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey))
+                                                           {
+                                                               Toast.makeText(DocumentOwnerList.this, "you cannot delete this file", Toast.LENGTH_SHORT).show();
+                                                               canDelete=false;
+
+                                                           }
+
+                                                      /*     if (snapshot.child("status").getValue().toString().equals("done")) {
+                                                               //  Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+                                                               //removeItem(ref);
+                                                               //         System.out.println("PAAAAAAATH "+ session.requesterID);mFirebase = snapshot.getRef();
+                                                               mFirebase = snapshot.getRef();
+                                                               mFirebase.removeValue();
+                                                               System.out.println("here in if condition !!! ");*/
+                                                              // Toast.makeText(DocumentOwnerList.this, "You cannot delete this file!", Toast.LENGTH_SHORT).show();
+                                                       }
+
+                                                   }
+                                                   if (canDelete) {
+                                                       Toast.makeText(DocumentOwnerList.this, "delete", Toast.LENGTH_SHORT).show();
+                                                       deleteDoc();
+                                                       Firebase refDoc = new Firebase("https://torrid-heat-4458.firebaseio.com/documents");
+                                                       refDoc.child(session.docKey).removeValue();
+                                                   }
+
+
+                                               }
+
+
+                                               @Override
+                                               public void onCancelled(FirebaseError firebaseError) {
+
+                                               }
+                                           });
+
+                                               /*Query queryRefDoc = refDoc.orderByChild("rDocumentId").equalTo(session.docKey);
+
+                                               queryRefDoc.addValueEventListener(new ValueEventListener() {
+                                                                                     public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                         //    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+                                                                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                                                                                                 if (dataSnapshot.exists()) {
+
+                                                                                             }
+                                                                                         }
+
+                                                                                     }
+
+                                                                                     @Override
+                                                                                     public void onCancelled(FirebaseError firebaseError) {
+
+                                                                                     }
+                                                                                 }
+
+                                               );*/
+
+                                       }
+                                   }
+
+        );
+
+
+//requestB
         requestB.setEnabled(true);
         requestB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +240,7 @@ public class DocumentOwnerList extends ListActivity {
 
                 //    Operation = "Request";
 
+                startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
 
                 ////// go to request Activity
                 // search for (documentId + session.userkey) in requests => if snapshot.exist() => cannot request
@@ -205,11 +295,44 @@ public class DocumentOwnerList extends ListActivity {
                 v.setEnabled(false);
                 signB.setEnabled(false);
                 viewB.setEnabled(false);
+                deleteB.setEnabled(false);
 
             }
         });
 
         super.onListItemClick(l, v, position, id);
     }
+
+private void deleteDoc() {
+        ///////////////////delete button code////////////////////////
+
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
+        Query queryRef = ref.orderByKey().equalTo(session.docKey);
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        if (child.getKey().equals(session.docKey)) {
+                            String fileName;
+                            fileName = child.child("documentName").getValue(String.class);
+                            System.out.println("name"+fileName);
+                            new HDWFTP_Delete().execute(fileName);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+
+        };
+        queryRef.addValueEventListener(listener);
+////////////////delete end///////////////////////////////////////
+
+    }
+
 }
 
