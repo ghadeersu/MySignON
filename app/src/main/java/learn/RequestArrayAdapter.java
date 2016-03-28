@@ -34,7 +34,7 @@ public class RequestArrayAdapter extends BaseAdapter implements ChildEventListen
         mRequests = new ArrayList<Request>();
         Firebase.setAndroidContext(context);
         mFirebase = new Firebase ("https://torrid-heat-4458.firebaseio.com/requests");
-        Query q1 = mFirebase.orderByChild("requesterID").equalTo(session.userkey);
+        Query q1 = mFirebase.orderByChild("rDocumentId").equalTo(session.docKey);
         q1.addChildEventListener(this);
     }
 
