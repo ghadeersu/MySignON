@@ -169,10 +169,9 @@ public class DocumentOwnerList extends ListActivity {
                                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                        if (dataSnapshot.exists()) {
 
-                                                           if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey))
-                                                           {
+                                                           if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey)) {
                                                                Toast.makeText(DocumentOwnerList.this, "you cannot delete this file", Toast.LENGTH_SHORT).show();
-                                                               canDelete=false;
+                                                               canDelete = false;
 
                                                            }
 
@@ -183,7 +182,7 @@ public class DocumentOwnerList extends ListActivity {
                                                                mFirebase = snapshot.getRef();
                                                                mFirebase.removeValue();
                                                                System.out.println("here in if condition !!! ");*/
-                                                              // Toast.makeText(DocumentOwnerList.this, "You cannot delete this file!", Toast.LENGTH_SHORT).show();
+                                                           // Toast.makeText(DocumentOwnerList.this, "You cannot delete this file!", Toast.LENGTH_SHORT).show();
                                                        }
 
                                                    }
@@ -240,7 +239,6 @@ public class DocumentOwnerList extends ListActivity {
 
                 //    Operation = "Request";
 
-                startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
 
                 ////// go to request Activity
                 // search for (documentId + session.userkey) in requests => if snapshot.exist() => cannot request
@@ -295,7 +293,6 @@ public class DocumentOwnerList extends ListActivity {
                 v.setEnabled(false);
                 signB.setEnabled(false);
                 viewB.setEnabled(false);
-                deleteB.setEnabled(false);
 
             }
         });
