@@ -292,6 +292,7 @@ public class DocumentOwnerList extends ListActivity {
                 v.setEnabled(false);
                 signB.setEnabled(false);
                 viewB.setEnabled(false);
+                deleteB.setEnabled(false);
 
             }
         });
