@@ -188,33 +188,6 @@ public class HomeActivity extends BaseActivity {
 
 
 private void callDelete(){
-    ///////////////////delete button code////////////////////////
-
-    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
-    Query queryRef = ref.orderByKey().equalTo(session.docKey);
-    ValueEventListener listener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot.exists()) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if (child.getKey().equals(session.docKey)) {
-                        String fileName;
-                        fileName = child.child("documentName").getValue(String.class);
-                        System.out.println("name"+fileName);
-                        new HDWFTP_Delete().execute(fileName);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-
-        }
-
-    };
-    queryRef.addValueEventListener(listener);
-////////////////delete end///////////////////////////////////////
 
 }
     public void testOn2(View v) {

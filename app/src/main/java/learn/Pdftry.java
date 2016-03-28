@@ -1065,7 +1065,7 @@ public abstract class Pdftry extends Activity {
 
 
             /////////////////////firebase////////////////////////////
-            DigitalS();
+         //   DigitalS();
         }
 
         private void addNavButtons(ViewGroup vg) {
@@ -1582,7 +1582,7 @@ public abstract class Pdftry extends Activity {
 
 
     }
-    private void DigitalS(){
+   private void DigitalS(){
         // check if ownerID is digital
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents ");
         Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
