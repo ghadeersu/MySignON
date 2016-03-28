@@ -319,6 +319,7 @@ private void callDelete(){
                 session.requesterID=null;
                 session.userEmail=null;
                 session.userkey=null;
+                finish();
                 new Intent(HomeActivity.this, IntroActivity.class);
             }
         }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
