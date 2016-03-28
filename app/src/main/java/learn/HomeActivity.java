@@ -308,11 +308,34 @@ private void callDelete(){
 
     }
     @Override
+    public void onBackPressed(){
+        new AlertDialog.Builder(this).setTitle("Log out").setMessage("Are you sure you want to log out?").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ////////logout//////////////////////
+                session.homecounter=0;
+                session.base64=null;
+                session.docKey=null;
+                session.requesterID=null;
+                session.userEmail=null;
+                session.userkey=null;
+                new Intent(HomeActivity.this, IntroActivity.class);
+            }
+        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //do nothing
+            }
+        }).show();
+
+    }
+    @Override
     public void onResume(){
        changeImageView();
         super.onResume();
 
     }
+
     public void changeImageView(){
         final ImageView test=(ImageView)findViewById(R.id.homeSignatureImageView);
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/signature");
