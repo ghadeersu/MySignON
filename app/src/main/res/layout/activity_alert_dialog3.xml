@@ -16,7 +16,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="You have reached the maximum size for storage, please delete a file."
+        android:text="File uploaded successfully"
         android:id="@+id/textView4"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
@@ -30,10 +30,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OK"
-        android:id="@+id/button4"
-        android:onClick="close"
+        android:id="@+id/button3"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:onClick="close"/>
 
 </RelativeLayout>

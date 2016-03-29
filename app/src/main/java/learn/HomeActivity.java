@@ -20,6 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -144,9 +147,7 @@ public class HomeActivity extends BaseActivity {
                                         exist=true;
                                     }*/
                         // if(!exist){
-                        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                         new HDWFTP_Upload(HomeActivity.this).execute(path);
-                        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                         //}
                         //else{
                         //  AlertDialog alert = new AlertDialog.Builder(HomeActivity.this).setMessage("A file with the same name already exist").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

@@ -6,12 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 
-public class alertDialog2 extends AppCompatActivity {
+public class alertDialog3 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alert_dialog2);
+        setContentView(R.layout.activity_alert_dialog3);
 
     }
     public void close(View v){

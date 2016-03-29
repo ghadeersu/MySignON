@@ -177,7 +177,7 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
 
 
                         System.out.println("File saved");
-
+                            context.startActivity(new Intent(context, alertDialog3.class));
 
                         ftpClient.logout();
                         ftpClient.disconnect();
