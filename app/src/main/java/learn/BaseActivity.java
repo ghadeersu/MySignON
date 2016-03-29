@@ -164,6 +164,7 @@ public abstract class BaseActivity extends AppCompatActivity
                 session.requesterID=null;
                 session.userEmail=null;
                 session.userkey=null;
+                SaveSharedPreference.clearShared(BaseActivity.this);
                 createBackStack(new Intent(this, IntroActivity.class));
 
                 break;

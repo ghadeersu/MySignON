@@ -48,46 +48,62 @@ public class IntroActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
         homeintent= new Intent(this, learn.HomeActivity.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.rgb(80, 23, 140));
+        if(SaveSharedPreference.getUserName(this).length() == 0)
+        {
+            // call Login Activity
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(Color.rgb(80, 23, 140));
+            }
+
+
+            setContentView(R.layout.activity_intro);
+
+
+            Button introActivityLoginButton=(Button)findViewById(R.id.introActivityLoginButton);
+            Button introActivityRegisterButton=(Button) findViewById(R.id.introActivityRegisterButton);
+
+            final EditText email, password;
+            email = (EditText) findViewById(R.id.introEmailEditText);
+            password = (EditText) findViewById(R.id.introPasswordEditText);
+
+            introActivityLoginButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        public void onClick(View v) {
+
+                            searchforuser(email.getText().toString(), password.getText().toString());
+
+                        }
+
+                    }
+
+            );
+
+            introActivityRegisterButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(IntroActivity.this, learn.RigesterActivity.class));
+
+                        }
+
+                    }
+
+            );
+
+
+        }
+        else
+        {
+            // Stay at the current activity.
+            homeintent.putExtra("key", SaveSharedPreference.getUserName(this));
+            homeintent.putExtra("Email",SaveSharedPreference.getEmail(this));
+            startActivity(homeintent);
+
         }
 
-
-        setContentView(R.layout.activity_intro);
-
-
-        Button introActivityLoginButton=(Button)findViewById(R.id.introActivityLoginButton);
-        Button introActivityRegisterButton=(Button) findViewById(R.id.introActivityRegisterButton);
-
-        final EditText email, password;
-        email = (EditText) findViewById(R.id.introEmailEditText);
-        password = (EditText) findViewById(R.id.introPasswordEditText);
-
-        introActivityLoginButton.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-
-                        searchforuser(email.getText().toString(), password.getText().toString());
-
-                    }
-
-                }
-
-        );
-
-        introActivityRegisterButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(IntroActivity.this, learn.RigesterActivity.class));
-
-                    }
-
-                }
-
-        );
     }
     public void storeSignatureButtonClick(View v){
         startActivity(new Intent(IntroActivity.this, learn.hash.class));
@@ -144,7 +160,9 @@ public class IntroActivity extends FragmentActivity {
                     for (DataSnapshot child: dataSnapshot.getChildren()) {
                         if(userkey==child.getKey()) {
                             homeintent.putExtra("key", userkey);
-                            homeintent.putExtra("Email",email);
+                            homeintent.putExtra("Email", email);
+                            SaveSharedPreference.setUserName(IntroActivity.this, userkey);
+                            SaveSharedPreference.setEmail(IntroActivity.this, email);
                             startActivity(homeintent);
                             break;
                         }

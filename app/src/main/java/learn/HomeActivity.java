@@ -144,8 +144,9 @@ public class HomeActivity extends BaseActivity {
                                         exist=true;
                                     }*/
                         // if(!exist){
-
+                        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                         new HDWFTP_Upload(HomeActivity.this).execute(path);
+                        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                         //}
                         //else{
                         //  AlertDialog alert = new AlertDialog.Builder(HomeActivity.this).setMessage("A file with the same name already exist").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -319,6 +320,7 @@ private void callDelete(){
                 session.requesterID=null;
                 session.userEmail=null;
                 session.userkey=null;
+                SaveSharedPreference.clearShared(HomeActivity.this);
                 finish();
                 new Intent(HomeActivity.this, IntroActivity.class);
             }
