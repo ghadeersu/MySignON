@@ -3,6 +3,7 @@ package learn;
 /**
  * Created by Naseebah on 06/03/16.
  */
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -168,10 +169,9 @@ public class DocumentOwnerList extends ListActivity {
                                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                        if (dataSnapshot.exists()) {
 
-                                                           if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey))
-                                                           {
+                                                           if (snapshot.child("rDocumentId").getValue().toString().equals(session.docKey)) {
                                                                Toast.makeText(DocumentOwnerList.this, "you cannot delete this file", Toast.LENGTH_SHORT).show();
-                                                               canDelete=false;
+                                                               canDelete = false;
 
                                                            }
 
@@ -182,7 +182,7 @@ public class DocumentOwnerList extends ListActivity {
                                                                mFirebase = snapshot.getRef();
                                                                mFirebase.removeValue();
                                                                System.out.println("here in if condition !!! ");*/
-                                                              // Toast.makeText(DocumentOwnerList.this, "You cannot delete this file!", Toast.LENGTH_SHORT).show();
+                                                           // Toast.makeText(DocumentOwnerList.this, "You cannot delete this file!", Toast.LENGTH_SHORT).show();
                                                        }
 
                                                    }
@@ -239,7 +239,6 @@ public class DocumentOwnerList extends ListActivity {
 
                 //    Operation = "Request";
 
-                startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
 
                 ////// go to request Activity
                 // search for (documentId + session.userkey) in requests => if snapshot.exist() => cannot request
@@ -248,8 +247,9 @@ public class DocumentOwnerList extends ListActivity {
                 request = true;
                 canRequest = new boolean[3];
                 final Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+
                 Query query = ref.orderByChild("requesterID").equalTo(session.userkey);
-                query.addValueEventListener(new ValueEventListener() {
+                ValueEventListener listener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -271,16 +271,12 @@ public class DocumentOwnerList extends ListActivity {
                                     canRequest[2] = true;
                                     i = 3;
                                 }
-                                                            /*if (dataSnapshot.exists() && snapshot.child("rDocumentId").getValue().toString().equals(session.docKey) && !snapshot.child("status").getValue().toString().equals("done") && (snapshot.child("status").getValue().toString().equals("waiting") || snapshot.child("status").getValue().toString().equals("waiting2"))) {
-                                                                Toast.makeText(DocumentOwnerList.this, "please wait untill requests are finished  ", Toast.LENGTH_SHORT).show();
-                                                                canRequest[i] = false;
-                                                                i++;
-                                                            }*/
+
                             }
                         }
                         if (request) {
-                            ref.removeEventListener(this);
-                            startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
+                                ref.removeEventListener(this);
+                                startActivity(new Intent(DocumentOwnerList.this, Request_Signture.class));
                         }
                         //i = 0;
                     }
@@ -289,7 +285,9 @@ public class DocumentOwnerList extends ListActivity {
                     public void onCancelled(FirebaseError firebaseError) {
 
                     }
-                });
+                };
+                query.addValueEventListener(listener);
+
 
                 v.setEnabled(false);
                 signB.setEnabled(false);
