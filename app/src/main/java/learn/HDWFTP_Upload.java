@@ -196,6 +196,7 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                         context.startActivity(new Intent(context, alertDialog.class));
 
                     }
+
                 }
 
 

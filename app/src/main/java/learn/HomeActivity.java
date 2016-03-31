@@ -3,6 +3,7 @@ package learn;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,9 +48,10 @@ import learn.R;
 import learn.session;
 
 public class HomeActivity extends BaseActivity {
-
+    public ProgressDialog progress;
     private static final String TAG = "Snap";
     ImageView signatureImageView;
+    String path;
     ImageView imageView;
     private static final int FILE_SELECT_CODE = 0;
     public File fileToUpload;
@@ -128,7 +130,7 @@ public class HomeActivity extends BaseActivity {
 
                         String uriString=uri.getPath();
                         Log.d(TAG, "String Path: " + uriString);
-                        String path = FileUtils.getPath(this, uri);
+                        path = FileUtils.getPath(this, uri);
 
                         Log.d(TAG, "File Path: " + path);
                       /*  pathToUpload=path;
@@ -147,7 +149,31 @@ public class HomeActivity extends BaseActivity {
                                         exist=true;
                                     }*/
                         // if(!exist){
-                        new HDWFTP_Upload(HomeActivity.this).execute(path);
+                        progress = ProgressDialog.show(HomeActivity.this, "Uploading", "Uploading Document ", true, true);
+
+                        new Thread()
+                        {
+                            public void run()
+                            {
+
+                                try
+                                {
+                                    sleep(5000);
+                                    new HDWFTP_Upload(HomeActivity.this).execute(path);
+                                    // do the background process or any work that takes time to see progreaa dialog
+
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.e("tag",e.getMessage());
+                                }
+                                // dismiss the progressdialog
+                                progress.dismiss();
+                            }
+                        }.start();
+
+
+
                         //}
                         //else{
                         //  AlertDialog alert = new AlertDialog.Builder(HomeActivity.this).setMessage("A file with the same name already exist").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
