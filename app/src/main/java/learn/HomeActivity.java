@@ -48,7 +48,7 @@ import learn.R;
 import learn.session;
 
 public class HomeActivity extends BaseActivity {
-    public ProgressDialog progress;
+
     private static final String TAG = "Snap";
     ImageView signatureImageView;
     String path;
@@ -149,28 +149,13 @@ public class HomeActivity extends BaseActivity {
                                         exist=true;
                                     }*/
                         // if(!exist){
-                        progress = ProgressDialog.show(HomeActivity.this, "Uploading", "Uploading Document ", true, true);
 
-                        new Thread()
-                        {
-                            public void run()
-                            {
 
-                                try
-                                {
-                                    sleep(5000);
+
                                     new HDWFTP_Upload(HomeActivity.this).execute(path);
                                     // do the background process or any work that takes time to see progreaa dialog
 
-                                }
-                                catch (Exception e)
-                                {
-                                    Log.e("tag",e.getMessage());
-                                }
-                                // dismiss the progressdialog
-                                progress.dismiss();
-                            }
-                        }.start();
+
 
 
 

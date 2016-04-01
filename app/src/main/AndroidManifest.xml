@@ -40,8 +40,6 @@
         <activity android:name=".DocumentWaitingList" />
         <activity android:name=".GetSignatureActivity" />
         <activity android:name=".SignatureActivity" />
-        <activity android:name=".alertDialog3" android:theme="@style/mytheme"/>
-        <activity android:name=".alertDialog2" android:theme="@style/mytheme" />
 
         <activity android:name=".ViewDocumentActivity"></activity>
     </application>

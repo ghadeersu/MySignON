@@ -1,5 +1,6 @@
 package learn;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -50,21 +51,28 @@ import java.nio.charset.Charset;
 public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
 
     private Context context;
-
+    public ProgressDialog progress;
     String messagedigest, ekey, documentOwnerID, documentName, documentURL;
     documents document;
     documentsArrayAdapter documentAdapter;
     FTPClient ftpClient;
     String TAG="HELP";
     File f ;
+
     byte[] key;
     Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users");
     HDWFTP_Upload(Context context){
         this.context=context;
     }
 
-    protected Long doInBackground(String... FULL_PATH_TO_LOCAL_FILE ) {
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progress = ProgressDialog.show(context, "Uploading", "Uploading Document ", true, true);
+    }
 
+    protected Long doInBackground(String... FULL_PATH_TO_LOCAL_FILE ) {
+        long returning=0;
         {
             Firebase.setAndroidContext(context);
 
@@ -107,12 +115,8 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                 }*/
                 boolean exist=false;
 
-
-                System.out.println(exist);
                 //exist=checkName(new File(FULL_PATH_TO_LOCAL_FILE[0]));
 
-
-                System.out.println("inside f");
                 if (ftpClient.getReplyString().contains("250")) {
                     ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
                     messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
@@ -177,8 +181,8 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
 
 
                         System.out.println("File saved");
-                            context.startActivity(new Intent(context, alertDialog3.class));
 
+                            returning=3;
                         ftpClient.logout();
                         ftpClient.disconnect();
                         try {
@@ -189,11 +193,13 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                         }
 
                     }
-                        else {System.out.println("Size overlimit");}
+                        else {System.out.println("Size overlimit");
+
+                            returning=2;}
                 }
                     else{
 
-                        context.startActivity(new Intent(context, alertDialog.class));
+                        returning=1;
 
                     }
 
@@ -210,98 +216,63 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                 System.out.println("IO Exception!");
             }
 
-            return null;
+            return returning;
 
         }
 
 
     }
 
-    public void ftpPrintFilesList(String dir_path)
-    {
-        try {
-            FTPFile[] ftpFiles = ftpClient.listFiles(dir_path);
-            int length = ftpFiles.length;
-            for (int i = 0; i < length; i++) {
-                String name = ftpFiles[i].getName();
-                boolean isFile = ftpFiles[i].isFile();
+    @Override
+    protected void onPostExecute(Long aLong) {
+        super.onPostExecute(aLong);
+        int caseswitch=aLong.intValue();
+        String message;
+        Intent alert=new Intent(context, alertDialog.class);
+        switch (caseswitch){
+            case 0:
+                message="Error while uploading file.";
+                break;
+            case 1:
+                message="A file with the same name already exists.";
+                break;
+            case 2:
+                message="You have reached the maximum size for storage, please delete a file.";
+                break;
+            case 3:
+                message="File uploaded successfully.";
 
-                if (isFile) {
-                    Log.i(TAG, "File : " + name);
-                }
-                else {
-                    Log.i(TAG, "Directory : " + name);
-                }
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
+                break;
+            default:
+                message="Error while uploading file.";
+                break;
+
         }
+        alert.putExtra("message", message);
+        progress.dismiss();
+        context.startActivity(alert);
     }
 
-    boolean checkName(File f){
-        FTPClient mFTPClient = null;
+    /* private void createHandler() {
+            Thread thread = new Thread() {
+                public void run() {
+                    Looper.prepare();
 
-        try {
-            String TAG="MESSAGE";
-            mFTPClient = new FTPClient();
-            if (android.os.Build.VERSION.SDK_INT > 9) {
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-            }
-            // connecting to the host
-            mFTPClient.connect("ftp.byethost4.com", 21);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"cant",Toast.LENGTH_LONG).show();
+                            handler.removeCallbacks(this);
+                            Looper.myLooper().quit();
+                        }
+                    }, 2000);
 
-            // now check the reply code, if positive mean connection success
-            if (FTPReply.isPositiveCompletion(mFTPClient.getReplyCode())) {
-                // login using username & password
-                boolean status = mFTPClient.login("b4_17442719", "pnuisalie");
-                Log.i(TAG, "connection : " + status);
-            /* Set File Transfer Mode
-             *
-             * To avoid corruption issue you must specified a correct
-             * transfer mode, such as ASCII_FILE_TYPE, BINARY_FILE_TYPE,
-             * EBCDIC_FILE_TYPE .etc. Here, I use BINARY_FILE_TYPE
-             * for transferring text, image, and compressed files.
-             */
-                mFTPClient.enterLocalPassiveMode();
-                FTPFile[] ftpFiles = mFTPClient.listFiles("/htdocs/"+session.userkey+"/");
-                int length = ftpFiles.length;
-                Log.i(TAG, "connection : " + length);
-                for (int i = 0; i < length; i++) {
-                    String name = ftpFiles[i].getName();
-                    if(name.equals(f.getName()))
-                        return true;
-
+                    Looper.loop();
                 }
-                return false;
-            }} catch(Exception e) {
-            e.printStackTrace();
-        }
-
-
-        return false;
-    }
-
-   /* private void createHandler() {
-        Thread thread = new Thread() {
-            public void run() {
-                Looper.prepare();
-
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context,"cant",Toast.LENGTH_LONG).show();
-                        handler.removeCallbacks(this);
-                        Looper.myLooper().quit();
-                    }
-                }, 2000);
-
-                Looper.loop();
-            }
-        };
-        thread.start();
-    }*/
+            };
+            thread.start();
+        }*/
    private long getFileSize(FTPClient ftp, String filePath) throws Exception {
        long fileSize = 0;
        FTPFile[] files = ftp.listFiles(filePath);
