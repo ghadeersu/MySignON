@@ -4,7 +4,9 @@ package learn;
  * Created by daniah on 2/29/2016.
  */
 ////////////////////////////// wherever you want to upload use new HDWFTP_Upload().execute("/sdcard/signon/word.pdf");
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -43,8 +45,13 @@ String originalOwner;
     HDWFTP_Upload_Update(Context context){
         this.context=context;
     }
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
 
+    }
     protected Long doInBackground(String... FULL_PATH_TO_LOCAL_FILE ) {
+        long returning=0;
 
         {
             Firebase.setAndroidContext(context);
@@ -143,6 +150,7 @@ catch (CryptoException ex) {
 
                         };
                         documentAdapter.updateItem(document);
+                        returning=1;
                     }
 
 
@@ -171,12 +179,25 @@ catch (CryptoException ex) {
                 System.out.println("IO Exception!");
             }
 
-            return null;
+            return returning;
 
         }
 
 
     }
+    @Override
+    protected void onPostExecute(Long aLong) {
+        super.onPostExecute(aLong);
+        String message;
+        Intent alert=new Intent(context, alertDialog.class);
+        if(aLong==1)
+            message="File uploaded successfully.";
 
+        else
+            message="Error while uploading file.";
+        alert.putExtra("message", message);
+
+        context.startActivity(alert);
+    }
 
 }
