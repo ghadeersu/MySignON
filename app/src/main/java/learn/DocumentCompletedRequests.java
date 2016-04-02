@@ -126,9 +126,13 @@ public class DocumentCompletedRequests extends ListActivity {
             @Override
             public void onClick(View v) {
 
-                Operation = "View";
-                FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentCompletedRequests.this).execute(DocURL);
+                DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                boolean istrue = app.verify();
+                if (istrue) {
+                    Operation = "View";
+                    FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                    new FTP_Download(DocumentCompletedRequests.this).execute(DocURL);
+                }
                 v.setEnabled(false);
 
 
