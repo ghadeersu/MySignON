@@ -158,12 +158,7 @@ public abstract class BaseActivity extends AppCompatActivity
                 break;
             case R.id.nav_account: // logout
 
-                session.homecounter=0;
-                session.base64=null;
-                session.docKey=null;
-                session.requesterID=null;
-                session.userEmail=null;
-                session.userkey=null;
+             session.destructor();
                 SaveSharedPreference.clearShared(BaseActivity.this);
                 createBackStack(new Intent(this, IntroActivity.class));
 

@@ -144,7 +144,7 @@ public class SignAndVerifyActivity extends AppCompatActivity {
         mFirebase = new Firebase ("https://torrid-heat-4458.firebaseio.com/requests");
         mFirebase.child(requestID).child("signature").setValue(signature);
         ECDSATextview.setText(signature);
-        mFirebase.child(requestID).child("status").setValue("DONE");
+        mFirebase.child(requestID).child("status").setValue("done");
         getseq();
 
 

@@ -205,7 +205,7 @@ private void callDelete(){
 }
     public void testOn2(View v) {
         // startActivity(new Intent(HomeActivity.this, CaptureSignatureActivity.class));
-        startActivity(new Intent(HomeActivity.this, CaptureSignatureActivity.class));
+        startActivity(new Intent(HomeActivity.this, DocumentOwnerList.class));
 
 
 
@@ -401,4 +401,6 @@ private void callDelete(){
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

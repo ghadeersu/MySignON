@@ -11,5 +11,18 @@ public class session {
     public static int homecounter = 0;
     public static String requesterID;
     public static String userEmail;
+    public static String requestID;
+
+
+    public static void destructor(){
+        userkey=null;
+        base64=null;
+        docKey=null;
+        homecounter=0;
+        requesterID=null;
+        userEmail=null;
+        requestID=null;
+
+    }
 
 }

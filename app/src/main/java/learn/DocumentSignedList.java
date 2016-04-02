@@ -89,6 +89,9 @@ public class DocumentSignedList extends ListActivity {
                                                     doc.setOwner(mUser);
                                                     mdocuments.add(0, doc);// add to the top
                                                     notifyDataSetChanged();// update adapter
+                                                    session.requestID= child.getKey();   // ghadeer
+
+
                                                 }
                                             }
 
@@ -136,9 +139,12 @@ public class DocumentSignedList extends ListActivity {
             @Override
             public void onClick(View v) {
 
-                Operation = "View";
+                DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                app.verfiyclick();
+
+            /*    Operation = "View";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentSignedList.this).execute(DocURL);
+                new FTP_Download(DocumentSignedList.this).execute(DocURL); */
                 v.setEnabled(false);
 
 
@@ -146,6 +152,8 @@ public class DocumentSignedList extends ListActivity {
         });
         super.onListItemClick(l, v, position, id);
     }
+
+
 }
 
 

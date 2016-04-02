@@ -1,5 +1,7 @@
 package learn;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -47,7 +49,7 @@ import learn.R;
  */
 public class DigitalSignatureSignAndVerfiy {
 
-
+    private Context context;
      private    String requestID;
      private    String documentID; // this variable will be used in both signing and verifying
      private    String thedigest;
@@ -55,13 +57,96 @@ public class DigitalSignatureSignAndVerfiy {
 
 
 
+    public void Startsigningowner(){ // get public key from FIREBASE
 
 
-        public void signdocument(String DID,String RID ,String digest){ // get public key from FIREBASE
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+session.userkey+"/");
 
-            documentID=DID;
-            requestID=RID;
-            thedigest=digest;
+        Query queryref = ref.orderByValue();
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                BigInteger privatekey;
+
+                privatekey=new BigInteger(dataSnapshot.child("PK").getValue(String.class));
+
+                ECDSASIGNINGowner(privatekey);
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+
+        queryref.addValueEventListener(listener);
+
+
+    }
+
+
+    private void ECDSASIGNINGowner (BigInteger privkey){
+
+        try {
+            // sign ducoment
+
+            ECDSA app = new ECDSA();  // eliptic curve opject
+            // public key will be stored in firebase
+
+            app.setdA(privkey);
+            signature = app.signingMessage(thedigest);
+
+            //  ECDSATextview.setText(signature);
+            Request request = new Request(null, session.userEmail, session.docKey, session.userkey,"1", "done", signature);
+            AddRequest(request);
+
+
+        } catch (java.lang.Exception e1) {  //
+            Log.e("sign and verify", e1.getStackTrace().toString());
+        }
+
+
+    }
+
+
+    public void signdocument(boolean isowner,String DID,String RID) {
+
+if(isowner){
+
+    Startsigningowner();
+}
+        else {
+
+        documentID=DID;
+        requestID=RID;
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+documentID+"/");
+        Query queryref = ref.orderByValue();
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                thedigest=  dataSnapshot.child("messagedigest").getValue().toString();
+                Startsigning();
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+
+        queryref.addValueEventListener(listener);}
+
+    }
+
+
+        public void Startsigning(){ // get public key from FIREBASE
+
+
+        //    thedigest;
 
             Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+session.userkey+"/");
 
@@ -72,7 +157,7 @@ public class DigitalSignatureSignAndVerfiy {
 
                     BigInteger privatekey;
 
-                    privatekey=new BigInteger(dataSnapshot.child("password").getValue(String.class));
+                    privatekey=new BigInteger(dataSnapshot.child("PK").getValue(String.class));
 
                     ECDSASIGNING(privatekey);
 
@@ -100,14 +185,12 @@ public class DigitalSignatureSignAndVerfiy {
 
                 app.setdA(privkey);
                 signature = app.signingMessage(thedigest);
-
                 //  ECDSATextview.setText(signature);
-                storePubkeyAndSignature(signature, thedigest);
-
+                storeSignature(signature, thedigest);
 
 
             } catch (java.lang.Exception e1) {  //
-                Log.e("sign and verify", e1.getStackTrace().toString());
+                Log.e("ECDSA java.lang", e1.getStackTrace().toString());
             }
 
 
@@ -116,24 +199,21 @@ public class DigitalSignatureSignAndVerfiy {
 
 
 
-        private void storePubkeyAndSignature(String signature,String msg){
+        private void storeSignature(String signature,String msg){
 
+            digsignature digsignature = new digsignature(null,session.userkey,session.docKey,signature);
+            digsignatureArryAdapter adapter = new digsignatureArryAdapter(context);
+            adapter.addItem(digsignature);
+           Firebase mFirebase = new Firebase ("https://torrid-heat-4458.firebaseio.com/requests");
+            mFirebase.child(session.requestID).child("status").setValue("done");
 
-
-
-            Firebase  mFirebase = new Firebase ("https://torrid-heat-4458.firebaseio.com/documents");
-            // mFirebase.child(documentID).child("messagedigest").setValue(msg); // digest did not change
-
-            mFirebase = new Firebase ("https://torrid-heat-4458.firebaseio.com/requests");
-            mFirebase.child(requestID).child("signature").setValue(signature);
-            mFirebase.child(requestID).child("status").setValue("DONE");
             getseq();
 
 
         }
 
         private void getseq() {
-            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/" + requestID + "");
+            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/" + session.requestID + "");
 
             Query queryref = ref.child("signingSeq");
             ValueEventListener listener = new ValueEventListener() {
@@ -163,7 +243,7 @@ public class DigitalSignatureSignAndVerfiy {
 
                     for (DataSnapshot child: dataSnapshot.getChildren()){
 
-                        if(!(requestID==child.getKey()))
+                        if(!(session.requestID==child.getKey()))
                         { // ECDSATextview.setText(ECDSATextview.getText()+"[   ]"+child.getKey());
                             checkIfItsTheNextSiner(child.getKey(),seq); }
 
@@ -210,9 +290,9 @@ public class DigitalSignatureSignAndVerfiy {
         }
 
 
-        public void verfiyclick(String therequestID){
+        public void verfiyclick(){
 
-            requestID=therequestID;
+            requestID=session.requestID;
             setdocumentID(requestID); /// here start verifying
 
 
@@ -397,20 +477,41 @@ public class DigitalSignatureSignAndVerfiy {
                 app.setQA(pubkey);
                 boolean check = app.checkSignature(msg, sign);
                 if (check == true) {
-             //TODO
+
+                    Intent alertintent = new Intent(context,alertDialog.class);
+                    alertintent.putExtra("MSG","Verified");
+                    context.startActivity(alertintent);
+
                 }
                 else
-                    ;// TODO if verify is false
+                {
+                    Intent alertintent = new Intent(context,alertDialog.class);
+                    alertintent.putExtra("MSG", "ERROR");
+                    context.startActivity(alertintent);
+                }
 
             }
             catch (java.lang.Exception e1){
 
-                Log.e("sign and verify", e1.getStackTrace().toString());
+                Log.e(" ECDSA verify", e1.getStackTrace().toString());
 
             }
 
 
         }
+
+    private void AddRequest(Request request) {
+        Firebase reqRef = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+        Map<String, String> newRequest = new HashMap<String, String>();
+        newRequest.put("SignerEmail", request.getSignerEmail());
+        newRequest.put("rDocumentId", "");
+        newRequest.put("requesterID", request.getRequesterID());
+        newRequest.put("signingSeq", request.getOrder());
+        newRequest.put("status", request.getStatus());
+        newRequest.put("signature", request.getSignature());
+        reqRef.push().setValue(newRequest);
+
+    }
 
     }
 

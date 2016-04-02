@@ -56,7 +56,7 @@ public class DocumentWaitingList extends ListActivity {
                 final String ekey = dataSnapshot.child("ekey").getValue(String.class);
                 final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
                 final Firebase requestFire = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/");
-                Query qDocID = requestFire.orderByChild("rDocumentId").equalTo(Skey);
+                Query qDocID = requestFire.orderByChild("rDocumentId").equalTo(dataSnapshot.getKey());
                 ValueEventListener listener0 = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot DocID) {
@@ -68,6 +68,18 @@ public class DocumentWaitingList extends ListActivity {
                                 if (child.child("SignerEmail").getValue().equals(session.userEmail))
                                     if (child.child("status").getValue().equals("waiting")) {
                                         System.out.println(" 2 signer Email + status waiting ");
+
+                                       session.requestID = child.getKey();
+// not sure if this is the correct place to set requestID // ghadeer
+                                        /////////////////////////////////////////
+
+                                       // Pdftry.RequestInfo(RequestID);
+                                        /*
+                                            static String RID;
+                                            public static void RequestInfo (String RKey) {RID = RKey; }
+                                        */
+                                        /////////////////////////////////////////
+
                                         Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + child.child("requesterID").getValue() + "/");
                                         Query qUser = userFire.orderByValue();
                                         ValueEventListener listener3 = new ValueEventListener() {

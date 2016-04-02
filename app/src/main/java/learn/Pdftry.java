@@ -73,6 +73,7 @@ import java.util.Map;
  * @author ferenc.hechler
  */
 public abstract class Pdftry extends Activity {
+    boolean ownerFlag;
     public static int pageSign;
     private static final int STARTPAGE = 1;
     private static final float STARTZOOM = 1.0f;//2.0f for full page on HD
@@ -1031,8 +1032,9 @@ public abstract class Pdftry extends Activity {
                                         System.out.println("path " + f2.getPath());
                                         File ff = new File(signPath);
 
-                                        f2.renameTo(test);
-                                        new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
+                                                f2.renameTo(test);
+                                                new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
+                                                DigitalS(); // perform ECDSA
 
                                     } else {
                                         AlertDialog alert = new AlertDialog.Builder(Pdftry.this).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -1065,7 +1067,7 @@ public abstract class Pdftry extends Activity {
 
 
             /////////////////////firebase////////////////////////////
-         //   DigitalS();
+           // DigitalS();
         }
 
         private void addNavButtons(ViewGroup vg) {
@@ -1582,25 +1584,28 @@ public abstract class Pdftry extends Activity {
 
 
     }
-   private void DigitalS(){
+    private void DigitalS(){
+
         // check if ownerID is digital
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents ");
         Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
         final ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Request request = new Request(null, session.userEmail, session.docKey, session.userkey,"1", "done", "");
-                        RequestID = request.getKey();
-                        AddRequest(request);
-                        break;
-                    }
-                } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "you cannot sign this document", Toast.LENGTH_LONG);
-                    toast.show();
+                ownerFlag= false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (dataSnapshot.exists())  {
+                         if(session.docKey== snapshot.getKey()) {
+                             ownerFlag = true;
+                         }
+                        }}
 
-                }
+
+
+           DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                    app.signdocument(ownerFlag,session.docKey,RequestID);
+
+
             }
 
             @Override
@@ -1610,7 +1615,7 @@ public abstract class Pdftry extends Activity {
 
         };
         queryRef.addListenerForSingleValueEvent(listener);}
-    // omaimah
+        // omaimah
 
     private void AddRequest(Request request) {
         Firebase reqRef = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
@@ -1620,12 +1625,11 @@ public abstract class Pdftry extends Activity {
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
-        newRequest.put("signature",request.getSignature());
+        newRequest.put("signature", request.getSignature());
         reqRef.push().setValue(newRequest);
-        Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
-        counter++;
-
 
     }
+
+
 }
 
