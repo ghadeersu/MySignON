@@ -38,6 +38,13 @@ public class DocumentActivity extends BaseActivity {
                 startActivity(new Intent(DocumentActivity.this, DocumentWaitingList.class));
             }
         });
+        ImageButton docCom = (ImageButton) findViewById(R.id.doccomimageButton);
+        docCom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DocumentActivity.this, DocumentCompletedRequests.class));
+            }
+        });
 
     }
 

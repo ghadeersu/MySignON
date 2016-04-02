@@ -38,6 +38,7 @@
         <activity android:name=".hash" />
         <activity android:name=".SignAndVerifyActivity" />
         <activity android:name=".DocumentWaitingList" />
+        <activity android:name=".DocumentCompletedRequests" />
         <activity android:name=".GetSignatureActivity" />
         <activity android:name=".SignatureActivity" />
 

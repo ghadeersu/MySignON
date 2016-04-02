@@ -29,7 +29,7 @@
             android:id="@+id/docuserimageButton"
             android:src="@drawable/docuser"
             android:background="#ffffff"
-            android:layout_marginTop="62dp"
+            android:layout_marginTop="40dp"
             android:layout_gravity="center_horizontal"/>
 
         <TextView
@@ -45,7 +45,7 @@
             android:id="@+id/docsignimageButton"
             android:src="@drawable/docsigned"
             android:background="#ffffff"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="35dp"
             android:layout_gravity="center_horizontal"/>
 
         <TextView
@@ -62,7 +62,7 @@
             android:id="@+id/docwaitimageButton"
             android:src="@drawable/docpending"
             android:background="#ffffff"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="35dp"
             android:layout_gravity="center_horizontal"/>
 
         <TextView
@@ -71,6 +71,22 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Pending Documents"
             android:id="@+id/docuwaittextView"
+            android:layout_gravity="center_horizontal"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/doccomimageButton"
+            android:src="@drawable/lock"
+            android:background="#ffffff"
+            android:layout_marginTop="35dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Completed Requests"
+            android:id="@+id/docucomtextView"
             android:layout_gravity="center_horizontal"/>
 
 
