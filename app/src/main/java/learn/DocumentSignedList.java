@@ -139,12 +139,9 @@ public class DocumentSignedList extends ListActivity {
             @Override
             public void onClick(View v) {
 
-                DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
-                app.verfiyclick();
-
-            /*    Operation = "View";
+                Operation = "View";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentSignedList.this).execute(DocURL); */
+                new FTP_Download(DocumentSignedList.this).execute(DocURL);
                 v.setEnabled(false);
 
 
