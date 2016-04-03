@@ -49,13 +49,14 @@ import learn.R;
  */
 public class DigitalSignatureSignAndVerfiy {
 
-    private Context context;
     private String requestID;
     private String documentID; // this variable will be used in both signing and verifying
     private String thedigest;
     private String signature;
-    private boolean check;
-
+    private String ftpDocName, ftpEncKey, ftpDocOwner,ftpDocURL;
+   private Context context;
+    private boolean check = true;
+    private  int childcount;
 
     public void Startsigningowner() { // get public key from FIREBASE
 
@@ -92,11 +93,11 @@ public class DigitalSignatureSignAndVerfiy {
         try {
             // sign ducoment
 
-            ECDSA app = new ECDSA();  // eliptic curve opject
+            ECDSA app2 = new ECDSA();  // eliptic curve opject
             // public key will be stored in firebase
 
-            app.setdA(privkey);
-            signature = app.signingMessage(thedigest);
+            app2.setdA(privkey);
+            signature = app2.signingMessage(thedigest);
 
             storeSignatureowner(signature, thedigest);
             //  ECDSATextview.setText(signature);
@@ -308,9 +309,14 @@ public class DigitalSignatureSignAndVerfiy {
 
 
 
-    public boolean verify(){
+    public void verify(String DocName,String EncKey,String DocOwner,String DocURL,Context thecontext){
 
-        check = false;
+        ftpDocName = DocName;
+        ftpEncKey = EncKey;
+        ftpDocOwner= DocOwner;
+        ftpDocURL = DocURL;
+        context=thecontext;
+
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+session.docKey+"/");
         Query queryref = ref.orderByValue();
         ValueEventListener listener = new ValueEventListener() {
@@ -330,7 +336,6 @@ public class DigitalSignatureSignAndVerfiy {
 
         queryref.addValueEventListener(listener);
 
-        return check;
 
     }
 
@@ -344,14 +349,57 @@ public class DigitalSignatureSignAndVerfiy {
         @Override
         public void onDataChange(DataSnapshot DocID) {
             if (DocID.exists()) {
-
+               childcount=(int)DocID.getChildrenCount();
                 for (DataSnapshot child : DocID.getChildren()) {
                     String signeriD = child.child("signerID").getValue().toString();
                     signature = child.child("signature").getValue().toString();
-                    retrievepubKey(signeriD);
+                  // retreivepublic
+                    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+signeriD+"/");
+
+                    Query queryref = ref.orderByValue();
+                    // 0 key of person who signed the document
+                    ValueEventListener listener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            BigInteger x,y,a,p;
+                            String inf;
+                            boolean infinity;
+
+                            x=new BigInteger(dataSnapshot.child("x").getValue(String.class));
+                            y=new BigInteger(dataSnapshot.child("y").getValue(String.class));
+                            a=new BigInteger(dataSnapshot.child("a").getValue(String.class));
+                            p=new BigInteger(dataSnapshot.child("p").getValue(String.class));
+                            inf=dataSnapshot.child("infinity").getValue(String.class);
+                            if(inf=="TRUE")
+                                infinity=true;
+                            else
+                                infinity=false;
+
+                            Point pubkey = new Point(x,y,a,p);
+                            pubkey.setInfinity(infinity);
+                           verfiySignature(pubkey);
+
+
+                            //   ECDSATextview.setText(ECDSATextview.getText()+"[[[[]]]]]]"+pubkey.getX().toString());
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    };
+
+                    queryref.addValueEventListener(listener);
+
+
+                    // retrievepubend
 
                 }
+
             }
+
+
         }
 
         @Override
@@ -412,34 +460,42 @@ public class DigitalSignatureSignAndVerfiy {
 
 
 
-    private void verfiySignature(Point pubkey){
+    public void verfiySignature(Point pubkey) {
 
+        try {
 
-
-            try {
-                ECDSA app = new ECDSA();
-                app.setQA(pubkey);
-                 check = app.checkSignature(thedigest, signature);
-                if (check == true) {
-
-
-                }
-                else
-                {
-                    Intent alertintent = new Intent(context,alertDialog.class);
-                    alertintent.putExtra("MSG", "ERROR");
-                    context.startActivity(alertintent);
-                }
+            ECDSA app = new ECDSA();
+            app.setQA(pubkey);
+            System.out.println("GHG before check");
+            check = app.checkSignature(thedigest, signature);
+            System.out.println("GHG after check");
+            if (check == true) {
+                if(childcount== 0){
+                System.out.println("GHG inside true before download");
+                FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner, "View");
+                new FTP_Download(context).execute(ftpDocURL);}
+                childcount--;
 
             }
-            catch (java.lang.Exception e1){
-
-                Log.e(" ECDSA verify", e1.getStackTrace().toString());
+            else
+          {
+              System.out.println("GHG inside false before alert");
+              Intent alertintent = new Intent(context, alertDialog.class);
+              alertintent.putExtra("message", "Signature is fake");
+              context.startActivity(alertintent);
+              System.out.println("GHG indide false after alert");
 
             }
 
+        } catch (java.lang.Exception e1) {
+
+            Log.e(" ECDSA verify", e1.getStackTrace().toString());
 
         }
+
+
+    }
+
 
 
     }

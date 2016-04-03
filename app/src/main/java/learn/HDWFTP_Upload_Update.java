@@ -227,7 +227,6 @@ catch (CryptoException ex) {
         else
             message="Error while uploading file.";
         alert.putExtra("message", message);
-
         context.startActivity(alert);
     }
 
