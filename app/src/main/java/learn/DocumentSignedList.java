@@ -27,17 +27,102 @@ import java.io.File;
  */
 public class DocumentSignedList extends ListActivity {
     private documentsArrayAdapter mAdapter;
-
+    private boolean signerIDcheck;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_signed_list);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
         mAdapter = new documentsArrayAdapter(this) {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
-
                 final String Skey = dataSnapshot.getKey();
+                final String documentName = dataSnapshot.child("documentName").getValue(String.class);
+                final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
+                final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
+                final String ekey = dataSnapshot.child("ekey").getValue(String.class);
+                final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
+                signerIDcheck = false;
+                Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+                Query queryRef1 = signFire.orderByChild("docID").equalTo(Skey);
+                ValueEventListener listener0 = new ValueEventListener(){
+                    @Override
+                    public void onDataChange(DataSnapshot DocID) {
+                        if(DocID.exists())
+                        {
+                            signerIDcheck=false;
+                            System.out.println("kkkkkkkkkkkkkkkkkkk " );
+                            for (final DataSnapshot child : DocID.getChildren())
+                           { if(signerIDcheck)
+                             {break;}
+                               else if(child.child("signerID").getValue().equals(session.userkey))
+                                {
+                                    signerIDcheck=true;
+
+                                    Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + documentOwnerID+ "/");
+                                    Query qUser = userFire.orderByValue();
+                                    ValueEventListener listener3 = new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+
+                                                System.out.println(" 2 find User requester ");
+
+                                                String key = dataSnapshot.getKey();
+                                                String email = dataSnapshot.child("Email").getValue(String.class);
+                                                String a = dataSnapshot.child("a").getValue(String.class);
+                                                String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
+                                                String infinity = dataSnapshot.child("infinity").getValue(String.class);
+                                                String password = dataSnapshot.child("password").getValue(String.class);
+                                                String username = dataSnapshot.child("username").getValue(String.class);
+                                                String x = dataSnapshot.child("x").getValue(String.class);
+                                                String y = dataSnapshot.child("y").getValue(String.class);
+                                                String pk = dataSnapshot.child("PK").getValue(String.class);
+                                                String p = dataSnapshot.child("PK").getValue(String.class);
+                                                User mUser = new User(key, email, birthdate, password, username);
+
+                                                System.out.println("find user " + username + "");
+                                                // mUser.setA(a);
+                                                // mUser.setP();
+                                                // mUser.setPK();
+                                                // mUser.setX();
+                                                // mUser.setY();
+                                                System.out.println("" + documentOwnerID + "  " + documentName + "");
+                                                documents doc = new documents(Skey, messagedigest, ekey, documentURL, documentOwnerID, documentName);
+                                                doc.setOwner(mUser);
+
+                                                mdocuments.add(0, doc);// add to the top
+                                                    notifyDataSetChanged();// update adapter
+
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(FirebaseError firebaseError) {
+                                        }
+                                    };
+                                    qUser.addValueEventListener(listener3);
+
+
+                                }
+
+                            }
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                };
+                queryRef1.addValueEventListener(listener0);
+
+
+  /*              final String Skey = dataSnapshot.getKey();
                 final String documentName = dataSnapshot.child("documentName").getValue(String.class);
                 final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
                 final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
@@ -115,9 +200,10 @@ public class DocumentSignedList extends ListActivity {
                 };
                 qDocID.addValueEventListener(listener0);
                 setListAdapter(mAdapter);
-
+*/
             }
         };
+        setListAdapter(mAdapter);
     }
 
     String DocURL , EncKey,DocName,DocOwner;
@@ -140,11 +226,11 @@ public class DocumentSignedList extends ListActivity {
             public void onClick(View v) {
 
                 DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
-                app.verfiyclick();
+               // app.verfiyclick();
 
-            /*    Operation = "View";
+               Operation = "View";
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentSignedList.this).execute(DocURL); */
+                new FTP_Download(DocumentSignedList.this).execute(DocURL);
                 v.setEnabled(false);
 
 
