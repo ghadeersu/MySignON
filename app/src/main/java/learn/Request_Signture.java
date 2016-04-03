@@ -1,5 +1,5 @@
 package learn;
-
+//hi
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -63,11 +63,11 @@ public class Request_Signture extends ListActivity {
                     Request request;
                     if (counter > 1)
                     {
-                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2", "");
+                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2");
                     }
                     else
                     {
-                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting", "");
+                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting");
                         session.requesterID = request.getRequesterID();
                     }
                     CheckEmail(request);
@@ -120,7 +120,6 @@ public class Request_Signture extends ListActivity {
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
-        newRequest.put("signature",request.getSignature());
         reqRef.push().setValue(newRequest);
         Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
         counter++;

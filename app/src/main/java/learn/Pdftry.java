@@ -1,5 +1,5 @@
 package learn;
-
+//hi
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -1034,7 +1034,7 @@ public abstract class Pdftry extends Activity {
 
                                                 f2.renameTo(test);
                                                 new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
-                                                DigitalS(); // perform ECDSA
+
 
                                     } else {
                                         AlertDialog alert = new AlertDialog.Builder(Pdftry.this).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -1587,7 +1587,7 @@ public abstract class Pdftry extends Activity {
     private void DigitalS(){
 
         // check if ownerID is digital
-        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents ");
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents");
         Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
         final ValueEventListener listener = new ValueEventListener() {
             @Override
@@ -1601,7 +1601,7 @@ public abstract class Pdftry extends Activity {
                         }}
 
 
-
+                System.out.println("pdf try Digitals");
            DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
                     app.signdocument(ownerFlag,session.docKey,RequestID);
 
@@ -1625,7 +1625,6 @@ public abstract class Pdftry extends Activity {
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
-        newRequest.put("signature", request.getSignature());
         reqRef.push().setValue(newRequest);
 
     }

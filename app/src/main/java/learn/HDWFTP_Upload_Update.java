@@ -13,6 +13,7 @@ import android.util.Log;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -35,6 +36,7 @@ public class HDWFTP_Upload_Update extends AsyncTask <String, Void, Long>{
     private Context context;
     String messagedigest, ekey, documentOwnerID, documentName, documentURL;
     documents document;
+    boolean ownerFlag ;
     documentsArrayAdapter documentAdapter;
     File f ;
     byte[] key;
@@ -190,13 +192,41 @@ catch (CryptoException ex) {
         super.onPostExecute(aLong);
         String message;
         Intent alert=new Intent(context, alertDialog.class);
-        if(aLong==1)
-            message="File uploaded successfully.";
+        if(aLong==1) {
+            message = "File uploaded successfully.";
+            // ghadeer
+            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents");
+            Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
+            final ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ownerFlag= false;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (dataSnapshot.exists())  {
+                            if(session.docKey== snapshot.getKey()) {
+                                ownerFlag = true;
+                                System.out.println("inside owner document ::::::");
+                            }
+                        }}
 
+                   System.out.println("owner flag:::::"+ownerFlag);
+                    DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                    app.signdocument(ownerFlag,session.docKey,session.requestID);
+
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+
+            };
+            queryRef.addListenerForSingleValueEvent(listener);
+        }
         else
             message="Error while uploading file.";
         alert.putExtra("message", message);
-
         context.startActivity(alert);
     }
 
