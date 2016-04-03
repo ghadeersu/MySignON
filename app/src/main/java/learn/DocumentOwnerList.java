@@ -136,6 +136,8 @@ public class DocumentOwnerList extends ListActivity {
                 v.setEnabled(false);
                 signB.setEnabled(false);
                 requestB.setEnabled(false);
+                deleteB.setEnabled(false);
+
             }
         });
 
@@ -150,6 +152,8 @@ public class DocumentOwnerList extends ListActivity {
                 v.setEnabled(false);
                 viewB.setEnabled(false);
                 requestB.setEnabled(false);
+                deleteB.setEnabled(false);
+
             }
         });
 
