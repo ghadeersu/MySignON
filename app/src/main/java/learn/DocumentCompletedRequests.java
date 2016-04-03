@@ -127,12 +127,13 @@ public class DocumentCompletedRequests extends ListActivity {
             public void onClick(View v) {
 
                 DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
-                boolean istrue = app.verify();
-                if (istrue) {
+              app.verify(DocName,EncKey,DocOwner,DocURL,DocumentCompletedRequests.this);
+
+                /*
                     Operation = "View";
-                    FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                    FTP_Download.iniate(DocName, EncKey, DocOwner, "View");
                     new FTP_Download(DocumentCompletedRequests.this).execute(DocURL);
-                }
+                */
                 v.setEnabled(false);
 
 
