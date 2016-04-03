@@ -98,7 +98,7 @@ public class DigitalSignatureSignAndVerfiy {
             app.setdA(privkey);
             signature = app.signingMessage(thedigest);
 
-            storeSignature(signature, thedigest);
+            storeSignatureowner(signature, thedigest);
             //  ECDSATextview.setText(signature);
      /*       Request request = new Request(null, session.userEmail, session.docKey, session.userkey,"1", "done", signature);
             AddRequest(request); */
@@ -112,6 +112,17 @@ public class DigitalSignatureSignAndVerfiy {
 
     }
 
+    private void storeSignatureowner(String signature, String msg) {
+
+
+        Firebase mFireBase = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature");
+        Map<String, String> newDigSignature = new HashMap<String, String>();
+        newDigSignature.put("signature", signature);
+        newDigSignature.put("docID", session.docKey);
+        newDigSignature.put("signerID", session.userkey);
+        mFireBase.push().setValue(newDigSignature);
+
+    }
 
     public void signdocument(boolean isowner, String DID, String RID) {
 
@@ -145,10 +156,10 @@ public class DigitalSignatureSignAndVerfiy {
     }
 
 
-    public void Startsigning() { // get public key from FIREBASE
 
+// get private key and send it to ECDSASIGNING
+    public void Startsigning() { // get private key from FIREBASE
 
-        //    thedigest;
 
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + session.userkey + "/");
 
@@ -176,7 +187,7 @@ public class DigitalSignatureSignAndVerfiy {
 
     }
 
-
+// generate signature
     private void ECDSASIGNING(BigInteger privkey) {
 
         try {
@@ -188,7 +199,7 @@ public class DigitalSignatureSignAndVerfiy {
             app.setdA(privkey);
             signature = app.signingMessage(thedigest);
             //  ECDSATextview.setText(signature);
-            storeSignature(signature, thedigest);
+            storeSignature(signature);
 
 
         } catch (java.lang.Exception e1) {  //
@@ -199,7 +210,8 @@ public class DigitalSignatureSignAndVerfiy {
     }
 
 
-    private void storeSignature(String signature, String msg) {
+// store generated signature
+    private void storeSignature(String signature) {
 
 
         Firebase mFireBase = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature");
@@ -407,10 +419,10 @@ public class DigitalSignatureSignAndVerfiy {
             try {
                 ECDSA app = new ECDSA();
                 app.setQA(pubkey);
-                boolean check2 = app.checkSignature(thedigest, signature);
-                if (check2 == true) {
+                 check = app.checkSignature(thedigest, signature);
+                if (check == true) {
 
-                       check=true;
+
                 }
                 else
                 {

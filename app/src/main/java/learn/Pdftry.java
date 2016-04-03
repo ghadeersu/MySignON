@@ -1034,7 +1034,7 @@ public abstract class Pdftry extends Activity {
 
                                                 f2.renameTo(test);
                                                 new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
-                                                DigitalS(); // perform ECDSA
+
 
                                     } else {
                                         AlertDialog alert = new AlertDialog.Builder(Pdftry.this).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -1587,7 +1587,7 @@ public abstract class Pdftry extends Activity {
     private void DigitalS(){
 
         // check if ownerID is digital
-        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents ");
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents");
         Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
         final ValueEventListener listener = new ValueEventListener() {
             @Override
