@@ -11,19 +11,19 @@ public class Request {
     private String requesterID;
     private String Order;
     private String Status;
-    private String Signature;
+
 
 
     public Request(){}
 
-    public Request(String key, String signerEmail, String docID, String requesterID, String order, String status, String Signature) {
+    public Request(String key, String signerEmail, String docID, String requesterID, String order, String status) {
         this.key = key;
         this.signerEmail = signerEmail;
         this.docID = docID;
         this.requesterID = requesterID;
         this.Order = order;
         this.Status = status;
-        this.Signature=Signature;
+
     }
 
 
@@ -75,11 +75,5 @@ public class Request {
         Status = status;
     }
 
-    public String getSignature() {
-        return Signature;
-    }
-
-    public void setSignature(String status) {Signature = Signature;
-    }
 
 }

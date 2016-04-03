@@ -1601,7 +1601,7 @@ public abstract class Pdftry extends Activity {
                         }}
 
 
-
+                System.out.println("pdf try Digitals");
            DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
                     app.signdocument(ownerFlag,session.docKey,RequestID);
 
@@ -1625,7 +1625,6 @@ public abstract class Pdftry extends Activity {
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
-        newRequest.put("signature", request.getSignature());
         reqRef.push().setValue(newRequest);
 
     }
