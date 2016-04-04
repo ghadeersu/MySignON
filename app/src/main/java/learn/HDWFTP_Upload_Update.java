@@ -47,11 +47,7 @@ String originalOwner;
     HDWFTP_Upload_Update(Context context){
         this.context=context;
     }
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
 
-    }
     protected Long doInBackground(String... FULL_PATH_TO_LOCAL_FILE ) {
         long returning=0;
 
