@@ -60,17 +60,21 @@ public class Request_Signture extends ListActivity {
                 public void onClick(View v) {
                     String email;
                     email = etEmail.getText().toString();
-                    Request request;
-                    if (counter > 1)
-                    {
-                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2");
+
+                    if (email.equals(session.userEmail)) {
+                        Toast.makeText(Request_Signture.this, "this email cannot be requested", Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
-                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting");
-                        session.requesterID = request.getRequesterID();
+                        Request request;
+                        if (counter > 1) {
+                            request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2");
+                        } else {
+                            request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting");
+                            session.requesterID = request.getRequesterID();
+                        }
+                        CheckEmail(request);
                     }
-                    CheckEmail(request);
                     dialog.cancel();
                 }
             });

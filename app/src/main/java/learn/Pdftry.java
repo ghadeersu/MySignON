@@ -173,7 +173,7 @@ public abstract class Pdftry extends Activity {
     }
 
     /** Called when the activity is first created. */
-
+//new sign button
     LinearLayout Rlayout;
     Button sign;
     Button signAll;
