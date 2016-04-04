@@ -34,6 +34,7 @@ import learn.session;
 public class HDWFTP_Upload_Update extends AsyncTask <String, Void, Long>{
 
     private Context context;
+    public ProgressDialog progress;
     String messagedigest, ekey, documentOwnerID, documentName, documentURL;
     documents document;
     boolean ownerFlag ;
@@ -184,11 +185,17 @@ catch (CryptoException ex) {
 
     }
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progress = ProgressDialog.show(context, "Uploading", "Uploading Document ", true, true);
+    }
+    @Override
     protected void onPostExecute(Long aLong) {
         super.onPostExecute(aLong);
         String message;
         Intent alert=new Intent(context, alertDialog.class);
         if(aLong==1) {
+            progress.dismiss();
             message = "File uploaded successfully.";
             // ghadeer
             Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents");

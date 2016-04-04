@@ -274,6 +274,8 @@ public abstract class Pdftry extends Activity {
             // sign button
             sign=(Button)findViewById(R.id.pdfVsignbutton);
             signAll=(Button)findViewById(R.id.pdfVsignallbutton);
+            sign.setEnabled(true);
+            signAll.setEnabled(true);
             // sign.setEnabled(false);
             sign.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -281,6 +283,8 @@ public abstract class Pdftry extends Activity {
                     if(mGraphView.signature.getVisibility()==ImageView.VISIBLE)
                     {
                         mGraphView.setsignbutton();
+                        sign.setEnabled(false);
+                        signAll.setEnabled(false);
                     }
                     else
                     {
@@ -297,6 +301,8 @@ public abstract class Pdftry extends Activity {
                     if(mGraphView.signature.getVisibility()==ImageView.VISIBLE)
                     {
                         mGraphView.setsignAllbutton();
+                        sign.setEnabled(false);
+                        signAll.setEnabled(false);
                     }
                     else
                     {

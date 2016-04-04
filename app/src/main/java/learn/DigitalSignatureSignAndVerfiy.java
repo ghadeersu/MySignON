@@ -222,7 +222,10 @@ public class DigitalSignatureSignAndVerfiy {
         newDigSignature.put("signerID", session.userkey);
         mFireBase.push().setValue(newDigSignature);
         Firebase mFirebase = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
+        System.out.println(" GHG before setting statuse DONE ");
         mFirebase.child(session.requestID).child("status").setValue("done");
+        System.out.println(" GHG before setting statuse DONE "+ session.requestID);
+
         getseq();
 
 
