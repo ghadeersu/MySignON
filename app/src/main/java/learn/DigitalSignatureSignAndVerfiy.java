@@ -315,7 +315,7 @@ public class DigitalSignatureSignAndVerfiy {
         ftpEncKey = EncKey;
         ftpDocOwner= DocOwner;
         ftpDocURL = DocURL;
-        context=thecontext;
+      context=thecontext;
 
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+session.docKey+"/");
         Query queryref = ref.orderByValue();
@@ -324,6 +324,8 @@ public class DigitalSignatureSignAndVerfiy {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 thedigest=  dataSnapshot.child("messagedigest").getValue().toString();
+
+                System.out.println("GHG" +  thedigest + "    docID: " + session.docKey +"   DocOwner: " + ftpDocOwner);
                 // ECDSATextview.setText(MSG);
                 searchDIgitals();
             }
@@ -351,8 +353,11 @@ public class DigitalSignatureSignAndVerfiy {
             if (DocID.exists()) {
                childcount=(int)DocID.getChildrenCount();
                 for (DataSnapshot child : DocID.getChildren()) {
+
                     String signeriD = child.child("signerID").getValue().toString();
                     signature = child.child("signature").getValue().toString();
+
+                    System.out.println("GHG searchDIgitals  signeriD : " + signeriD+ "    signature: "+ signature);
                   // retreivepublic
                     Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+signeriD+"/");
 
@@ -470,7 +475,8 @@ public class DigitalSignatureSignAndVerfiy {
             check = app.checkSignature(thedigest, signature);
             System.out.println("GHG after check");
             if (check == true) {
-                if(childcount== 0){
+                System.out.println("GHG after check childcount" +childcount);
+                if(childcount== 1){
                 System.out.println("GHG inside true before download");
                 FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner, "View");
                 new FTP_Download(context).execute(ftpDocURL);}
