@@ -2,27 +2,7 @@ package learn;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
-
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-
-import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -168,6 +148,9 @@ public class RigesterActivity extends AppCompatActivity {
         mAdapter.addItem(CurrentUser);
         Toast MSG = Toast.makeText(RigesterActivity.this, "register is successful", Toast.LENGTH_SHORT);
         MSG.show();
+       Intent intent = new Intent(RigesterActivity.this, IntroActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 
@@ -196,6 +179,14 @@ public class RigesterActivity extends AppCompatActivity {
     private void showDate(int year, int month, int day) {
         etBirthdate.setText(new StringBuilder().append(day).append("/")
                 .append(month).append("/").append(year));
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(RigesterActivity.this, IntroActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 
 

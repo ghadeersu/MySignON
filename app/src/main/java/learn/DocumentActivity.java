@@ -1,12 +1,9 @@
 package learn;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-
-import learn.R;
 
 public class DocumentActivity extends BaseActivity {
 
@@ -50,7 +47,9 @@ public class DocumentActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Intent intent = new Intent(DocumentActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 }

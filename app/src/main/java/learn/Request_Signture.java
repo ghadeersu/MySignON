@@ -1,5 +1,5 @@
 package learn;
-
+//hi
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -60,17 +60,21 @@ public class Request_Signture extends ListActivity {
                 public void onClick(View v) {
                     String email;
                     email = etEmail.getText().toString();
-                    Request request;
-                    if (counter > 1)
-                    {
-                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2", "");
+
+                    if (email.equals(session.userEmail)) {
+                        Toast.makeText(Request_Signture.this, "this email cannot be requested", Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
-                        request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting", "");
-                        session.requesterID = request.getRequesterID();
+                        Request request;
+                        if (counter > 1) {
+                            request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting2");
+                        } else {
+                            request = new Request(null, email, session.docKey, session.userkey, String.valueOf(counter), "waiting");
+                            session.requesterID = request.getRequesterID();
+                        }
+                        CheckEmail(request);
                     }
-                    CheckEmail(request);
                     dialog.cancel();
                 }
             });
@@ -81,6 +85,7 @@ public class Request_Signture extends ListActivity {
     public void DoneButtonOnClick (View view)
     {
         startActivity(new Intent(Request_Signture.this, DocumentOwnerList.class));
+        finish();
     }
 
 
@@ -120,11 +125,18 @@ public class Request_Signture extends ListActivity {
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
-        newRequest.put("signature",request.getSignature());
         reqRef.push().setValue(newRequest);
         Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
         counter++;
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Request_Signture.this, DocumentOwnerList.class);
+        startActivity(intent);
+        finish();
 
     }
 }

@@ -136,6 +136,8 @@ public class DocumentOwnerList extends ListActivity {
                 v.setEnabled(false);
                 signB.setEnabled(false);
                 requestB.setEnabled(false);
+                deleteB.setEnabled(false);
+
             }
         });
 
@@ -150,6 +152,8 @@ public class DocumentOwnerList extends ListActivity {
                 v.setEnabled(false);
                 viewB.setEnabled(false);
                 requestB.setEnabled(false);
+                deleteB.setEnabled(false);
+
             }
         });
 
@@ -328,6 +332,14 @@ private void deleteDoc() {
         };
         queryRef.addValueEventListener(listener);
 ////////////////delete end///////////////////////////////////////
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DocumentOwnerList.this, DocumentActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 

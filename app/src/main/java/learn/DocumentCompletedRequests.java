@@ -7,7 +7,6 @@ package learn;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,8 +17,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
-
-import java.io.File;
 
 
 /**
@@ -142,6 +139,15 @@ public class DocumentCompletedRequests extends ListActivity {
         });
         super.onListItemClick(l, v, position, id);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DocumentCompletedRequests.this, DocumentActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
 }
 
 

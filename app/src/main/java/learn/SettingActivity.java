@@ -147,4 +147,12 @@ public class SettingActivity extends BaseActivity {
                 .append(month).append("/").append(year));
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SettingActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
 }

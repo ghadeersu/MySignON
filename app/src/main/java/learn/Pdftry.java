@@ -1,5 +1,5 @@
 package learn;
-
+//hi
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -173,9 +173,10 @@ public abstract class Pdftry extends Activity {
     }
 
     /** Called when the activity is first created. */
-
+//new sign button
     LinearLayout Rlayout;
     Button sign;
+    Button signAll;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -272,6 +273,9 @@ public abstract class Pdftry extends Activity {
 
             // sign button
             sign=(Button)findViewById(R.id.pdfVsignbutton);
+            signAll=(Button)findViewById(R.id.pdfVsignallbutton);
+            sign.setEnabled(true);
+            signAll.setEnabled(true);
             // sign.setEnabled(false);
             sign.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -279,6 +283,8 @@ public abstract class Pdftry extends Activity {
                     if(mGraphView.signature.getVisibility()==ImageView.VISIBLE)
                     {
                         mGraphView.setsignbutton();
+                        sign.setEnabled(false);
+                        signAll.setEnabled(false);
                     }
                     else
                     {
@@ -289,7 +295,24 @@ public abstract class Pdftry extends Activity {
 
                 }
             });
+            signAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mGraphView.signature.getVisibility()==ImageView.VISIBLE)
+                    {
+                        mGraphView.setsignAllbutton();
+                        sign.setEnabled(false);
+                        signAll.setEnabled(false);
+                    }
+                    else
+                    {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Put the signature on the page to sign", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
 
+
+                }
+            });
             //select signature button
             ImageButton bSelect=(ImageButton)findViewById(R.id.pdfVselectsignimageButton);
             bSelect.setOnClickListener(new View.OnClickListener() {
@@ -633,6 +656,7 @@ public abstract class Pdftry extends Activity {
         //private Fragment sign_bar;
         private Button send;
         private Button sign;
+        private Button signAll;
         //float relativeX;
         //float relativeY;
         ImageButton signatureBottun;
@@ -969,7 +993,90 @@ public abstract class Pdftry extends Activity {
 		}*/
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        public void setsignAllbutton(){
+            final File test = new File(signPath);
 
+            ////////////////check hash//////////////////////////////
+
+            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
+            Query queryRef = ref.orderByKey().equalTo(session.docKey);
+
+            System.out.println(session.docKey);
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (counter == 0) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                if (child.getKey().equals(session.docKey)) {
+                                    messagedigest = child.child("messagedigest").getValue(String.class);
+                                    System.out.println(messagedigest + "      " + "message Di");
+                                    System.out.println("now     " + SHA512.calculateSHA512(test));
+                                    if (session.docKey != null) {
+                                        //        System.out.println(session.docKey);
+                                        System.out.println("yes");
+
+                                    } else {
+                                        System.out.println("no ");
+
+                                    }
+                                    if (SHA512.checkSHA512(messagedigest, test)) {
+                                        Matrix matrix = signature.getImageMatrix();
+                                        // Get the values of the matrix
+                                        float[] values = new float[9];
+                                        matrix.getValues(values);
+                                        // values[2] and values[5] are the x,y coordinates of the top left corner of the drawable image, regardless of the zoom factor.
+                                        // values[0] and values[4] are the zoom factors for the image's width and height respectively. If you zoom at the same factor, these should both be the same value.
+                                        values[0] = mZoom;
+                                        values[4] = mZoom;
+                                        // event is the touch event for MotionEvent.ACTION_UP
+                                        float relativeX = (signature.getX() - values[2]) / values[0];
+                                        float relativeY = (signature.getY() - values[5]) / values[4];
+                                        //////////////////////////option for signing//////////////////////
+                                        if (mPdfFile.getNumPages() > 1) {
+
+                                            merge(relativeX, relativeY, -1);
+                                        } else
+                                            merge(relativeX, relativeY, 1);
+                                        File f2 = new File(newP);
+
+                                        //PdfChecksum = SHA512.calculateSHA512(f2);
+                                        //documentToUpdate=new documents(session.docKey,PdfChecksum,child.child("ekey").getValue(String.class),"ftp.byethost4.com/htdocs/"+session.userkey+"/"+f2.getName()+"/",child.child("documentOwnerID").getValue(String.class),child.child("documentName").getValue(String.class));
+                                        //documentAdapter=new documentsArrayAdapter(Pdftry.this);
+                                        //fileTosign=new File(newP);
+                                        //documentAdapter.updateItem(documentToUpdate);
+                                        System.out.println("path " + f2.getPath());
+                                        File ff = new File(signPath);
+
+                                        f2.renameTo(test);
+                                        new HDWFTP_Upload_Update(Pdftry.this).execute(signPath);
+
+
+                                    } else {
+                                        AlertDialog alert = new AlertDialog.Builder(Pdftry.this).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // do nothing
+                                            }
+                                        }).show();
+                                    }
+                                }
+                                break;
+
+
+                            }
+                        }
+                        counter++;
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+
+            };
+            queryRef.addValueEventListener(listener);
+        }
         public void setsignbutton(){
             final File test = new File(signPath);
 
@@ -1011,14 +1118,7 @@ public abstract class Pdftry extends Activity {
                                         float relativeY = (signature.getY() - values[5]) / values[4];
                                         //////////////////////////option for signing//////////////////////
                                         if (mPdfFile.getNumPages() > 1) {
-                                            displayAlertDialog();
-                                            if (allOrNot) {
 
-                                                /////////////////////////////////////////////////////////////////
-                                                ///////////////////zoom coordinates///////////////////////
-
-                                                merge(relativeX, relativeY, -1);
-                                            } else
                                                 merge(relativeX, relativeY, mPage);
                                         } else
                                             merge(relativeX, relativeY, 1);
@@ -1504,6 +1604,7 @@ public abstract class Pdftry extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 allOrNot=true;
+
             }
         });
 
@@ -1601,7 +1702,7 @@ public abstract class Pdftry extends Activity {
                         }}
 
 
-
+                System.out.println("pdf try Digitals");
            DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
                     app.signdocument(ownerFlag,session.docKey,RequestID);
 
@@ -1625,7 +1726,6 @@ public abstract class Pdftry extends Activity {
         newRequest.put("requesterID", request.getRequesterID());
         newRequest.put("signingSeq", request.getOrder());
         newRequest.put("status", request.getStatus());
-        newRequest.put("signature", request.getSignature());
         reqRef.push().setValue(newRequest);
 
     }
