@@ -126,8 +126,9 @@ public class DocumentCompletedRequests extends ListActivity {
             @Override
             public void onClick(View v) {
 
+                Operation="View";
                 DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
-              app.verify(DocName,EncKey,DocOwner,DocURL,DocumentCompletedRequests.this);
+              app.verify(DocName,EncKey,DocOwner,DocURL,Operation,DocumentCompletedRequests.this);
 
                 /*
                     Operation = "View";
