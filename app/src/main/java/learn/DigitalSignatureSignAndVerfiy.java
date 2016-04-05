@@ -53,10 +53,11 @@ public class DigitalSignatureSignAndVerfiy {
     private String documentID; // this variable will be used in both signing and verifying
     private String thedigest;
     private String signature;
-    private String ftpDocName, ftpEncKey, ftpDocOwner,ftpDocURL;
+    private String ftpDocName, ftpEncKey, ftpDocOwner,ftpDocURL,ftpOpreation;
    private Context context;
     private boolean check = true;
     private  int childcount;
+    boolean FirstSigner= false; // document without signature -- to idnetify first document to be signd so that it doesnt varify after signing
 
     public void Startsigningowner() { // get public key from FIREBASE
 
@@ -130,8 +131,10 @@ public class DigitalSignatureSignAndVerfiy {
         if (isowner) {
 
             Startsigningowner();
-        } else {
 
+            System.out.println("GHG indide owner is true");
+        } else {
+            System.out.println("GHG indide is not owner ");
             documentID = DID;
             requestID = RID;
             Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/" + documentID + "/");
@@ -196,7 +199,7 @@ public class DigitalSignatureSignAndVerfiy {
 
             ECDSA app = new ECDSA();  // eliptic curve opject
             // public key will be stored in firebase
-
+System.out.println("GHG inside ECDSAsiging");
             app.setdA(privkey);
             signature = app.signingMessage(thedigest);
             //  ECDSATextview.setText(signature);
@@ -222,10 +225,7 @@ public class DigitalSignatureSignAndVerfiy {
         newDigSignature.put("signerID", session.userkey);
         mFireBase.push().setValue(newDigSignature);
         Firebase mFirebase = new Firebase("https://torrid-heat-4458.firebaseio.com/requests");
-        System.out.println(" GHG before setting statuse DONE ");
         mFirebase.child(session.requestID).child("status").setValue("done");
-        System.out.println(" GHG before setting statuse DONE "+ session.requestID);
-
         getseq();
 
 
@@ -312,14 +312,14 @@ public class DigitalSignatureSignAndVerfiy {
 
 
 
-    public void verify(String DocName,String EncKey,String DocOwner,String DocURL,Context thecontext){
+    public void verify(String DocName,String EncKey,String DocOwner,String DocURL,String oper,Context thecontext){
 
         ftpDocName = DocName;
         ftpEncKey = EncKey;
         ftpDocOwner= DocOwner;
         ftpDocURL = DocURL;
-      context=thecontext;
-
+        context=thecontext;
+        ftpOpreation=oper;
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+session.docKey+"/");
         Query queryref = ref.orderByValue();
         ValueEventListener listener = new ValueEventListener() {
@@ -327,8 +327,6 @@ public class DigitalSignatureSignAndVerfiy {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 thedigest=  dataSnapshot.child("messagedigest").getValue().toString();
-
-                System.out.println("GHG" +  thedigest + "    docID: " + session.docKey +"   DocOwner: " + ftpDocOwner);
                 // ECDSATextview.setText(MSG);
                 searchDIgitals();
             }
@@ -344,66 +342,99 @@ public class DigitalSignatureSignAndVerfiy {
 
     }
 
+    public void checkifitsthefirstSigner(){
+
+        Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+        Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
+        ValueEventListener listener0 = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot DocID) {
+                if (DocID.exists()) {
+                    FirstSigner=true;
+
+                }
+
+
+
+            }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                };
+
+                queryRef.addValueEventListener(listener0);
+
+    }
 
     public void searchDIgitals() {
 
 
     Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
-    Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
-    ValueEventListener listener0 = new ValueEventListener() {
+    final Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
+    final ValueEventListener listener0 = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot DocID) {
+            System.out.println("GHG signature exists ? "+DocID.exists());
+            System.out.println("GHG digsignature key"+DocID.getKey());
+
             if (DocID.exists()) {
+                //
                childcount=(int)DocID.getChildrenCount();
                 for (DataSnapshot child : DocID.getChildren()) {
+                    if (childcount == 1) { // loop until reaching the last signature to varify
+                        System.out.println("GHG after if childcount==1  signature key"+child.getKey());
+                        String signeriD = child.child("signerID").getValue().toString();
+                        signature = child.child("signature").getValue().toString();
+                        // retreivepublic
 
-                    String signeriD = child.child("signerID").getValue().toString();
-                    signature = child.child("signature").getValue().toString();
+                        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + signeriD + "/");
 
-                    System.out.println("GHG searchDIgitals  signeriD : " + signeriD+ "    signature: "+ signature);
-                  // retreivepublic
-                    Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+signeriD+"/");
+                        Query queryref = ref.orderByValue();
+                        // 0 key of person who signed the document
+                        ValueEventListener listener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    Query queryref = ref.orderByValue();
-                    // 0 key of person who signed the document
-                    ValueEventListener listener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                BigInteger x, y, a, p;
+                                String inf;
+                                boolean infinity;
 
-                            BigInteger x,y,a,p;
-                            String inf;
-                            boolean infinity;
+                                x = new BigInteger(dataSnapshot.child("x").getValue(String.class));
+                                y = new BigInteger(dataSnapshot.child("y").getValue(String.class));
+                                a = new BigInteger(dataSnapshot.child("a").getValue(String.class));
+                                p = new BigInteger(dataSnapshot.child("p").getValue(String.class));
+                                inf = dataSnapshot.child("infinity").getValue(String.class);
+                                if (inf == "TRUE")
+                                    infinity = true;
+                                else
+                                    infinity = false;
 
-                            x=new BigInteger(dataSnapshot.child("x").getValue(String.class));
-                            y=new BigInteger(dataSnapshot.child("y").getValue(String.class));
-                            a=new BigInteger(dataSnapshot.child("a").getValue(String.class));
-                            p=new BigInteger(dataSnapshot.child("p").getValue(String.class));
-                            inf=dataSnapshot.child("infinity").getValue(String.class);
-                            if(inf=="TRUE")
-                                infinity=true;
-                            else
-                                infinity=false;
-
-                            Point pubkey = new Point(x,y,a,p);
-                            pubkey.setInfinity(infinity);
-                           verfiySignature(pubkey);
-
-
-                            //   ECDSATextview.setText(ECDSATextview.getText()+"[[[[]]]]]]"+pubkey.getX().toString());
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-                    };
-
-                    queryref.addValueEventListener(listener);
+                                Point pubkey = new Point(x, y, a, p);
+                                pubkey.setInfinity(infinity);
+                                verfiySignature(pubkey);
 
 
-                    // retrievepubend
+                                //   ECDSATextview.setText(ECDSATextview.getText()+"[[[[]]]]]]"+pubkey.getX().toString());
+                            }
 
-                }
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        };
+
+                        queryref.addValueEventListener(listener);
+
+                }// retrievepubend
+                    childcount--;
+            }}
+            else
+            {
+                // this variable change doesnt apply to the variable inside if exists
+                FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner, ftpOpreation);
+                new FTP_Download(context).execute(ftpDocURL);
+                queryRef.removeEventListener(this);
 
             }
 
@@ -416,7 +447,8 @@ public class DigitalSignatureSignAndVerfiy {
         }
     };
 
-    queryRef.addValueEventListener(listener0);
+        queryRef.addValueEventListener(listener0);
+
 }
 
     private void retrievepubKey(String signerID){
@@ -478,14 +510,12 @@ public class DigitalSignatureSignAndVerfiy {
             check = app.checkSignature(thedigest, signature);
             System.out.println("GHG after check");
             if (check == true) {
-                System.out.println("GHG after check childcount" +childcount);
-                if(childcount== 1){
-                System.out.println("GHG inside true before download");
-                FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner, "View");
-                new FTP_Download(context).execute(ftpDocURL);}
-                childcount--;
 
-            }
+                System.out.println("GHG inside true before download");
+                FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner,ftpOpreation);
+                new FTP_Download(context).execute(ftpDocURL);}
+
+
             else
           {
               System.out.println("GHG inside false before alert");
@@ -493,7 +523,7 @@ public class DigitalSignatureSignAndVerfiy {
               alertintent.putExtra("message", "Signature is fake");
               context.startActivity(alertintent);
               System.out.println("GHG indide false after alert");
-
+              childcount--;
             }
 
         } catch (java.lang.Exception e1) {

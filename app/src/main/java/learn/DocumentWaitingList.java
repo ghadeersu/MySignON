@@ -146,8 +146,8 @@ public class DocumentWaitingList extends ListActivity {
             @Override
             public void onClick(View v) {
                 Operation = "View";
-                FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentWaitingList.this).execute(DocURL);
+                DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                app.verify(DocName, EncKey, DocOwner, DocURL,Operation,DocumentWaitingList.this);
                 v.setEnabled(false);
                 signB.setEnabled(false);
 
@@ -159,8 +159,8 @@ public class DocumentWaitingList extends ListActivity {
             @Override
             public void onClick(View v) {
                 Operation = "Sign";
-                FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentWaitingList.this).execute(DocURL);
+                DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                app.verify(DocName, EncKey, DocOwner, DocURL, Operation, DocumentWaitingList.this);
                 v.setEnabled(false);
                 viewB.setEnabled(false);
 
