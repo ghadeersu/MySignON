@@ -50,13 +50,9 @@ public class IntroActivity extends FragmentActivity {
         homeintent= new Intent(this, learn.HomeActivity.class);
         if(SaveSharedPreference.getUserName(this).length() == 0)
         {
-            // call Login Activity
+            // stay in Login Activity
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(Color.rgb(80, 23, 140));
-            }
+
 
 
             setContentView(R.layout.activity_intro);
