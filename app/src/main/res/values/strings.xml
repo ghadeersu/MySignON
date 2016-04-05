@@ -10,7 +10,7 @@
     <string name="navdrawer_description_a11y">Navigation Drawer used to switch between major features of the application</string>
     <string name="title_activity_deleteme">deleteme</string>
     <string name="title_activity_2">Activity2</string>
-    <string name="title_activity_intro">IntroActivity</string>
+    <string name="title_activity_intro">SignOn</string>
     <string name="loading">Loading...</string>
     <string name="title_activity_main">MainActivity</string>
 
