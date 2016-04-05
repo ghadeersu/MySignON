@@ -329,6 +329,7 @@ private void callDelete(){
                 session.requesterID=null;
                 session.userEmail=null;
                 session.userkey=null;
+                session.destructor();
                 SaveSharedPreference.clearShared(HomeActivity.this);
                 finish();
                 new Intent(HomeActivity.this, IntroActivity.class);
