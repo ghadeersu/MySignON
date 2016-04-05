@@ -5,32 +5,16 @@ package learn;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -185,4 +169,13 @@ public class DocumentWaitingList extends ListActivity {
         });
         super.onListItemClick(l, v, position, id);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DocumentWaitingList.this, DocumentActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
 }

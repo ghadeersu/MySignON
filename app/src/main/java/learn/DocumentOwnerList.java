@@ -335,5 +335,13 @@ private void deleteDoc() {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DocumentOwnerList.this, DocumentActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
 }
 

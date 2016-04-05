@@ -85,6 +85,7 @@ public class Request_Signture extends ListActivity {
     public void DoneButtonOnClick (View view)
     {
         startActivity(new Intent(Request_Signture.this, DocumentOwnerList.class));
+        finish();
     }
 
 
@@ -128,6 +129,14 @@ public class Request_Signture extends ListActivity {
         Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
         counter++;
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Request_Signture.this, DocumentOwnerList.class);
+        startActivity(intent);
+        finish();
 
     }
 }
