@@ -16,6 +16,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.math.BigInteger;
+
 
 /**
  * Created by Naseebah on 26/02/16.
@@ -128,6 +130,7 @@ public class DocumentWaitingList extends ListActivity {
 
     String DocURL , EncKey,DocName,DocOwner;
     String Operation;
+    static boolean firstsigner= false;
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -146,8 +149,49 @@ public class DocumentWaitingList extends ListActivity {
             @Override
             public void onClick(View v) {
                 Operation = "View";
-                DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
-                app.verify(DocName, EncKey, DocOwner, DocURL,Operation,DocumentWaitingList.this);
+
+                ////
+                Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+                final Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
+                final ValueEventListener listener0 = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot DocID) {
+                        System.out.println("GHG waiting list signature exists ? "+DocID.exists());
+                        System.out.println("GHG waiting list digsignature key :::::"+DocID.getKey());
+                        if (!DocID.exists()) {
+                            System.out.println("GHG before remove event lisener");
+                            queryRef.removeEventListener(this);
+                            firstsigner= true;
+                            System.out.println("GHG inside docID not exist");
+                            // this variable change doesnt apply to the variable inside if exists
+                            FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                            new FTP_Download(DocumentWaitingList.this).execute(DocURL);
+
+                        }
+
+
+                     if(DocID.exists()) {
+                         queryRef.removeEventListener(this);
+                         System.out.println("GHG inside not first signer");
+                            DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                         app.verify(DocName, EncKey, DocOwner, DocURL, Operation, DocumentWaitingList.this);
+
+                     }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                };
+
+                queryRef.addListenerForSingleValueEvent(listener0);
+
+
+
+                ////
                 v.setEnabled(false);
                 signB.setEnabled(false);
 
@@ -159,8 +203,46 @@ public class DocumentWaitingList extends ListActivity {
             @Override
             public void onClick(View v) {
                 Operation = "Sign";
-                DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
-                app.verify(DocName, EncKey, DocOwner, DocURL, Operation, DocumentWaitingList.this);
+
+                Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+                final Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
+                final ValueEventListener listener0 = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot DocID) {
+                        System.out.println("GHG signature exists ? " + DocID.exists());
+                        System.out.println("GHG digsignature key" + DocID.getKey());
+
+                        if (!DocID.exists()) {
+                            System.out.println("GHG before remove event lisener");
+                            queryRef.removeEventListener(this);
+                            firstsigner = true;
+                            System.out.println("GHG inside docID not exist");
+                            // this variable change doesnt apply to the variable inside if exists
+                            FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                            new FTP_Download(DocumentWaitingList.this).execute(DocURL);
+
+                        }
+
+
+                      if (DocID.exists()) { // if firstsigner false
+                          queryRef.removeEventListener(this);
+                          System.out.println("GHG inside not first signer");
+                            DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                          app.verify(DocName, EncKey, DocOwner, DocURL, Operation, DocumentWaitingList.this);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                };
+
+                queryRef.addListenerForSingleValueEvent(listener0);
+
+
                 v.setEnabled(false);
                 viewB.setEnabled(false);
 

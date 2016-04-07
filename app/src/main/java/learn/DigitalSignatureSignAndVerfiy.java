@@ -58,7 +58,7 @@ public class DigitalSignatureSignAndVerfiy {
     private boolean check = true;
     private  int childcount;
     boolean FirstSigner= false; // document without signature -- to idnetify first document to be signd so that it doesnt varify after signing
-
+    private  int childcount2;
     public void Startsigningowner() { // get public key from FIREBASE
 
 
@@ -138,11 +138,11 @@ public class DigitalSignatureSignAndVerfiy {
             documentID = DID;
             requestID = RID;
             Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/" + documentID + "/");
-            Query queryref = ref.orderByValue();
+         final    Query queryref = ref.orderByValue();
             ValueEventListener listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
+                    queryref.removeEventListener(this);
                     thedigest = dataSnapshot.child("messagedigest").getValue().toString();
                     Startsigning();
 
@@ -154,7 +154,7 @@ public class DigitalSignatureSignAndVerfiy {
                 }
             };
 
-            queryref.addValueEventListener(listener);
+            queryref.addListenerForSingleValueEvent(listener);
         }
 
     }
@@ -167,11 +167,11 @@ public class DigitalSignatureSignAndVerfiy {
 
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + session.userkey + "/");
 
-        Query queryref = ref.orderByValue();
+        final Query queryref = ref.orderByValue();
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                queryref.removeEventListener(this);
                 BigInteger privatekey;
 
                 privatekey = new BigInteger(dataSnapshot.child("PK").getValue(String.class));
@@ -186,7 +186,7 @@ public class DigitalSignatureSignAndVerfiy {
             }
         };
 
-        queryref.addValueEventListener(listener);
+        queryref.addListenerForSingleValueEvent(listener);
 
 
     }
@@ -321,12 +321,13 @@ System.out.println("GHG inside ECDSAsiging");
         context=thecontext;
         ftpOpreation=oper;
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/"+session.docKey+"/");
-        Query queryref = ref.orderByValue();
-        ValueEventListener listener = new ValueEventListener() {
+     final    Query queryref = ref.orderByValue();
+        final ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                   queryref.removeEventListener(this);
                 thedigest=  dataSnapshot.child("messagedigest").getValue().toString();
+                System.out.println("GHG indside digest liestner");
                 // ECDSATextview.setText(MSG);
                 searchDIgitals();
             }
@@ -337,7 +338,7 @@ System.out.println("GHG inside ECDSAsiging");
             }
         };
 
-        queryref.addValueEventListener(listener);
+        queryref.addListenerForSingleValueEvent(listener);
 
 
     }
@@ -350,10 +351,12 @@ System.out.println("GHG inside ECDSAsiging");
             @Override
             public void onDataChange(DataSnapshot DocID) {
                 if (DocID.exists()) {
+
                     FirstSigner=true;
 
-                }
 
+
+                }
 
 
             }
@@ -375,12 +378,16 @@ System.out.println("GHG inside ECDSAsiging");
     final ValueEventListener listener0 = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot DocID) {
+            queryRef.removeEventListener(this);
             System.out.println("GHG signature exists ? "+DocID.exists());
             System.out.println("GHG digsignature key"+DocID.getKey());
 
             if (DocID.exists()) {
                 //
+
                childcount=(int)DocID.getChildrenCount();
+                childcount2=(int)DocID.getChildrenCount();
+                System.out.println("GHG child count of signatures ="+childcount);
                 for (DataSnapshot child : DocID.getChildren()) {
                     if (childcount == 1) { // loop until reaching the last signature to varify
                         System.out.println("GHG after if childcount==1  signature key"+child.getKey());
@@ -390,12 +397,12 @@ System.out.println("GHG inside ECDSAsiging");
 
                         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + signeriD + "/");
 
-                        Query queryref = ref.orderByValue();
+                        final Query queryref = ref.orderByValue();
                         // 0 key of person who signed the document
                         ValueEventListener listener = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                                queryref.removeEventListener(this);
                                 BigInteger x, y, a, p;
                                 String inf;
                                 boolean infinity;
@@ -424,19 +431,11 @@ System.out.println("GHG inside ECDSAsiging");
                             }
                         };
 
-                        queryref.addValueEventListener(listener);
+                        queryref.addListenerForSingleValueEvent(listener);
 
                 }// retrievepubend
                     childcount--;
             }}
-            else
-            {
-                // this variable change doesnt apply to the variable inside if exists
-                FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner, ftpOpreation);
-                new FTP_Download(context).execute(ftpDocURL);
-                queryRef.removeEventListener(this);
-
-            }
 
 
         }
@@ -489,7 +488,7 @@ System.out.println("GHG inside ECDSAsiging");
             }
         };
 
-        queryref.addValueEventListener(listener);
+        queryref.addListenerForSingleValueEvent(listener);
 
 
 
@@ -508,13 +507,14 @@ System.out.println("GHG inside ECDSAsiging");
             app.setQA(pubkey);
             System.out.println("GHG before check");
             check = app.checkSignature(thedigest, signature);
-            System.out.println("GHG after check");
+            System.out.println("GHG after check"); // may need for childcount
+
             if (check == true) {
-
-                System.out.println("GHG inside true before download");
-                FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner,ftpOpreation);
-                new FTP_Download(context).execute(ftpDocURL);}
-
+                System.out.println("GHG child count inside varify =   "+childcount2);
+                    System.out.println("GHG inside true before download");
+                    FTP_Download.iniate(ftpDocName, ftpEncKey, ftpDocOwner, ftpOpreation);
+                    new FTP_Download(context).execute(ftpDocURL);
+            }
 
             else
           {
