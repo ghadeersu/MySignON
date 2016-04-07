@@ -37,15 +37,8 @@ public class SettingActivity extends BaseActivity {
         setContentView(R.layout.setting);
         mNavigationView.getMenu().getItem(3).setChecked(true);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.rgb(80, 23, 140));
-
-        }
-
         Button save = (Button) findViewById(R.id.SaveChangesButton);
-        Button changePic = (Button) findViewById(R.id.ChangePictureButton);
+
 
         setContentView(R.layout.setting);
         Firebase.setAndroidContext(this);

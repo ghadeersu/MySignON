@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,10 +32,13 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class HomeActivity extends BaseActivity {
-
+    Query numberofRequestQuery;
+    TextView Emailtext;
     private static final String TAG = "Snap";
     ImageView signatureImageView;
+    TextView pendingTextViewHome;
     String path;
+    int numberofRequests;
     ImageView imageView;
     private static final int FILE_SELECT_CODE = 0;
     public File fileToUpload;
@@ -47,17 +49,22 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        pendingTextViewHome=(TextView)findViewById(R.id.pendingTextViewHome);
         rootview = findViewById(R.id.activity1_container);
         mNavigationView.getMenu().getItem(0).setChecked(true);
         Firebase.setAndroidContext(this);
+        numberofRequests=0;
+        test();
         if(session.homecounter==0){
         Bundle extras = getIntent().getExtras();
         session.userkey = extras.getString("key");
         session.userEmail = extras.getString("Email");
         session.homecounter=1;
+            test();
         }
 
-        imageView = (ImageView) findViewById(R.id.imageButton);
+       // imageView = (ImageView) findViewById(R.id.imageButton);
         signatureImageView=(ImageView)findViewById(R.id.homeSignatureImageView);
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+session.userkey+"/username/");
         Query queryRef = ref.orderByValue();
@@ -68,6 +75,10 @@ public class HomeActivity extends BaseActivity {
                 TextView usernametext = (TextView)findViewById(R.id.textView15);
 
                 usernametext.setText((String) dataSnapshot.getValue());
+                System.out.println(session.userEmail);
+                String x=session.userEmail;
+                Emailtext = (TextView)findViewById(R.id.textView16);
+                Emailtext.setText(x);
                // personalImageSearch();
             }
 
@@ -77,7 +88,7 @@ public class HomeActivity extends BaseActivity {
             }
         };
 
-        queryRef.addValueEventListener(listener);
+        queryRef.addListenerForSingleValueEvent(listener);
 
 
     }
@@ -317,6 +328,7 @@ private void callDelete(){
                 session.requesterID=null;
                 session.userEmail=null;
                 session.userkey=null;
+                session.destructor();
                 SaveSharedPreference.clearShared(HomeActivity.this);
                 finish();
                 new Intent(HomeActivity.this, IntroActivity.class);
@@ -331,6 +343,7 @@ private void callDelete(){
     }
     @Override
     public void onResume(){
+
        changeImageView();
         super.onResume();
 
@@ -365,12 +378,12 @@ private void callDelete(){
         queryRef2.addValueEventListener(listener2);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity1, menu);
+        //getMenuInflater().inflate(R.menu.menu_activity1, menu);
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -380,12 +393,34 @@ private void callDelete(){
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
 
+void test(){
+    numberofRequests=0;
+    Firebase ref2 = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/");
+    numberofRequestQuery = ref2.orderByChild("SignerEmail").equalTo(session.userEmail);
+    numberofRequestQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot Req) {
+            for (DataSnapshot child : Req.getChildren()) {
+                if (child.child("status").getValue(String.class).equals("waiting")) {
+                    numberofRequests++;
+                }
 
+            }
+            pendingTextViewHome.setText("Pending Documents: " + numberofRequests + "");
+            numberofRequestQuery.removeEventListener(this);
+        }
+
+        @Override
+        public void onCancelled(FirebaseError firebaseError) {
+
+        }
+    });
+    }
 }
