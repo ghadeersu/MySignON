@@ -261,17 +261,17 @@ System.out.println("GHG inside ECDSAsiging");
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                for ( DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (!(session.requestID == child.getKey())) {
+                     System.out.println("GHG inside sequncing child key is ::::"+child.getKey());
+                        if(!child.child("status").getValue().toString().equals("done")) {
+                                checkIfItsTheNextSiner(child.getKey(), seq);
 
-                    if (!(session.requestID == child.getKey())) { // ECDSATextview.setText(ECDSATextview.getText()+"[   ]"+child.getKey());
-                        checkIfItsTheNextSiner(child.getKey(), seq);
-                    }
-
-
+                        }
                 }
 
 
-            }
+            }}
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -285,17 +285,16 @@ System.out.println("GHG inside ECDSAsiging");
     private void checkIfItsTheNextSiner(String RID, final String seq) {
 
         final Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/" + RID + "");
-        Query queryref = ref.child("signingSeq").orderByValue();
+         Query queryref = ref.child("signingSeq").orderByValue();
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                int afterseq = Integer.parseInt(dataSnapshot.getValue().toString());
-                int beforeseq = Integer.parseInt(seq);
-                if (afterseq - 1 == beforeseq) {
-                    ref.child("status").setValue("waiting");
-                }
-
+              final   int afterseq = Integer.parseInt(dataSnapshot.getValue().toString());
+              final   int beforeseq = Integer.parseInt(seq);
+                    if (afterseq - 1 == beforeseq) {
+                        ref.child("status").setValue("waiting");
+                    }
 
             }
 
