@@ -55,7 +55,7 @@ public class DocumentWaitingList extends ListActivity {
                                     if (child.child("status").getValue().equals("waiting")) {
                                         System.out.println(" 2 signer Email + status waiting ");
 
-                                       session.requestID = child.getKey();
+                                       //session.requestID = child.getKey();
 // not sure if this is the correct place to set requestID // ghadeer
                                         /////////////////////////////////////////
 
@@ -141,6 +141,29 @@ public class DocumentWaitingList extends ListActivity {
         EncKey = currentdocuments.getEkey();
         DocName=currentdocuments.getDocumentName();
         DocOwner=currentdocuments.getDocumentOwnerID();
+
+        ///find request ID
+        final Firebase requestFire = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/");
+        Query qDocI = requestFire.orderByChild("rDocumentId").equalTo(session.docKey);
+        ValueEventListener listener0 = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot DocID) {
+                    for (final DataSnapshot child : DocID.getChildren()) {
+                        System.out.println(" 2 find Same Doc ID child ");
+                        System.out.println(" 2 find Same Doc ID child" + child.child("SignerEmail").getValue() + "  " + child.child("status").getValue() +"  "+child.child("SignerEmail").getKey()+"");
+                        if (child.child("SignerEmail").getValue().equals(session.userEmail))
+                            if (child.child("status").getValue().equals("waiting")) {
+                                System.out.println(" 2 signer Email + status waiting ");
+
+                                session.requestID = child.getKey();
+                            }
+                    }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        }; qDocI.addListenerForSingleValueEvent(listener0);
 
         final Button viewB = (Button) findViewById(R.id.docWlistviewButton);
         final Button signB= (Button)findViewById(R.id.docWlistsignButton);
