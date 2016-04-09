@@ -5,6 +5,7 @@ package learn;
  */
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -24,11 +25,16 @@ import com.firebase.client.ValueEventListener;
  */
 public class DocumentOwnerList extends ListActivity {
     private documentsArrayAdapter mAdapter;
+    private boolean signerIDcheck;
     boolean checked = false;
     int i;
     boolean[] canRequest;
     boolean request;
     boolean canDelete=true;
+     Button viewB;
+     Button signB;
+    Button requestB;
+     Button deleteB;
     private Firebase mFirebase ;// = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/"+session.userkey) ; //= new Firebase("");
 
     @Override
@@ -36,65 +42,39 @@ public class DocumentOwnerList extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_owner_list);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+          viewB = (Button) findViewById(R.id.docOviewbutton);
+          signB = (Button) findViewById(R.id.docOsignbutton);
+          requestB = (Button) findViewById(R.id.docOrequestbutton);
+          deleteB = (Button) findViewById(R.id.docOdelete);
+viewB.setEnabled(false);
+        signB.setEnabled(false);
+        requestB.setEnabled(false);
+        deleteB.setEnabled(false);
+
+        Bundle exras = getIntent().getExtras();
+        View view=new View(this);
+
+        switch (exras.getString("choice")){
+
+            case "owner":
+                mydocsclick(view);
+                break;
+            case "signed":
+                signedclick(view);
+                break;
+            case "pending":
+                pendingclick(view);
+                break;
+            case "completed":
+                completedclick(view);
+                break;
+
+
+        }
+
         //getListView().setChoiceMode (ListView.);
         //  getListView().setOnItemSelectedListener(new MyselectClickListener());
-        mAdapter = new documentsArrayAdapter(this) {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
 
-                final String Skey = dataSnapshot.getKey();
-                final String documentName = dataSnapshot.child("documentName").getValue(String.class);
-                final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
-                final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
-                final String ekey = dataSnapshot.child("ekey").getValue(String.class);
-                final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
-
-                Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + session.userkey + "/");
-                if (documentOwnerID.equals(session.userkey)) {
-
-                    Query queryRef = userFire.orderByValue();
-                    // userFire.orderByKey().equalTo(session.userkey).addListenerForSingleValueEvent(new ValueEventListener() {
-                    ValueEventListener listener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String key = dataSnapshot.getKey();
-                            String email = dataSnapshot.child("Email").getValue(String.class);
-                            String a = dataSnapshot.child("a").getValue(String.class);
-                            String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
-                            String infinity = dataSnapshot.child("infinity").getValue(String.class);
-                            String password = dataSnapshot.child("password").getValue(String.class);
-                            String username = dataSnapshot.child("username").getValue(String.class);
-                            String x = dataSnapshot.child("x").getValue(String.class);
-                            String y = dataSnapshot.child("y").getValue(String.class);
-                            String pk = dataSnapshot.child("PK").getValue(String.class);
-                            String p = dataSnapshot.child("PK").getValue(String.class);
-                            User mUser = new User(key, email, birthdate, password, username);
-                            // mUser.setA(a);
-                            // mUser.setP();
-                            // mUser.setPK();
-                            // mUser.setX();
-                            // mUser.setY();
-                            documents doc = new documents(Skey, messagedigest, ekey, documentURL, documentOwnerID, documentName);
-                            doc.setOwner(mUser);
-                            mdocuments.add(0, doc);// add to the top
-
-                            notifyDataSetChanged();// update adapter
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-                    };
-                    queryRef.addValueEventListener(listener);
-                }
-
-                notifyDataSetChanged();// update adapter
-
-                setListAdapter(mAdapter);
-
-            }
-        };
     }
 
     String DocURL , EncKey,DocName,DocOwner;
@@ -113,6 +93,28 @@ public class DocumentOwnerList extends ListActivity {
         canRequest = new boolean[3];
         request=true;
 
+        ///find request ID
+        final Firebase requestFire = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/");
+        Query qDocI = requestFire.orderByChild("rDocumentId").equalTo(session.docKey);
+        ValueEventListener listener0 = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot DocID) {
+                for (final DataSnapshot child : DocID.getChildren()) {
+                    System.out.println(" 2 find Same Doc ID child ");
+                    System.out.println(" 2 find Same Doc ID child" + child.child("SignerEmail").getValue() + "  " + child.child("status").getValue() +"  "+child.child("SignerEmail").getKey()+"");
+                    if (child.child("SignerEmail").getValue().equals(session.userEmail))
+                        if (child.child("status").getValue().equals("waiting")) {
+                            System.out.println(" 2 signer Email + status waiting ");
+
+                            session.requestID = child.getKey();
+                        }
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        }; qDocI.addListenerForSingleValueEvent(listener0);
           //***********************************FireBase RequesterID**************************
         /////////////////////////////////////////////////////////////////////////////////
 
@@ -121,12 +123,7 @@ public class DocumentOwnerList extends ListActivity {
 
 //-------------------
 
-        final Button viewB = (Button) findViewById(R.id.docOviewbutton);
-        final Button signB = (Button) findViewById(R.id.docOsignbutton);
-        final Button requestB = (Button) findViewById(R.id.docOrequestbutton);
-        final Button deleteB = (Button) findViewById(R.id.docOdelete);
 
-        viewB.setEnabled(true);
         viewB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +139,6 @@ public class DocumentOwnerList extends ListActivity {
         });
 
 
-        signB.setEnabled(true);
         signB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +154,6 @@ public class DocumentOwnerList extends ListActivity {
         });
 
         /////////////////////////////Delete Button/////////////////
-        deleteB.setEnabled(true);
         deleteB.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
@@ -236,7 +231,6 @@ public class DocumentOwnerList extends ListActivity {
 
 
 //requestB
-        requestB.setEnabled(true);
         requestB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -342,6 +336,442 @@ private void deleteDoc() {
         finish();
 
     }
+
+
+    public void signedclick(View view){
+        viewB.setEnabled(true);
+        signB.setEnabled(false);
+        requestB.setEnabled(false);
+        deleteB.setEnabled(false);
+        mAdapter = new documentsArrayAdapter(this) {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
+                final String Skey = dataSnapshot.getKey();
+                final String documentName = dataSnapshot.child("documentName").getValue(String.class);
+                final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
+                final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
+                final String ekey = dataSnapshot.child("ekey").getValue(String.class);
+                final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
+                signerIDcheck = false;
+                Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+                Query queryRef1 = signFire.orderByChild("docID").equalTo(Skey);
+                ValueEventListener listener0 = new ValueEventListener(){
+                    @Override
+                    public void onDataChange(DataSnapshot DocID) {
+                        if(DocID.exists())
+                        {
+                            signerIDcheck=false;
+                            System.out.println("kkkkkkkkkkkkkkkkkkk " );
+                            for (final DataSnapshot child : DocID.getChildren())
+                            { if(signerIDcheck)
+                            {break;}
+                            else if(child.child("signerID").getValue().equals(session.userkey))
+                            {
+                                signerIDcheck=true;
+
+                                Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + documentOwnerID+ "/");
+                                Query qUser = userFire.orderByValue();
+                                ValueEventListener listener3 = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+
+                                            System.out.println(" 2 find User requester ");
+
+                                            String key = dataSnapshot.getKey();
+                                            String email = dataSnapshot.child("Email").getValue(String.class);
+                                            String a = dataSnapshot.child("a").getValue(String.class);
+                                            String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
+                                            String infinity = dataSnapshot.child("infinity").getValue(String.class);
+                                            String password = dataSnapshot.child("password").getValue(String.class);
+                                            String username = dataSnapshot.child("username").getValue(String.class);
+                                            String x = dataSnapshot.child("x").getValue(String.class);
+                                            String y = dataSnapshot.child("y").getValue(String.class);
+                                            String pk = dataSnapshot.child("PK").getValue(String.class);
+                                            String p = dataSnapshot.child("PK").getValue(String.class);
+                                            User mUser = new User(key, email, birthdate, password, username);
+
+                                            System.out.println("find user " + username + "");
+                                            // mUser.setA(a);
+                                            // mUser.setP();
+                                            // mUser.setPK();
+                                            // mUser.setX();
+                                            // mUser.setY();
+                                            System.out.println("" + documentOwnerID + "  " + documentName + "");
+                                            documents doc = new documents(Skey, messagedigest, ekey, documentURL, documentOwnerID, documentName);
+                                            doc.setOwner(mUser);
+
+                                            mdocuments.add(0, doc);// add to the top
+                                            notifyDataSetChanged();// update adapter
+
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+                                    }
+                                };
+                                qUser.addValueEventListener(listener3);
+
+
+                            }
+
+                            }
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                };
+                queryRef1.addValueEventListener(listener0);
+
+
+  /*              final String Skey = dataSnapshot.getKey();
+                final String documentName = dataSnapshot.child("documentName").getValue(String.class);
+                final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
+                final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
+                final String ekey = dataSnapshot.child("ekey").getValue(String.class);
+                final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
+                final Firebase requestFire = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/");
+                Query qDocID = requestFire.orderByChild("rDocumentId").equalTo(dataSnapshot.getKey().toString());
+                ValueEventListener listener0 = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot DocID) {
+                        if (DocID.exists()) {
+                            System.out.println(" 2 find Same Doc ID ");
+                            for (final DataSnapshot child : DocID.getChildren()) {
+                                System.out.println(" 2 find Same Doc ID child ");
+                                System.out.println(" 2 find Same Doc ID child" + child.child("SignerEmail").getValue() + "  " + child.child("status").getValue() + "  " + child.child("SignerEmail").getKey() + "");
+                                if (child.child("SignerEmail").getValue().equals(session.userEmail))
+                                    if (child.child("status").getValue().equals("done")) {
+                                        System.out.println(" 2 signer Email + status DONE ");
+                                        Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + child.child("requesterID").getValue() + "/");
+                                        Query qUser = userFire.orderByValue();
+                                        ValueEventListener listener3 = new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()) {
+
+                                                    System.out.println(" 2 find User requester ");
+
+                                                    String key = dataSnapshot.getKey();
+                                                    String email = dataSnapshot.child("Email").getValue(String.class);
+                                                    String a = dataSnapshot.child("a").getValue(String.class);
+                                                    String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
+                                                    String infinity = dataSnapshot.child("infinity").getValue(String.class);
+                                                    String password = dataSnapshot.child("password").getValue(String.class);
+                                                    String username = dataSnapshot.child("username").getValue(String.class);
+                                                    String x = dataSnapshot.child("x").getValue(String.class);
+                                                    String y = dataSnapshot.child("y").getValue(String.class);
+                                                    String pk = dataSnapshot.child("PK").getValue(String.class);
+                                                    String p = dataSnapshot.child("PK").getValue(String.class);
+                                                    User mUser = new User(key, email, birthdate, password, username);
+
+                                                    System.out.println("find user " + username + "");
+                                                    // mUser.setA(a);
+                                                    // mUser.setP();
+                                                    // mUser.setPK();
+                                                    // mUser.setX();
+                                                    // mUser.setY();
+                                                    System.out.println("" + documentOwnerID + "  " + documentName + "");
+                                                    documents doc = new documents(Skey, messagedigest, ekey, documentURL, documentOwnerID, documentName);
+                                                    doc.setOwner(mUser);
+                                                    mdocuments.add(0, doc);// add to the top
+                                                    notifyDataSetChanged();// update adapter
+                                                    session.requestID= child.getKey();   // ghadeer
+
+
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(FirebaseError firebaseError) {
+                                            }
+                                        };
+                                        qUser.addValueEventListener(listener3);
+                                        //    notifyDataSetChanged();// update adapter
+                                    }
+
+                            }
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                };
+                qDocID.addValueEventListener(listener0);
+                setListAdapter(mAdapter);
+*/
+            }
+        };
+        setListAdapter(mAdapter);
+
+    }
+    public void pendingclick(View view){
+        viewB.setEnabled(true);
+        signB.setEnabled(true);
+        requestB.setEnabled(false);
+        deleteB.setEnabled(false);
+        Button request = (Button)findViewById(R.id.docOrequestbutton);
+        Button delete = (Button)findViewById(R.id.docOdelete);
+        request.setActivated(false);
+        delete.setActivated(false);
+        mAdapter = new documentsArrayAdapter(this) {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
+
+                final String Skey = dataSnapshot.getKey();
+                final String documentName = dataSnapshot.child("documentName").getValue(String.class);
+                final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
+                final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
+                final String ekey = dataSnapshot.child("ekey").getValue(String.class);
+                final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
+                final Firebase requestFire = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/");
+                Query qDocID = requestFire.orderByChild("rDocumentId").equalTo(dataSnapshot.getKey());
+                ValueEventListener listener0 = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot DocID) {
+                        if (DocID.exists()) {
+                            System.out.println(" 2 find Same Doc ID ");
+                            for (final DataSnapshot child : DocID.getChildren()) {
+                                System.out.println(" 2 find Same Doc ID child ");
+                                System.out.println(" 2 find Same Doc ID child" + child.child("SignerEmail").getValue() + "  " + child.child("status").getValue() +"  "+child.child("SignerEmail").getKey()+"");
+                                if (child.child("SignerEmail").getValue().equals(session.userEmail))
+                                    if (child.child("status").getValue().equals("waiting")) {
+                                        System.out.println(" 2 signer Email + status waiting ");
+
+                                  //      session.requestID = child.getKey();
+// not sure if this is the correct place to set requestID // ghadeer
+                                        /////////////////////////////////////////
+
+                                        // Pdftry.RequestInfo(RequestID);
+                                        /*
+                                            static String RID;
+                                            public static void RequestInfo (String RKey) {RID = RKey; }
+                                        */
+                                        /////////////////////////////////////////
+
+                                        Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + child.child("requesterID").getValue() + "/");
+                                        Query qUser = userFire.orderByValue();
+                                        ValueEventListener listener3 = new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()) {
+
+                                                    System.out.println(" 2 find User requester ");
+
+                                                    String key = dataSnapshot.getKey();
+                                                    String email = dataSnapshot.child("Email").getValue(String.class);
+                                                    String a = dataSnapshot.child("a").getValue(String.class);
+                                                    String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
+                                                    String infinity = dataSnapshot.child("infinity").getValue(String.class);
+                                                    String password = dataSnapshot.child("password").getValue(String.class);
+                                                    String username = dataSnapshot.child("username").getValue(String.class);
+                                                    String x = dataSnapshot.child("x").getValue(String.class);
+                                                    String y = dataSnapshot.child("y").getValue(String.class);
+                                                    String pk = dataSnapshot.child("PK").getValue(String.class);
+                                                    String p = dataSnapshot.child("PK").getValue(String.class);
+                                                    User mUser = new User(key, email, birthdate, password, username);
+
+                                                    System.out.println("find user " + username + "");
+                                                    // mUser.setA(a);
+                                                    // mUser.setP();
+                                                    // mUser.setPK();
+                                                    // mUser.setX();
+                                                    // mUser.setY();
+                                                    System.out.println("" + documentOwnerID + "  " + documentName + "");
+                                                    documents doc = new documents(Skey, messagedigest, ekey, documentURL, documentOwnerID, documentName);
+                                                    doc.setOwner(mUser);
+                                                    mdocuments.add(0, doc);// add to the top
+                                                    notifyDataSetChanged();// update adapter
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(FirebaseError firebaseError) {
+                                            }
+                                        };
+                                        qUser.addValueEventListener(listener3);
+                                        //    notifyDataSetChanged();// update adapter
+                                    }
+
+                            }
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                };
+                qDocID.addValueEventListener(listener0);
+                setListAdapter(mAdapter);
+
+
+            }
+        };
+
+    }
+    public void completedclick(View view){
+        viewB.setEnabled(true);
+        signB.setEnabled(false);
+        requestB.setEnabled(false);
+        deleteB.setEnabled(false);
+        Button sign = (Button)findViewById(R.id.docOsignbutton);
+        Button request = (Button)findViewById(R.id.docOrequestbutton);
+        Button delete = (Button)findViewById(R.id.docOdelete);
+        sign.setActivated(false);
+        request.setActivated(false);
+        delete.setActivated(false);
+        mAdapter = new documentsArrayAdapter(this) {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
+                final String Skey = dataSnapshot.getKey();
+                final String documentName = dataSnapshot.child("documentName").getValue(String.class);
+                final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
+                final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
+                final String ekey = dataSnapshot.child("ekey").getValue(String.class);
+                final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
+
+                Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + session.userkey + "/");
+                if (documentOwnerID.equals(session.userkey)) {
+                    Query queryRef = userFire.orderByValue();
+                    // userFire.orderByKey().equalTo(session.userkey).addListenerForSingleValueEvent(new ValueEventListener() {
+                    ValueEventListener listener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(final DataSnapshot dataSnapshot) {
+                            Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+                            Query queryRef = signFire.orderByChild("docID").equalTo(Skey);
+                            ValueEventListener listener0 = new ValueEventListener(){
+                                @Override
+                                public void onDataChange(DataSnapshot DocID) {
+                                    if(DocID.exists())
+                                    {
+                                        String key = dataSnapshot.getKey();
+                                        String email = dataSnapshot.child("Email").getValue(String.class);
+                                        String a = dataSnapshot.child("a").getValue(String.class);
+                                        String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
+                                        String infinity = dataSnapshot.child("infinity").getValue(String.class);
+                                        String password = dataSnapshot.child("password").getValue(String.class);
+                                        String username = dataSnapshot.child("username").getValue(String.class);
+                                        String x = dataSnapshot.child("x").getValue(String.class);
+                                        String y = dataSnapshot.child("y").getValue(String.class);
+                                        String pk = dataSnapshot.child("PK").getValue(String.class);
+                                        String p = dataSnapshot.child("PK").getValue(String.class);
+                                        User mUser = new User(key, email, birthdate, password, username);
+                                        // mUser.setA(a);
+                                        // mUser.setP();
+                                        // mUser.setPK();
+                                        // mUser.setX();
+                                        // mUser.setY();
+                                        documents doc = new documents(Skey, messagedigest, ekey, documentURL, documentOwnerID, documentName);
+                                        doc.setOwner(mUser);
+                                        mdocuments.add(0, doc);// add to the top
+
+                                        notifyDataSetChanged();// update adapter
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+
+                                }
+                            };
+                            queryRef.addValueEventListener(listener0);
+
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    };
+                    queryRef.addValueEventListener(listener);
+                }
+
+                notifyDataSetChanged();// update adapter
+
+                setListAdapter(mAdapter);
+            }
+        };
+    }
+
+    public void mydocsclick(View view){
+        viewB.setEnabled(true);
+        signB.setEnabled(true);
+        requestB.setEnabled(true);
+        deleteB.setEnabled(true);
+        mAdapter = new documentsArrayAdapter(this) {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
+
+                final String Skey = dataSnapshot.getKey();
+                final String documentName = dataSnapshot.child("documentName").getValue(String.class);
+                final String documentOwnerID = dataSnapshot.child("documentOwnerID").getValue(String.class);
+                final String documentURL = dataSnapshot.child("documentURL").getValue(String.class);
+                final String ekey = dataSnapshot.child("ekey").getValue(String.class);
+                final String messagedigest = dataSnapshot.child("messagedigest").getValue(String.class);
+
+                Firebase userFire = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + session.userkey + "/");
+                if (documentOwnerID.equals(session.userkey)) {
+
+                    Query queryRef = userFire.orderByValue();
+                    // userFire.orderByKey().equalTo(session.userkey).addListenerForSingleValueEvent(new ValueEventListener() {
+                    ValueEventListener listener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String key = dataSnapshot.getKey();
+                            String email = dataSnapshot.child("Email").getValue(String.class);
+                            String a = dataSnapshot.child("a").getValue(String.class);
+                            String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
+                            String infinity = dataSnapshot.child("infinity").getValue(String.class);
+                            String password = dataSnapshot.child("password").getValue(String.class);
+                            String username = dataSnapshot.child("username").getValue(String.class);
+                            String x = dataSnapshot.child("x").getValue(String.class);
+                            String y = dataSnapshot.child("y").getValue(String.class);
+                            String pk = dataSnapshot.child("PK").getValue(String.class);
+                            String p = dataSnapshot.child("PK").getValue(String.class);
+                            User mUser = new User(key, email, birthdate, password, username);
+                            // mUser.setA(a);
+                            // mUser.setP();
+                            // mUser.setPK();
+                            // mUser.setX();
+                            // mUser.setY();
+                            documents doc = new documents(Skey, messagedigest, ekey, documentURL, documentOwnerID, documentName);
+                            doc.setOwner(mUser);
+                            mdocuments.add(0, doc);// add to the top
+
+                            notifyDataSetChanged();// update adapter
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    };
+                    queryRef.addValueEventListener(listener);
+                }
+
+                notifyDataSetChanged();// update adapter
+
+                setListAdapter(mAdapter);
+
+            }
+        };
+
+    }
+
+
 
 }
 
