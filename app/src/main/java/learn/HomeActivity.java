@@ -4,11 +4,14 @@ package learn;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,8 +25,17 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -97,7 +109,7 @@ public class HomeActivity extends BaseActivity {
 
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("application/pdf");
+        intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
@@ -127,28 +139,76 @@ public class HomeActivity extends BaseActivity {
                         String uriString=uri.getPath();
                         Log.d(TAG, "String Path: " + uriString);
                         path = FileUtils.getPath(this, uri);
-
+                        if(path!=null){
+                        String  Type=path.substring(path.lastIndexOf(".") + 1, path.length());
                         Log.d(TAG, "File Path: " + path);
-                      /*  pathToUpload=path;
-                        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
-                        Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
-                       // Query q2=queryRef.orderByChild("documentName").equalTo(new File(pathToUpload).getName());
-                        ValueEventListener listener = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                            /////////////////////////make sure file is in right format/////////////////////////////
+                          /*  File myFile = new File(uri.getEncodedPath());
+                            Log.d(TAG, "Some Path: " + myFile.getPath());
+                            String test=myFile.getAbsolutePath();
+                            Log.d(TAG, "test Path: " + test);*/
+                            switch (Type){
+                                case "txt":
+                                    /////////txt to pdf/////////////////////
+                                    BufferedReader br = null;
 
-                                   System.out.println("path: "+pathToUpload);
-                                    if(child.child("documentName").getValue(String.class).equals((new File(pathToUpload)).getName()))
-                                    {
-                                        System.out.println("inside");
-                                        exist=true;
-                                    }*/
-                        // if(!exist){
+                                    try {
+                                        File file=new File(path);
+                                        String newPath=path.replace(".txt",".pdf");
+                                        Document pdfDoc = new Document(PageSize.A4);
+                                        String output_file =  newPath;
+                                        System.out.println("## writing to: " + output_file);
+                                        PdfWriter.getInstance(pdfDoc, new FileOutputStream(output_file)).setPdfVersion(PdfWriter.VERSION_1_7);;
 
+                                        pdfDoc.open();
 
+                                        Font myfont = new Font();
+                                        myfont.setStyle(Font.NORMAL);
+                                        myfont.setSize(11);
 
+                                        pdfDoc.add(new Paragraph("\n"));
+
+                                        if (file.exists()) {
+
+                                            br = new BufferedReader(new FileReader(file));
+                                            String strLine;
+
+                                            while ((strLine = br.readLine()) != null) {
+                                                Paragraph para = new Paragraph(strLine + "\n", myfont);
+                                                para.setAlignment(Element.ALIGN_JUSTIFIED);
+                                                pdfDoc.add(para);
+                                            }
+                                        } else {
+                                            System.out.println("no such file exists!");
+
+                                        }
+                                        pdfDoc.close();
+                                        path=newPath;
+                                    }
+
+                                    catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                case "pdf":
+                                case "ico":
+                                case "jpg":
+                                case "jpeg":
+                                case "png":
                                     new HDWFTP_Upload(HomeActivity.this).execute(path);
+                                    break;
+                                default:
+                                    AlertDialog alert = new AlertDialog.Builder(HomeActivity.this).setMessage("Invalid Type").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                          public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                          }
+                                        }).show();
+
+                                        break;
+                            }
+
+                        }
+
+
                                     // do the background process or any work that takes time to see progreaa dialog
 
 
@@ -423,4 +483,6 @@ void test(){
         }
     });
     }
+
+
 }

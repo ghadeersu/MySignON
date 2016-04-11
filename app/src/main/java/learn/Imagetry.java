@@ -80,6 +80,7 @@ import java.util.Map;
  */
 public abstract class Imagetry extends Activity {
     boolean ownerFlag;
+    String Type;
     public static int pageSign;
     private static final int STARTPAGE = 1;
     private static final float STARTZOOM = 1.0f;//2.0f for full page on HD
@@ -132,7 +133,7 @@ public abstract class Imagetry extends Activity {
     private ProgressDialog progress;
 
     public String signPath;
-    public String newP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/l.jpg";
+    public String newP ;
     public byte[] signatureByte;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,6 +197,9 @@ public abstract class Imagetry extends Activity {
         if (extras != null) {
             value = extras.getString(Imagetry.EXTRA_PDFFILENAME,"FullPath");
             signPath= value;
+            Type=signPath.substring(signPath.lastIndexOf(".") + 1, signPath.length());
+
+            newP= Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/temp364535."+Type;
 
         }
 
