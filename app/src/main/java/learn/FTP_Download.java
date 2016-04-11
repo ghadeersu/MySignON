@@ -27,8 +27,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
 public class FTP_Download extends AsyncTask <String, Void, Long>{
-
-
+    String Type;
     private Context context;
     static String DocName,EncKey,DocOwner, Operation;
 
@@ -97,12 +96,15 @@ public class FTP_Download extends AsyncTask <String, Void, Long>{
                 ///////////////////////////////////////////////////////////////////////////
                 ///////////////////////////////////////////////////////////////////////////
                 ///////////////////////////////////////////////////////////////////////////
-
+                Type=FullPath.substring(FullPath.lastIndexOf(".") + 1, FullPath.length());
                 switch (Operation)
                 {
                     case "View":
                         Intent intent = new Intent(Intent.ACTION_VIEW);
+                        if(Type.equals("pdf"))
                         intent.setDataAndType(Uri.fromFile(downloadFile1), "application/pdf");
+                        else
+                            intent.setDataAndType(Uri.fromFile(downloadFile1), "image/*");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                         context.startActivity(intent);
                         break;
