@@ -499,6 +499,7 @@ public abstract class Pdftry extends Activity {
                 mGraphView.bZoomOut.setEnabled(true);
 
                 //progress = ProgressDialog.show(PdfViewerActivity.this, "Rendering", "Rendering PDF Page");
+
                 startRenderThread(mPage, mZoom);
             }
         }

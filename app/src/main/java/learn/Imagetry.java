@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -130,7 +132,7 @@ public abstract class Imagetry extends Activity {
     private ProgressDialog progress;
 
     public String signPath;
-    public String newP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/l.pdf";
+    public String newP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/l.jpg";
     public byte[] signatureByte;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -943,7 +945,7 @@ public abstract class Imagetry extends Activity {
                                         System.out.println("path " + f2.getPath());
                                         File ff = new File(signPath);
 
-                                        f2.renameTo(test);
+                                       f2.renameTo(test);
                                         new HDWFTP_Upload_Update(Imagetry.this).execute(signPath);
 
 
@@ -1198,7 +1200,7 @@ public abstract class Imagetry extends Activity {
                 progress.dismiss();
         } catch (Throwable e) {
             Log.e(TAG, e.getMessage(), e);
-            mGraphView.showText("Exception: "+e.getMessage());
+            mGraphView.showText("Exception: " + e.getMessage());
         }
         //long stopTime = System.currentTimeMillis();
         //mGraphView.pageParseMillis = middleTime-startTime;
@@ -1315,103 +1317,30 @@ public abstract class Imagetry extends Activity {
     ////////////////////////////////////////////////////////////////////////////////////////
     public abstract int getsignatureImageReasource();
     public void merge(float x,float y, int pageNum) {
-        try {
+try {
+    System.out.println("step 1"+ signPath);
+    Bitmap imageToSign = BitmapFactory.decodeFile(signPath);
+    //stamp image code
+    int w = imageToSign.getWidth();
+    int h = imageToSign.getHeight();
+    //String path= Environment.getExternalStorageDirectory().getAbsolutePath()+"/signon/download/sign.jpg";
+    Bitmap result = Bitmap.createBitmap(w, h, imageToSign.getConfig());
+    System.out.println("step 2" + result.getByteCount());
+    Canvas canvas = new Canvas(result);
+
+    canvas.drawBitmap(imageToSign, 0, 0, null);
+    //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    Bitmap waterMark = BitmapFactory.decodeByteArray(signatureByte, 0, signatureByte.length);
+    canvas.drawBitmap(waterMark, x, y, null);
+    FileOutputStream fos = new FileOutputStream(newP);
+    result.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+    fos.close();
+    //String url = MediaStore.Images.Media.insertImage(getContentResolver(), result, , null);
+   // System.out.println(" path url: " + fos.g);
+}
+catch(Exception o){System.out.println("Image error"+o.getMessage());}
 
 
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/tes.pdf"  ;
-
-            File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon");
-
-            File f = new File(file, "tes.pdf");
-
-            Log.v("stage 1","store the pdf in sd card");
-
-            Document document = new Document(PageSize.A4, 38, 38, 50, 38);
-
-            Log.v("stage 2","Document Created");
-
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-
-            Log.v("Stage 3", "Pdf writer");
-
-            document.open();
-
-            Log.v("Stage 4", "Document opened");
-
-            document.add(new Paragraph("First Paragraph"));
-
-            Log.v("Stage 5", "Creating Paragraph");
-
-            Image image2 = Image.getInstance (Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/a.jpg");
-
-            Log.v("Stage 6", "Image path adding");
-
-            image2.setAlignment(Image.MIDDLE | Image.TEXTWRAP);
-
-            Log.v("Stage 7", "Image Alignments");
-
-            image2.setBorder(Image.BOX);
-
-            image2.setBorderWidth(15);
-
-            document.add(image2);
-
-            Log.v("Stage 8", "Image adding");
-
-            document.close();
-
-            Log.v("Stage 7", "Document Closed");
-
-
-
-
-            //finish();
-            pdfReader = new PdfReader(path);
-
-            //fix y
-            y=pdfReader.getCropBox(1).getHeight()-y;
-
-            PdfStamper pdfStamper = new PdfStamper(pdfReader,
-                    new FileOutputStream(newP));
-
-            Image image = Image.getInstance(signatureByte);
-
-            if (pageNum==-1) {
-
-                for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
-
-                    //put content under
-                    PdfContentByte content = pdfStamper.getUnderContent(i);
-                    image.setAbsolutePosition(x, y);
-                    content.addImage(image);
-
-                    //put content over
-                    content = pdfStamper.getOverContent(i);
-                    image.setAbsolutePosition(x, y);
-                    content.addImage(image);
-
-                    //Text over the existing page
-                    /*BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA,
-                            BaseFont.WINANSI, BaseFont.EMBEDDED);
-                    content.beginText();
-                    content.setFontAndSize(bf, 18);
-                    content.showTextAligned(PdfContentByte.ALIGN_LEFT, "Page No: " + i, 430, 15, 0);
-                    content.endText();*/
-                }
-            }
-            else{
-                PdfContentByte content =  pdfStamper.getOverContent(pageNum);
-                image.setAbsolutePosition(x, y);
-                content.addImage(image);
-
-            }
-            pdfStamper.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
 
     }
     public void displayAlertDialog() {

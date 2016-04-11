@@ -92,7 +92,7 @@
                     android:id="@+id/textView16"
                     android:layout_row="1"
                     android:layout_column="10"
-                    android:textSize="10dp"
+                    android:textSize="15dp"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="15dp"
