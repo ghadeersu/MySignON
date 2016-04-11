@@ -14,32 +14,45 @@ public class DocumentActivity extends BaseActivity {
         setContentView(R.layout.activity_document);
         rootview = findViewById(R.id.document_container);
         mNavigationView.getMenu().getItem(1).setChecked(true);
+
         ImageButton docowner = (ImageButton) findViewById(R.id.docuserimageButton);
         docowner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DocumentActivity.this, DocumentOwnerList.class));
+                Intent list =new Intent(DocumentActivity.this, DocumentOwnerList.class);
+                list.putExtra("choice", "owner");
+                startActivity(list);
             }
         });
         ImageButton docsigned = (ImageButton) findViewById(R.id.docsignimageButton);
         docsigned.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DocumentActivity.this, DocumentSignedList.class));
+
+                Intent list =new Intent(DocumentActivity.this, DocumentOwnerList.class);
+
+                list.putExtra("choice","signed");
+                startActivity(list);
             }
         });
         ImageButton docpending = (ImageButton) findViewById(R.id.docwaitimageButton);
         docpending.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DocumentActivity.this, DocumentWaitingList.class));
+                Intent list =new Intent(DocumentActivity.this, DocumentOwnerList.class);
+
+                list.putExtra("choice","pending");
+                startActivity(list);
             }
         });
         ImageButton docCom = (ImageButton) findViewById(R.id.doccomimageButton);
         docCom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DocumentActivity.this, DocumentCompletedRequests.class));
+                Intent list =new Intent(DocumentActivity.this, DocumentOwnerList.class);
+
+                list.putExtra("choice","completed");
+                startActivity(list);
             }
         });
 
