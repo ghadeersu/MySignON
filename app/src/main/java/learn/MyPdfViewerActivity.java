@@ -29,7 +29,7 @@ package learn;
         import java.io.IOException;
         import learn.R;
 
-public class MyPdfViewerActivity extends Pdftry {//implements View.OnTouchListener {
+public class MyPdfViewerActivity extends Imagetry {//implements View.OnTouchListener {
 
 
 
