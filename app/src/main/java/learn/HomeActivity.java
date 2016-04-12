@@ -1,9 +1,11 @@
 package learn;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +14,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
@@ -56,6 +60,7 @@ public class HomeActivity extends BaseActivity {
     public File fileToUpload;
     public String pathToUpload;
     boolean exist=false;
+
     View rootview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +118,8 @@ public class HomeActivity extends BaseActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
+
+
             startActivityForResult(
                     Intent.createChooser(intent, "Select a File to Upload"),
                     FILE_SELECT_CODE);
@@ -139,14 +146,11 @@ public class HomeActivity extends BaseActivity {
                         String uriString=uri.getPath();
                         Log.d(TAG, "String Path: " + uriString);
                         path = FileUtils.getPath(this, uri);
+
                         if(path!=null){
                         String  Type=path.substring(path.lastIndexOf(".") + 1, path.length());
                         Log.d(TAG, "File Path: " + path);
-                            /////////////////////////make sure file is in right format/////////////////////////////
-                          /*  File myFile = new File(uri.getEncodedPath());
-                            Log.d(TAG, "Some Path: " + myFile.getPath());
-                            String test=myFile.getAbsolutePath();
-                            Log.d(TAG, "test Path: " + test);*/
+
                             switch (Type){
                                 case "txt":
                                     /////////txt to pdf/////////////////////
@@ -193,6 +197,7 @@ public class HomeActivity extends BaseActivity {
                                 case "ico":
                                 case "jpg":
                                 case "jpeg":
+                                case "bmp":
                                 case "png":
                                     new HDWFTP_Upload(HomeActivity.this).execute(path);
                                     break;
@@ -483,6 +488,5 @@ void test(){
         }
     });
     }
-
 
 }
