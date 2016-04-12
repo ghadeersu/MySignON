@@ -4,10 +4,14 @@ package learn;
  * Created by Naseebah on 06/03/16.
  */
 
+import android.Manifest;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -30,6 +34,7 @@ public class DocumentOwnerList extends ListActivity {
     int i;
     boolean[] canRequest;
     boolean request;
+    boolean permission;
     boolean canDelete=true;
      Button viewB;
      Button signB;
@@ -43,6 +48,7 @@ public class DocumentOwnerList extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_owner_list);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
           viewB = (Button) findViewById(R.id.docOviewbutton);
           signB = (Button) findViewById(R.id.docOsignbutton);
           requestB = (Button) findViewById(R.id.docOrequestbutton);
@@ -129,6 +135,15 @@ viewB.setEnabled(false);
             @Override
             public void onClick(View v) {
                 Operation = "View";
+                if (ContextCompat.checkSelfPermission(DocumentOwnerList.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(DocumentOwnerList.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            1);
+                    permission=false;
+                }
+                else {
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentOwnerList.this).execute(DocURL);
                 v.setEnabled(false);
@@ -136,7 +151,7 @@ viewB.setEnabled(false);
                 requestB.setEnabled(false);
                 deleteB.setEnabled(false);
 
-            }
+            }}
         });
 
 
@@ -144,6 +159,17 @@ viewB.setEnabled(false);
             @Override
             public void onClick(View v) {
                 Operation = "Sign";
+                if (ContextCompat.checkSelfPermission(DocumentOwnerList.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(DocumentOwnerList.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            1);
+                    permission=true;
+                }
+                else {
+
+
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
                 new FTP_Download(DocumentOwnerList.this).execute(DocURL);
                 v.setEnabled(false);
@@ -151,7 +177,7 @@ viewB.setEnabled(false);
                 requestB.setEnabled(false);
                 deleteB.setEnabled(false);
 
-            }
+            }}
         });
 
         /////////////////////////////Delete Button/////////////////
@@ -772,6 +798,54 @@ private void deleteDoc() {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+
+                    //////////////////download code/////////////////////////////////////////////////////
+                    //////////////////case false: view//////////////////////////////////////////////////
+                    if(!permission){
+                        FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                        new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+                        signB.setEnabled(false);
+                        requestB.setEnabled(false);
+                        deleteB.setEnabled(false);
+
+                    }
+                    //////////////////case true: sign//////////////////////////////////////////////////
+                    else{
+                        FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                        new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+                        viewB.setEnabled(false);
+                        requestB.setEnabled(false);
+                        deleteB.setEnabled(false);
+
+
+                    }
+
+
+
+
+
+
+
+                } else {
+
+                    Toast.makeText(DocumentOwnerList.this, "Permission deny to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
+        }
+    }
 
 
 }

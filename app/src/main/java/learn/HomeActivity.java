@@ -110,26 +110,34 @@ public class HomeActivity extends BaseActivity {
 
     }
     public void uploadDocument(View v){
+///////////////check permission////////////////
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(HomeActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    1);
 
-
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        try {
-
-
-            startActivityForResult(
-                    Intent.createChooser(intent, "Select a File to Upload"),
-                    FILE_SELECT_CODE);
-        } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, "Please install a File Manager.",
-                    Toast.LENGTH_SHORT).show();
         }
+        else {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+            intent.setType("*/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+            try {
 
 
+                startActivityForResult(
+                        Intent.createChooser(intent, "Select a File to Upload"),
+                        FILE_SELECT_CODE);
+            } catch (android.content.ActivityNotFoundException ex) {
+                // Potentially direct the user to the Market with a Dialog
+                Toast.makeText(this, "Please install a File Manager.",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     @Override
@@ -212,42 +220,14 @@ public class HomeActivity extends BaseActivity {
                             }
 
                         }
+                        else{
+                            AlertDialog alert = new AlertDialog.Builder(HomeActivity.this).setMessage("Please use another File manager").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            }).show();}
 
 
-                                    // do the background process or any work that takes time to see progreaa dialog
-
-
-
-
-
-                        //}
-                        //else{
-                        //  AlertDialog alert = new AlertDialog.Builder(HomeActivity.this).setMessage("A file with the same name already exist").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        //    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        //  }
-                        //}).show();}
-                        // }
-                        //}
-
-                        //@Override
-                        //public void onCancelled(FirebaseError firebaseError) {
-
-                        //   }
-                        //};
-
-                        //queryRef.addValueEventListener(listener);
-
-
-
-
-
-
-                        // Get the file instance
-
-
-                        // File file = new File(path);
-                        // Initiate the upload
                     }
                     catch (URISyntaxException e){
                         Toast.makeText(this, "Please install a File Manager.",
@@ -258,6 +238,52 @@ public class HomeActivity extends BaseActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
 
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+
+            //////////////////upload code/////////////////////////////////////////////////////
+
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+                    intent.setType("*/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                    try {
+
+
+                        startActivityForResult(
+                                Intent.createChooser(intent, "Select a File to Upload"),
+                                FILE_SELECT_CODE);
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        // Potentially direct the user to the Market with a Dialog
+                        Toast.makeText(this, "Please install a File Manager.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+
+
+
+
+                } else {
+
+                    Toast.makeText(HomeActivity.this, "Permission deny to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
+        }
     }
 
 
