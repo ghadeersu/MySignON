@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.firebase.client.Firebase;
+
 import learn.DocumentActivity;
 import learn.R;
 import learn.SettingActivity;
@@ -166,7 +168,10 @@ public abstract class BaseActivity extends AppCompatActivity
             case R.id.nav_account: // logout
 
              session.destructor();
+
                 SaveSharedPreference.clearShared(BaseActivity.this);
+                Firebase ref=new Firebase("https://torrid-heat-4458.firebaseio.com");
+                ref.unauth();
                 createBackStack(new Intent(this, IntroActivity.class));
 
                 break;

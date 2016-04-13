@@ -390,7 +390,7 @@ private void deleteDoc() {
                                             String y = dataSnapshot.child("y").getValue(String.class);
                                             String pk = dataSnapshot.child("PK").getValue(String.class);
                                             String p = dataSnapshot.child("PK").getValue(String.class);
-                                            User mUser = new User(key, email, birthdate, password, username);
+                                            User mUser = new User(key, email, birthdate, username);
 
                                             System.out.println("find user " + username + "");
                                             // mUser.setA(a);
@@ -580,7 +580,7 @@ private void deleteDoc() {
                                                     String y = dataSnapshot.child("y").getValue(String.class);
                                                     String pk = dataSnapshot.child("PK").getValue(String.class);
                                                     String p = dataSnapshot.child("PK").getValue(String.class);
-                                                    User mUser = new User(key, email, birthdate, password, username);
+                                                    User mUser = new User(key, email, birthdate, username);
 
                                                     System.out.println("find user " + username + "");
                                                     // mUser.setA(a);
@@ -668,7 +668,7 @@ private void deleteDoc() {
                                         String y = dataSnapshot.child("y").getValue(String.class);
                                         String pk = dataSnapshot.child("PK").getValue(String.class);
                                         String p = dataSnapshot.child("PK").getValue(String.class);
-                                        User mUser = new User(key, email, birthdate, password, username);
+                                        User mUser = new User(key, email, birthdate, username);
                                         // mUser.setA(a);
                                         // mUser.setP();
                                         // mUser.setPK();
@@ -742,7 +742,7 @@ private void deleteDoc() {
                             String y = dataSnapshot.child("y").getValue(String.class);
                             String pk = dataSnapshot.child("PK").getValue(String.class);
                             String p = dataSnapshot.child("PK").getValue(String.class);
-                            User mUser = new User(key, email, birthdate, password, username);
+                            User mUser = new User(key, email, birthdate, username);
                             // mUser.setA(a);
                             // mUser.setP();
                             // mUser.setPK();

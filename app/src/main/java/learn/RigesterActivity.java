@@ -20,6 +20,7 @@ import com.firebase.client.ValueEventListener;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 
 public class RigesterActivity extends AppCompatActivity {
 
@@ -28,6 +29,8 @@ public class RigesterActivity extends AppCompatActivity {
     private int year, month, day;
     private String birthdate;
     private EditText etBirthdate;
+    EditText etName, etEmail, etPassword, etRePassword;
+    Button register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,13 @@ public class RigesterActivity extends AppCompatActivity {
         setContentView(learn.R.layout.activity_rigester);
         Firebase.setAndroidContext(this);
         etBirthdate = (EditText) findViewById(learn.R.id.registerBirthdateEditText);
+
+
+        etName = (EditText) findViewById(learn.R.id.registerNameEditText);
+        etEmail = (EditText) findViewById(learn.R.id.registerEmailEditText);
+        etPassword = (EditText) findViewById(learn.R.id.registerPasswordEditText);
+        etRePassword = (EditText) findViewById(learn.R.id.registerRePasswordEditText);
+        register = (Button) findViewById(learn.R.id.registerRegisterButton);
 
     }
 
@@ -46,14 +56,7 @@ public class RigesterActivity extends AppCompatActivity {
 
     public void registerRegisterButtonClick (View v)  {
 
-        EditText etName, etEmail, etPassword, etRePassword;
-        Button register;
 
-        etName = (EditText) findViewById(learn.R.id.registerNameEditText);
-        etEmail = (EditText) findViewById(learn.R.id.registerEmailEditText);
-        etPassword = (EditText) findViewById(learn.R.id.registerPasswordEditText);
-        etRePassword = (EditText) findViewById(learn.R.id.registerRePasswordEditText);
-        register = (Button) findViewById(learn.R.id.registerRegisterButton);
 
         String name = etName.getText().toString();
         final String email = etEmail.getText().toString().trim().toLowerCase();
@@ -102,7 +105,7 @@ public class RigesterActivity extends AppCompatActivity {
             Firebase.setAndroidContext(this);
             final Firebase mFirebase = new Firebase ("https://torrid-heat-4458.firebaseio.com/users");
             final learn.UserAdapter mAdapter = new learn.UserAdapter(this);
-            final learn.User CurrentUser = new learn.User(null, email, birthdate, password, name);
+            final learn.User CurrentUser = new learn.User(null, email, birthdate, name);
             EmailExist(email, CurrentUser, mAdapter);
 
 
@@ -145,7 +148,26 @@ public class RigesterActivity extends AppCompatActivity {
         //long PrK = System.currentTimeMillis();
         BigInteger PrK = BigInteger.valueOf(Long.parseLong(timeStamp));
         CurrentUser.CreateECDSAobject(PrK);
-        mAdapter.addItem(CurrentUser);
+
+        ///////////////test/////////////
+        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com");
+        ref.createUser(CurrentUser.getEmail(), etPassword.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> result) {
+                System.out.println("Successfully created user account with uid: " + result.get("uid"));
+                mAdapter.addItem(CurrentUser);
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                // there was an error
+            }
+        });
+
+
+
+
+
         Toast MSG = Toast.makeText(RigesterActivity.this, "register is successful", Toast.LENGTH_SHORT);
         MSG.show();
        Intent intent = new Intent(RigesterActivity.this, IntroActivity.class);

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -395,6 +396,8 @@ private void callDelete(){
                 session.userkey=null;
                 session.destructor();
                 SaveSharedPreference.clearShared(HomeActivity.this);
+                Firebase ref=new Firebase("https://torrid-heat-4458.firebaseio.com");
+                ref.unauth();
                 finish();
                 new Intent(HomeActivity.this, IntroActivity.class);
             }

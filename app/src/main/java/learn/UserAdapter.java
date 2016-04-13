@@ -67,7 +67,7 @@ public class UserAdapter extends BaseAdapter implements ChildEventListener {
         else {
             newUser.put("infinity", "FALSE");
         }
-        newUser.put("password", user.getPassword());
+
         newUser.put("username", user.getUsername());
         newUser.put("x", user.getX().toString());
         newUser.put("y", user.getY().toString());
@@ -83,11 +83,9 @@ public class UserAdapter extends BaseAdapter implements ChildEventListener {
         Map<String, String> newUser = new HashMap<String, String>();
         newUser.put("Email",user.getEmail());
         newUser.put("birthdate", user.getBirthdate());
-        newUser.put("password", user.getPassword());
         newUser.put("username", user.getUsername());
         mFirebase.child(user.getKey()).child("Email").setValue(user.getEmail());
         mFirebase.child(user.getKey()).child("birthdate").setValue(user.getBirthdate());
-        mFirebase.child(user.getKey()).child("password").setValue(user.getPassword());
         mFirebase.child(user.getKey()).child("username").setValue(user.getUsername());
     }
 
@@ -118,7 +116,7 @@ public class UserAdapter extends BaseAdapter implements ChildEventListener {
         String username = dataSnapshot.child("username").getValue(String.class);
         //String x = dataSnapshot.child("x").getValue(String.class);
         //String y = dataSnapshot.child("y").getValue(String.class);
-        mUsers.add(0, new User(key,email,birthdate,password,username));// add to the top
+        mUsers.add(0, new User(key,email,birthdate,username));// add to the top
         notifyDataSetChanged();// update adapter
     }
 
@@ -135,7 +133,7 @@ public class UserAdapter extends BaseAdapter implements ChildEventListener {
             {
                 newUser.setEmail(email);
                 newUser.setBirthdate(birthdate);
-                newUser.setPassword(password);
+
                 newUser.setUsername(username);
                 break;
             }

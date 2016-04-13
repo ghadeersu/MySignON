@@ -30,7 +30,8 @@ public class SettingActivity extends BaseActivity {
     private EditText Birthday;
     private int year, month, day;
     private Calendar calendar;
-
+    UserAdapter mAdapter;
+    User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +62,8 @@ public class SettingActivity extends BaseActivity {
                     String name, password, birthday;
                     name = (String) child.child("username").getValue(String.class);
                     email = (String) child.child("Email").getValue(String.class);
-                    password = (String) child.child("password").getValue(String.class);
                     birthday = (String) child.child("birthdate").getValue(String.class);
-                    User user = new User(key, email, birthday, password, name);
+                    User user = new User(key, email, birthday, name);
                     showInfo(user);
                 }
             }
@@ -78,12 +78,16 @@ public class SettingActivity extends BaseActivity {
 
     private void showInfo(User user) {
 
+        Firebase mFirebase = new Firebase("https://torrid-heat-4458.firebaseio.com");
+
+
 
         EditText Name = (EditText) findViewById(R.id.NameEditText);
-        EditText Password = (EditText) findViewById(R.id.PasswordEditText);
+
 
         Name.setText(user.getUsername());
-        Password.setText(user.getPassword());
+
+        System.out.println(mFirebase.getAuth().getProvider());
         Birthday.setText(user.getBirthdate());
 
     }
@@ -93,20 +97,41 @@ public class SettingActivity extends BaseActivity {
         EditText Name = (EditText) findViewById(R.id.NameEditText);
         EditText Password = (EditText) findViewById(R.id.PasswordEditText);
         EditText Birthday = (EditText) findViewById(R.id.BirthdayEditText);
-
+        EditText OldPassword = (EditText) findViewById(R.id.OldPasswordEditText);
         String key = session.userkey;
         String name = Name.getText().toString();
-        String password = Password.getText().toString();
         String birthday = Birthday.getText().toString();
+        user = new User(key, email, birthday,  name);
+        mAdapter = new UserAdapter(this);
 
-        User user = new User(key, email, birthday, password, name);
-        UserAdapter mAdapter = new UserAdapter(this);
-        mAdapter.updateItem(user);
+//////////////////////////////////////update password///////////////////
+        if(!Password.getText().toString().isEmpty() || !OldPassword.getText().toString().isEmpty()) {
+            String password = Password.getText().toString();
+            String oldPassword=OldPassword.getText().toString();
+            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com");
+            System.out.println("check 1" + password);
+            System.out.println("check 2" + ref.getAuth().getProviderData().get("email").toString());
+            System.out.println("check 3" + ref.getAuth().getUid());
+            System.out.println("check 4" + ref.getAuth().getProviderData().get("password"));
+            ref.changePassword(ref.getAuth().getProviderData().get("email").toString(), oldPassword, password, new Firebase.ResultHandler() {
+                @Override
+                public void onSuccess() {
+                    mAdapter.updateItem(user);
+                    Toast.makeText(SettingActivity.this, "Information Updated Successfully", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(SettingActivity.this, "Information Updated Successfully", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(FirebaseError firebaseError) {
+                    Toast.makeText(SettingActivity.this, "old password is incorrect", Toast.LENGTH_SHORT).show();
+
+                }
+            });
 
 
-
+        }else
+        {mAdapter.updateItem(user);
+            Toast.makeText(SettingActivity.this, "Information Updated Successfully", Toast.LENGTH_SHORT).show();}
     }
 
     public void editSignatures(View v){

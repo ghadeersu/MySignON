@@ -15,7 +15,6 @@ public class User {
     private BigInteger p;
     private String birthdate;
     boolean infinity;
-    private String password;
     private String username;
     private BigInteger x;
     private BigInteger y;
@@ -93,13 +92,6 @@ public class User {
         this.birthdate = birthdate;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getUsername() {
         return username;
@@ -112,11 +104,10 @@ public class User {
 
 
 
-    public User(String key, String email, String birthdate, String password, String username) {
+    public User(String key, String email, String birthdate, String username) {
         this.key = key;
         Email = email;
         this.birthdate = birthdate;
-        this.password = password;
         this.username = username;
     }
 
