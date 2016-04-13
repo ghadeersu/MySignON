@@ -40,6 +40,7 @@ public class DocumentOwnerList extends ListActivity {
      Button signB;
     Button requestB;
      Button deleteB;
+   static String List_Name;
     private Firebase mFirebase ;// = new Firebase("https://torrid-heat-4458.firebaseio.com/requests/"+session.userkey) ; //= new Firebase("");
 
 
@@ -53,7 +54,7 @@ public class DocumentOwnerList extends ListActivity {
           signB = (Button) findViewById(R.id.docOsignbutton);
           requestB = (Button) findViewById(R.id.docOrequestbutton);
           deleteB = (Button) findViewById(R.id.docOdelete);
-viewB.setEnabled(false);
+        viewB.setEnabled(false);
         signB.setEnabled(false);
         requestB.setEnabled(false);
         deleteB.setEnabled(false);
@@ -89,6 +90,34 @@ viewB.setEnabled(false);
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        switch (List_Name){
+            case "owner":
+                viewB.setEnabled(true);
+                signB.setEnabled(true);
+                requestB.setEnabled(true);
+                deleteB.setEnabled(true);
+                break;
+            case "signed":
+                viewB.setEnabled(true);
+                signB.setEnabled(false);
+                requestB.setEnabled(false);
+                deleteB.setEnabled(false);
+                break;
+            case "pending":
+                viewB.setEnabled(true);
+                signB.setEnabled(true);
+                requestB.setEnabled(false);
+                deleteB.setEnabled(false);
+                break;
+            case "completed":
+                viewB.setEnabled(true);
+                signB.setEnabled(false);
+                requestB.setEnabled(false);
+                deleteB.setEnabled(false);
+                break;
+
+
+        }
         final documents currentdocuments;
         currentdocuments = (documents) getListAdapter().getItem(position);
         session.docKey = currentdocuments.getKey();
@@ -366,6 +395,7 @@ private void deleteDoc() {
 
 
     public void signedclick(View view){
+        List_Name="signed";
         viewB.setEnabled(true);
         signB.setEnabled(false);
         requestB.setEnabled(false);
@@ -543,6 +573,7 @@ private void deleteDoc() {
 
     }
     public void pendingclick(View view){
+        List_Name = "pending";
         viewB.setEnabled(true);
         signB.setEnabled(true);
         requestB.setEnabled(false);
@@ -649,6 +680,7 @@ private void deleteDoc() {
 
     }
     public void completedclick(View view){
+        List_Name="completed";
         viewB.setEnabled(true);
         signB.setEnabled(false);
         requestB.setEnabled(false);
@@ -734,6 +766,7 @@ private void deleteDoc() {
     }
 
     public void mydocsclick(View view){
+        List_Name="owner";
         viewB.setEnabled(true);
         signB.setEnabled(true);
         requestB.setEnabled(true);
