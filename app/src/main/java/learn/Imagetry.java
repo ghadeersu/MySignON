@@ -81,7 +81,6 @@ import java.util.Map;
 public abstract class Imagetry extends Activity {
     boolean ownerFlag;
     String Type;
-    public static int pageSign;
     private static final int STARTPAGE = 1;
     private static final float STARTZOOM = 1.0f;//2.0f for full page on HD
     public static boolean allOrNot;
@@ -118,11 +117,6 @@ public abstract class Imagetry extends Activity {
 
     public int counter=0;
 
-    private PdfReader pdfReader;
-    private String PdfChecksum;
-    private documents mDocument;
-    documentsArrayAdapter documentAdapter;
-    documents documentToUpdate;
     public GraphView mOldGraphView;
     public GraphView mGraphView;
     private String pdffilename;
@@ -136,16 +130,8 @@ public abstract class Imagetry extends Activity {
     public String newP ;
     public byte[] signatureByte;
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /*private View navigationPanel;
-    private Handler closeNavigationHandler;
-    private Thread closeNavigationThread;*/
 
     private boolean touchcheck =false;
-    private PDFPage mPdfPage;
 
     private Thread backgroundThread;
     private Handler uiHandler;
@@ -168,8 +154,6 @@ public abstract class Imagetry extends Activity {
             Log.e(TAG, "restoring Instance");
             mOldGraphView = inst.mGraphView;
             mPage = inst.mPage;
-
-            mPdfPage = inst.mPdfPage;
             mTmpFile = inst.mTmpFile;
             mZoom = inst.mZoom;
             pdffilename = inst.pdffilename;
@@ -191,8 +175,6 @@ public abstract class Imagetry extends Activity {
         setContentView(R.layout.activity_pdfviewer);
         Log.i(TAG, "onCreate");
         Bundle extras = getIntent().getExtras();
-        //   Intent intentE = getIntent();
-        //   String FullPath = extras.getString("FullPath");
         String value;
         if (extras != null) {
             value = extras.getString(Imagetry.EXTRA_PDFFILENAME,"FullPath");
@@ -205,37 +187,11 @@ public abstract class Imagetry extends Activity {
 
         Rlayout = (LinearLayout)findViewById(R.id.Rlayout);
         Firebase.setAndroidContext(this);
-        //setContentView(R.layout.activity_view_document);
-        //progress = ProgressDialog.show(PdfViewerActivity.this, "Loading", "Loading PDF Page");
-        /*closeNavigationHandler = new Handler();
-        closeNavigationThread = new Thread(new Runnable() {
-
-        	public void run() {
-        		navigationPanel.startAnimation(AnimationUtils.loadAnimation(PdfViewerActivity.this,
-        				R.anim.slide_out));
-        		navigationPanel.setVisibility(View.GONE);
-        	}
-        });*/
-
-        /*if (navigationPanel == null) {
-        	navigationPanel = ((ViewStub) findViewById(R.id.stub_navigation)).inflate();
-        	navigationPanel.setVisibility(View.GONE);
-        	ImageButton previous = (ImageButton)navigationPanel.findViewById(R.id.navigation_previous);
-        	previous.setBackgroundDrawable(null);
-        }*/
-
         uiHandler = new Handler();
         restoreInstance();
         if (mOldGraphView != null) {
             mGraphView = new GraphView(this);
-            //mGraphView.fileMillis = mOldGraphView.fileMillis;
             mGraphView.mBi = mOldGraphView.mBi;
-            //mGraphView.mLine1 = mOldGraphView.mLine1;
-            //mGraphView.mLine2 = mOldGraphView.mLine2;
-            //mGraphView.mLine3 = mOldGraphView.mLine3;
-            //mGraphView.mText = mOldGraphView.mText;
-            //mGraphView.pageParseMillis= mOldGraphView.pageParseMillis;
-            //mGraphView.pageRenderMillis= mOldGraphView.pageRenderMillis;
             mOldGraphView = null;
             mGraphView.mImageView.setImageBitmap(mGraphView.mBi);
             mGraphView.updateTexts();
@@ -285,7 +241,8 @@ public abstract class Imagetry extends Activity {
             sign=(Button)findViewById(R.id.pdfVsignbutton);
             signAll=(Button)findViewById(R.id.pdfVsignallbutton);
             sign.setEnabled(true);
-            signAll.setEnabled(true);
+            signAll.setEnabled(false);
+            signAll.setVisibility(Button.GONE);
             // sign.setEnabled(false);
             sign.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -328,8 +285,6 @@ public abstract class Imagetry extends Activity {
         }
     }
 
-
-
     private void setContent(String password) {
         try {
             parsePDF(pdffilename, password);
@@ -364,19 +319,8 @@ public abstract class Imagetry extends Activity {
         backgroundThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    if (true){//mPdfFile != null) {
-                        //progress = ProgressDialog.show(PdfViewerActivity.this, "Loading", "Loading PDF Page");
-
-//			        	File f = new File("/sdcard/andpdf.trace");
-//			        	f.delete();
-//			        	Log.e(TAG, "DEBUG.START");
-//			        	Debug.startMethodTracing("andpdf");
+                    if (true){
                         showPage(page, zoom);
-//			        	Debug.stopMethodTracing();
-//			        	Log.e(TAG, "DEBUG.STOP");
-
-				        /*if (progress != null)
-				        	progress.dismiss();*/
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
@@ -390,21 +334,14 @@ public abstract class Imagetry extends Activity {
 
 
     private void updateImageStatus() {
-//		Log.i(TAG, "updateImageStatus: " +  (System.currentTimeMillis()&0xffff));
         if (backgroundThread == null) {
             mGraphView.updateUi();
-
-			/*if (progress != null)
-				progress.dismiss();*/
             return;
         }
         mGraphView.updateUi();
         mGraphView.postDelayed(new Runnable() {
             public void run() {
                 updateImageStatus();
-
-				/*if (progress != null)
-					progress.dismiss();*/
             }
         }, 1000);
     }
@@ -464,7 +401,6 @@ public abstract class Imagetry extends Activity {
 
 
     private void zoomIn() {
-        if (true){//mPdfFile != null) {
             if (mZoom < MAX_ZOOM) {
                 mZoom *= ZOOM_INCREMENT;
                 if (mZoom > MAX_ZOOM)
@@ -478,11 +414,8 @@ public abstract class Imagetry extends Activity {
                     mGraphView.bZoomIn.setEnabled(true);
 
                 mGraphView.bZoomOut.setEnabled(true);
-
-                //progress = ProgressDialog.show(PdfViewerActivity.this, "Rendering", "Rendering PDF Page");
                 startRenderThread(mPage, mZoom);
             }
-        }
     }
 
     private void zoomOut() {
@@ -598,53 +531,6 @@ public abstract class Imagetry extends Activity {
             mImageView.setPadding(5, 5, 5, 5);
             mImageView.setOnTouchListener(this);
             vl.addView(mImageView);
-		        /*mImageView = (ImageView) findViewById(R.id.pdf_image);
-		        if (mImageView == null) {
-		        	Log.i(TAG, "mImageView is null!!!!!!");
-		        }
-		        setPageBitmap(null);
-		        updateImage();*/
-
-		        /*
-		        navigationPanel = new ViewStub(PdfViewerActivity.this, R.layout.navigation_overlay);
-		        final ImageButton previous = (ImageButton)navigationPanel.findViewById(R.id.navigation_previous);
-		        previous.setBackgroundDrawable(null);
-		        previous.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						prevPage();
-					}
-				});
-
-		        final ImageButton next = (ImageButton)navigationPanel.findViewById(R.id.navigation_next);
-		        next.setBackgroundDrawable(null);
-		        previous.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						nextPage();
-					}
-				});
-
-		        //stub.setLayoutParams(Layou)
-		        vl.addView(navigationPanel);
-
-		        vl.setOnTouchListener(new OnTouchListener() {
-
-					@Override
-					public boolean onTouch(View v, MotionEvent event) {
-						if (navigationPanel.getVisibility() != View.VISIBLE) {
-							navigationPanel.startAnimation(AnimationUtils.loadAnimation(PdfViewerActivity.this,
-									R.anim.slide_in));
-							navigationPanel.setVisibility(View.VISIBLE);
-						}
-
-						return false;
-					}
-				});
-				*/
-
 
             setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 100));
             setBackgroundColor(Color.LTGRAY);
@@ -653,40 +539,7 @@ public abstract class Imagetry extends Activity {
             setVerticalScrollBarEnabled(true);
             setVerticalFadingEdgeEnabled(true);
 
-
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // sign button
-		/*	sign=new Button(context);
-			sign.setLayoutParams(lpWrap1);
-			sign.setText("SIGN");
-			sign.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					merge(signature.getX(), signature.getY());
-				}
-			});
-			vl.addView(sign);*/
-
-            // coordinate
-         /*   Coord=new TextView(context);
-            Coord.setLayoutParams(lpWrap1);
-            Coord.setText("SIGN");
-            vl.addView(Coord);
-            Coordx=new TextView(context);
-            Coordx.setLayoutParams(lpWrap1);
-            Coordx.setText("x");
-            vl.addView(Coordx);*/
-
-            // send button
-		/*	send=new Button(context);
-			send.setLayoutParams(lpWrap1);
-			send.setText("SEND");
-			send.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-
-				}
-			});
-			vl.addView(send);*/
-            LinearLayout.LayoutParams imsize = new LinearLayout.LayoutParams(140,100,1);
+       LinearLayout.LayoutParams imsize = new LinearLayout.LayoutParams(140,100,1);
 
             // sign Image
             signature=new ImageView(context);
@@ -705,51 +558,6 @@ public abstract class Imagetry extends Activity {
 
         }
 
-
-        ////////////////////////////////////////////////////Delete All Comments after solving the problems
-	/*	Bitmap bitmapMaster;
-		Canvas canvasMaster;
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-
-					int action = event.getAction();
-					int x = (int) event.getX();
-					int y = (int) event.getY();
-					switch(action){
-						case MotionEvent.ACTION_DOWN:
-									getProjectedColor((ImageView) v, bitmapMaster, x, y);
-							break;
-						case MotionEvent.ACTION_MOVE:
-									getProjectedColor((ImageView) v, bitmapMaster, x, y);
-							break;
-						case MotionEvent.ACTION_UP:
-									getProjectedColor((ImageView) v, bitmapMaster, x, y);
-							break;
-					}
-    /*
-     * Return 'true' to indicate that the event have been consumed.
-     * If auto-generated 'false', your code can detect ACTION_DOWN only,
-     * cannot detect ACTION_MOVE and ACTION_UP.
-     */
-					/*return true;
-				}*/
-
-		/*
-          * Project position on ImageView to position on Bitmap
-          * return the color on the position
-          */
-		/*private int getProjectedColor(ImageView iv, Bitmap bm, int x, int y){
-			if(x<0 || y<0 || x > iv.getWidth() || y > iv.getHeight()){
-				//outside ImageView
-				return 1;
-			}else{
-				int projectedX = (int)((double)x * ((double)bm.getWidth()/(double)iv.getWidth()));
-				int projectedY = (int)((double)y * ((double)bm.getHeight()/(double)iv.getHeight()));
-
-				return bm.getPixel(projectedX, projectedY);
-			}
-		}*/
-
         float x = 0.0f;
         float y = 0.0f;
         boolean moving=false;
@@ -761,20 +569,7 @@ public abstract class Imagetry extends Activity {
             if(touchcheck)
             {
                 mImageView.getParent().requestDisallowInterceptTouchEvent(true);
-                // Get the values of the matrix
-
-		/*	float[] values = new float[9];
-			Drawable drawable = mImageView.getDrawable();
-			matrix.getValues(values);*/
-
-                //View v = (ImageView) mImageView;
-                //mImageView.getMatrix();
-                // values[2] and values[5] are the x,y coordinates of the top left corner of the drawable image, regardless of the zoom factor.
-                // values[0] and values[4] are the zoom factors for the image's width and height respectively. If you zoom at the same factor, these should both be the same value.
-
-                // event is the touch event for MotionEvent.ACTION_UP
-                //if (mImageView.>)
-                switch (event.getAction()) {
+                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         //		flaoat startX = (int) event.getX();
                         //		startY = (int) event.getY();
@@ -803,100 +598,6 @@ public abstract class Imagetry extends Activity {
             }else {mImageView.getParent().requestDisallowInterceptTouchEvent(false);}
             return true;
         }
-
-/*			float x = 0.0f;
-		float y = 0.0f;
-		boolean moving=false;
-		private Matrix matrix = new Matrix();
-		private Matrix savedMatrix = new Matrix();
-		private static final int ZOOM = 2;
-
-			private static final int DRAG = 1;
-		private static final int NONE=0;
-		private int mode=NONE;
-		// remember some things for zooming
-		private PointF start = new PointF();
-		private PointF mid = new PointF();
-		private float oldDist = 1f;
-		private float d = 0f;
-		private float newRot = 0f;
-		private float[] lastEvent = null;
-	public boolean onTouch(View v, MotionEvent event) {
-			// handle touch events here
-		signature.getParent().requestDisallowInterceptTouchEvent(true);
-			switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					savedMatrix.set(matrix);
-					//start.set(event.getX(), event.getY());
-					mode = DRAG;
-					moving=true;
-					lastEvent = null;
-					break;
-				case MotionEvent.ACTION_POINTER_DOWN:
-					oldDist = spacing(event);
-					if (oldDist > 10f) {
-						savedMatrix.set(matrix);
-						midPoint(mid, event);
-						mode = ZOOM;
-					}
-					lastEvent = new float[4];
-					lastEvent[0] = event.getX(0);
-					lastEvent[1] = event.getX(1);
-					lastEvent[2] = event.getY(0);
-					lastEvent[3] = event.getY(1);
-					break;
-				case MotionEvent.ACTION_UP: moving=false;
-				case MotionEvent.ACTION_POINTER_UP:
-					mode = NONE;
-					lastEvent = null;
-					break;
-				case MotionEvent.ACTION_MOVE:
-					if (mode == DRAG) {
-						if(moving)
-						{
-							x = event.getRawX()-(mPage/(mImageView.getHeight()*mZoom));//- mImageView.getWidth()/2;
-							y = event.getRawY()-(mPage/(mImageView.getWidth()*mZoom));//- mImageView.getHeight()*3/2;
-							signature.setX(x);
-							signature.setY(y);
-							Coord.setText(Float.toString(y));
-							Coordx.setText(Float.toString(x));
-						}}else if (mode == ZOOM) {
-						/*matrix.set(savedMatrix);
-						float dx = event.getX() - start.x;
-						float dy = event.getY() - start.y;
-						matrix.postTranslate(dx, dy);*/
-        //}
-
-/*						float newDist = spacing(event);
-						if (newDist > 10f) {
-							matrix.set(savedMatrix);
-							float scale = (newDist / oldDist);
-							matrix.postScale(scale, scale, mid.x, mid.y);
-						}
-					}
-					break;
-			}
-			mImageView.setImageMatrix(matrix);
-			return true;
-		}
-		/**
-		 * Determine the space between the first two fingers
-		 */
-/*		private float spacing(MotionEvent event) {
-			float x = event.getX(0) - event.getX(1);
-			float y = event.getY(0) - event.getY(1);
-			return (float)Math.sqrt(x * x + y * y);
-		}
-		/**
-		 * Calculate the mid point of the first two fingers
-		 */
-/*		private void midPoint(PointF point, MotionEvent event) {
-			float x = event.getX(0) + event.getX(1);
-			float y = event.getY(0) + event.getY(1);
-			point.set(x / 2, y / 2);
-		}*/
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public void setsignbutton(){
             final File test = new File(signPath);
@@ -1038,22 +739,15 @@ public abstract class Imagetry extends Activity {
             //bPrev.setText("<");
             //bPrev.setWidth(40);
             bPrev.setImageResource(getPreviousPageImageResource());
-            bPrev.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-
-                }
-            });
+            bPrev.setEnabled(false);
             hl.addView(bPrev);
 
             // page button
             mBtPage=new Button(context);
             mBtPage.setLayoutParams(lpChild1);
 
-            mBtPage.setText(mPage + "/ 1");
-            mBtPage.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                }
-            });
+            mBtPage.setText("1" + "/ 1");
+            mBtPage.setEnabled(false);
             hl.addView(mBtPage);
 
             // next button
@@ -1063,11 +757,7 @@ public abstract class Imagetry extends Activity {
             //bNext.setText(">");
             //bNext.setWidth(40);
             bNext.setImageResource(getNextPageImageResource());
-            bNext.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-
-                }
-            });
+            bNext.setEnabled(false);
             hl.addView(bNext);
 
             // addSpace(hl, 20, 20);
@@ -1122,9 +812,6 @@ public abstract class Imagetry extends Activity {
             uiHandler.post(new Runnable() {
                 public void run() {
                     mImageView.setImageBitmap(mBi);
-
-		        	/*if (progress != null)
-		        		progress.dismiss();*/
                 }
             });
         }
@@ -1133,71 +820,41 @@ public abstract class Imagetry extends Activity {
             if (bi != null)
                 mBi = bi;
             else {
-/*
-				mBi = Bitmap.createBitmap(100, 100, Config.RGB_565);
-	            Canvas can = new Canvas(mBi);
-	            can.drawColor(Color.RED);
-
-				Paint paint = new Paint();
-	            paint.setColor(Color.BLUE);
-	            can.drawCircle(50, 50, 50, paint);
-
-	            paint.setStrokeWidth(0);
-	            paint.setColor(Color.BLACK);
-	            can.drawText("Bitmap", 10, 50, paint);*/
 
             }
         }
 
         protected void updateTexts() {
-			/*
-            mLine1 = "PdfViewer: "+mText;
-            float fileTime = fileMillis*0.001f;
-            float pageRenderTime = pageRenderMillis*0.001f;
-            float pageParseTime = pageParseMillis*0.001f;
-            mLine2 = "render page="+format(pageRenderTime,2)+", parse page="+format(pageParseTime,2)+", parse file="+format(fileTime,2);
-    		int maxCmds = PDFPage.getParsedCommands();
-    		int curCmd = PDFPage.getLastRenderedCommand()+1;
-    		mLine3 = "PDF-Commands: "+curCmd+"/"+maxCmds;
-    		//mLine1View.setText(mLine1);
-    		//mLine2View.setText(mLine2);
-    		//mLine3View.setText(mLine3);
-    		 */
+
 
         }
 
-		/*private String format(double value, int num) {
-			NumberFormat nf = NumberFormat.getNumberInstance();
-			nf.setGroupingUsed(false);
-			nf.setMaximumFractionDigits(num);
-			String result = nf.format(value);
-			return result;
-		}*/
     }
 
 
 
     private void showPage(int page, float zoom) throws Exception {
-        //long startTime = System.currentTimeMillis();
-        //long middleTime = startTime;
+
         try {
             // free memory from previous page
             mGraphView.setPageBitmap(null);
             mGraphView.updateImage();
 
-            // Only load the page if it's a different page (i.e. not just changing the zoom level)
-            //int num = mPdfPage.getPageNumber();
-            //int maxNum = mPdfFile.getNumPages();
+        Bitmap f= BitmapFactory.decodeFile(signPath);
+            int w = f.getWidth();
+            int h = f.getHeight();
+            //String path= Environment.getExternalStorageDirectory().getAbsolutePath()+"/signon/download/sign.jpg";
+            Bitmap f2 = Bitmap.createScaledBitmap(f, (int)(w* zoom), (int)(h* zoom), false);
+         //  Bitmap f2= Bitmap.createBitmap(f,w,h,(int)(w* zoom), (int)(h* zoom));
 
-            //String pageInfo= new File(pdffilename).getName() + " - " + num +"/"+maxNum+ ": " + width + "x" + height;
-            //mGraphView.showText(pageInfo);
-            //Log.i(TAG, pageInfo);
+         //  Bitmap f2= f.createBitmap((int)(w* zoom), (int)(h* zoom), f.getConfig());
+        //    f.createBitmap((int)(f.getHeight() * zoom),(int)(f.getWidth()*zoom), Bitmap.Config.RGB_565);
 
-            //middleTime = System.currentTimeMillis();
-            Bitmap f=BitmapFactory.decodeFile(signPath);
+        //   f.setHeight((int)(h*zoom));
+          //  f.setWidth((int)(w*zoom));
 
-        //    Bitmap bi = mPdfPage.getImage((int)(width*zoom), (int)(height*zoom), clip, true, true);
-            mGraphView.setPageBitmap(f);
+         // Bitmap bi = mPdfPage.getImage((int)(width*zoom), (int)(height*zoom), clip, true, true);
+            mGraphView.setPageBitmap(f2);
             mGraphView.updateImage();
             //getImageReasource();
             if (progress != null)
@@ -1206,9 +863,6 @@ public abstract class Imagetry extends Activity {
             Log.e(TAG, e.getMessage(), e);
             mGraphView.showText("Exception: " + e.getMessage());
         }
-        //long stopTime = System.currentTimeMillis();
-        //mGraphView.pageParseMillis = middleTime-startTime;
-        //mGraphView.pageRenderMillis = stopTime-middleTime;
     }
 
     private void parsePDF(String filename, String password) throws PDFAuthenticationFailureException {
@@ -1226,9 +880,7 @@ public abstract class Imagetry extends Activity {
             e.printStackTrace();
             mGraphView.showText("Exception: " + e.getMessage());
         }
-        //long stopTime = System.currentTimeMillis();
-        //mGraphView.fileMillis = stopTime-startTime;
-    }
+     }
 
 
     /**
@@ -1240,20 +892,6 @@ public abstract class Imagetry extends Activity {
      *
      * @throws IOException
      */
-
-    /*private byte[] readBytes(File srcFile) throws IOException {
-    	long fileLength = srcFile.length();
-    	int len = (int)fileLength;
-    	byte[] result = new byte[len];
-    	FileInputStream fis = new FileInputStream(srcFile);
-    	int pos = 0;
-		int cnt = fis.read(result, pos, len-pos);
-    	while (cnt > 0) {
-    		pos += cnt;
-    		cnt = fis.read(result, pos, len-pos);
-    	}
-		return result;
-	}*/
 
     private String storeUriContentToFile(Uri uri) {
         String result = null;
@@ -1298,12 +936,6 @@ public abstract class Imagetry extends Activity {
         }
     }
 
-    /*private void postHideNavigation() {
-    	// Start a time to hide the panel after 3 seconds
-    	closeNavigationHandler.removeCallbacks(closeNavigationThread);
-    	closeNavigationHandler.postDelayed(closeNavigationThread, 3000);
-    }*/
-
     public abstract int getPreviousPageImageResource(); // R.drawable.left_arrow
     public abstract int getNextPageImageResource(); // R.drawable.right_arrow
     public abstract int getZoomInImageResource(); // R.drawable.zoom_int
@@ -1339,16 +971,10 @@ try {
     FileOutputStream fos = new FileOutputStream(newP);
     result.compress(Bitmap.CompressFormat.JPEG, 90, fos);
     fos.close();
-    //String url = MediaStore.Images.Media.insertImage(getContentResolver(), result, , null);
-   // System.out.println(" path url: " + fos.g);
 }
 catch(Exception o){System.out.println("Image error"+o.getMessage());}
-
-
-
     }
     public void displayAlertDialog() {
-//////////
         AlertDialog.Builder alert = new AlertDialog.Builder(Imagetry.this);
         alert.setTitle("Signing");
         alert.setMessage("Do you want to sign on all pages?");
@@ -1410,17 +1036,9 @@ catch(Exception o){System.out.println("Image error"+o.getMessage());}
         changeImageView();
 
         super.onResume();
-
-
-
     }
 
     public void getChecksum(){
-
-
-
-
-
     }
     public void changeChecksum(){
 
@@ -1492,7 +1110,5 @@ catch(Exception o){System.out.println("Image error"+o.getMessage());}
         reqRef.push().setValue(newRequest);
 
     }
-
-
 }
 

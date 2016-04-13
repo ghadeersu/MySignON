@@ -27,6 +27,7 @@
         <activity android:name=".SettingActivity" />
         <activity android:name=".DocumentOwnerList" />
         <activity android:name=".MyPdfViewerActivity" />
+        <activity android:name=".MyImageViewerActivity" />
         <activity android:name=".SignatureSelectActivity" />
         <activity
             android:name=".alertDialog"
