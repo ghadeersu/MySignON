@@ -457,12 +457,12 @@ public abstract class Imagetry extends Activity {
 
      private void  shareDocument(){
         Intent intent=new Intent(Intent.ACTION_SEND);
-        intent.setType("application/pdf");
+        intent.setType("image/*");
         Uri uri=Uri.parse("file://"+signPath);
         intent.putExtra(Intent.EXTRA_STREAM,uri);
         try{
             startActivity(Intent.createChooser(intent,"Share File"));
-        }catch(Exception e){Toast.makeText(Imagetry.this,"Error sending the file",Toast.LENGTH_LONG);}
+        }catch(Exception e){Toast.makeText(Imagetry.this,"Error sending the file",Toast.LENGTH_LONG).show();}
 
 
 
@@ -964,10 +964,10 @@ try {
     System.out.println("step 2" + result.getByteCount());
     Canvas canvas = new Canvas(result);
 
-    canvas.drawBitmap(imageToSign, 0, 0, null);
+    canvas.drawBitmap(imageToSign,0, 0, null);
     //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     Bitmap waterMark = BitmapFactory.decodeByteArray(signatureByte, 0, signatureByte.length);
-    canvas.drawBitmap(waterMark, x, y, null);
+    canvas.drawBitmap(waterMark, x-mGraphView.mImageView.getX(), y-mGraphView.mImageView.getY(), null);
     FileOutputStream fos = new FileOutputStream(newP);
     result.compress(Bitmap.CompressFormat.JPEG, 90, fos);
     fos.close();
