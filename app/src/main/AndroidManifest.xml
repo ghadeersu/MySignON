@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="learn">
+    package="learn" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -11,11 +11,11 @@
         android:icon="@drawable/logo"
         android:label="SignOn"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".IntroActivity"
             android:label="@string/title_activity_intro"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +29,7 @@
         <activity android:name=".MyPdfViewerActivity" />
         <activity android:name=".MyImageViewerActivity" />
         <activity android:name=".SignatureSelectActivity" />
-        <activity android:name=".rendertry"/>
+        <activity android:name=".rendertry" />
         <activity
             android:name=".alertDialog"
             android:theme="@style/mytheme" />
@@ -39,7 +39,7 @@
         <activity android:name=".SignAndVerifyActivity" />
         <activity android:name=".GetSignatureActivity" />
         <activity android:name=".SignatureActivity" />
-        <activity android:name=".ForgotPasswordActivity">
+        <activity android:name=".ForgotPasswordActivity" >
         </activity>
     </application>
 

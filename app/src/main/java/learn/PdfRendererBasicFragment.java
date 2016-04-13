@@ -25,6 +25,7 @@ package learn;
         import android.graphics.Bitmap;
         import android.graphics.pdf.PdfRenderer;
         import android.os.Bundle;
+        import android.os.Environment;
         import android.os.ParcelFileDescriptor;
         import android.view.LayoutInflater;
         import android.view.View;
@@ -33,6 +34,9 @@ package learn;
         import android.widget.ImageView;
         import android.widget.Toast;
 
+        import java.io.File;
+        import java.io.FileDescriptor;
+        import java.io.FileInputStream;
         import java.io.IOException;
 
 /**
@@ -139,9 +143,13 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
      */
     private void openRenderer(Context context) throws IOException {
         // In this sample, we read a PDF from the assets directory.
-        mFileDescriptor = context.getAssets().openFd("sample.pdf").getParcelFileDescriptor();
         // This is the PdfRenderer we use to render the PDF.
+        File file=new File( Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/download/POSTER SIGNON.pdf");
+        System.out.println(file.getAbsoluteFile());
+        mFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+        System.out.println(mFileDescriptor.toString());
         mPdfRenderer = new PdfRenderer(mFileDescriptor);
+
     }
 
     /**

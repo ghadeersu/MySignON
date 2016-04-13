@@ -128,7 +128,7 @@ public abstract class BaseActivity extends AppCompatActivity
             // Use home/back button instead
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat
-                    .getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha));
+                    .getDrawable(this, R.drawable.ic_menu_send));
         }
 
 
