@@ -59,5 +59,6 @@
     <string name="settingEditSignature">Edit Signature</string>
     <string name="saveChangesButton">Save Changes</string>
     <string name="setBirthdate">set Date</string>
+    <string name="forgot_password">Forgot Password</string>
 
 </resources>

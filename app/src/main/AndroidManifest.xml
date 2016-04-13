@@ -38,7 +38,8 @@
         <activity android:name=".SignAndVerifyActivity" />
         <activity android:name=".GetSignatureActivity" />
         <activity android:name=".SignatureActivity" />
-
+        <activity android:name=".ForgotPasswordActivity">
+        </activity>
     </application>
 
 </manifest>
