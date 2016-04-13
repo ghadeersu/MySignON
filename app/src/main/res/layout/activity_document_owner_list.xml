@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="  my Document"
-            android:id="@+id/textView4"
+            android:id="@+id/homeActivityTitleTextView"
             android:layout_alignTop="@+id/textView6"
             android:layout_toLeftOf="@+id/textView6"
             android:layout_toStartOf="@+id/textView6" />
@@ -78,9 +78,9 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="   completed"
             android:id="@+id/textView3"
-            android:layout_alignTop="@+id/textView4"
-            android:layout_toLeftOf="@+id/textView4"
-            android:layout_toStartOf="@+id/textView4" />
+            android:layout_alignTop="@+id/homeActivityTitleTextView"
+            android:layout_toLeftOf="@+id/homeActivityTitleTextView"
+            android:layout_toStartOf="@+id/homeActivityTitleTextView" />
 
         <ImageButton
             android:layout_width="85dp"

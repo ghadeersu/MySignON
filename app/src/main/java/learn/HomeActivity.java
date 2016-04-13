@@ -58,10 +58,6 @@ public class HomeActivity extends BaseActivity {
     int numberofRequests;
     ImageView imageView;
     private static final int FILE_SELECT_CODE = 0;
-    public File fileToUpload;
-    public String pathToUpload;
-    boolean exist=false;
-
     View rootview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,23 +77,18 @@ public class HomeActivity extends BaseActivity {
         session.homecounter=1;
             test();
         }
-
-       // imageView = (ImageView) findViewById(R.id.imageButton);
         signatureImageView=(ImageView)findViewById(R.id.homeSignatureImageView);
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+session.userkey+"/username/");
         Query queryRef = ref.orderByValue();
-
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 TextView usernametext = (TextView)findViewById(R.id.textView15);
-
                 usernametext.setText((String) dataSnapshot.getValue());
                 System.out.println(session.userEmail);
                 String x=session.userEmail;
                 Emailtext = (TextView)findViewById(R.id.textView16);
                 Emailtext.setText(x);
-               // personalImageSearch();
             }
 
             @Override
@@ -111,7 +102,7 @@ public class HomeActivity extends BaseActivity {
 
     }
     public void uploadDocument(View v){
-///////////////check permission////////////////
+    ///////////////check permission////////////////
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
@@ -249,12 +240,8 @@ public class HomeActivity extends BaseActivity {
 
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-
-            //////////////////upload code/////////////////////////////////////////////////////
-
+                    //////////////////upload code/////////////////////////////////////////////////////
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-
                     intent.setType("*/*");
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
 
@@ -269,13 +256,6 @@ public class HomeActivity extends BaseActivity {
                         Toast.makeText(this, "Please install a File Manager.",
                                 Toast.LENGTH_SHORT).show();
                     }
-
-
-
-
-
-
-
                 } else {
 
                     Toast.makeText(HomeActivity.this, "Permission deny to read your External storage", Toast.LENGTH_SHORT).show();
@@ -288,126 +268,10 @@ public class HomeActivity extends BaseActivity {
     }
 
 
-private void callDelete(){
-
-}
-    public void testOn2(View v) {
+    public void createSignatureButton(View v) {
         startActivity(new Intent(HomeActivity.this, CaptureSignatureActivity.class));
-        //startActivity(new Intent(HomeActivity.this, DocumentOwnerList.class));
-
-
-
-
     }
 
-    public void testOn3(View v){
-        //  startActivity(new Intent(HomeActivity.this, SettingActivity.class));
-     ///   startActivity(new Intent(HomeActivity.this, SettingActivity.class));
-
-    }
-
-    public void testOn4(View v){
-      //  startActivity(new Intent(HomeActivity.this, Request_Signture.class));
-
-
-    }
-
-    public void imageViewfromURL (String imageUrl){
-        final String URL = imageUrl;
-        /** Called when the activity is first created. */
-
-
-        // Create an object for subclass of AsyncTask
-        GetXMLTask task = new GetXMLTask();
-        // Execute the task
-        task.execute(new String[]{URL});
-    }
-
-    private class GetXMLTask extends AsyncTask<String, Void, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            Bitmap map = null;
-            for (String url : urls) {
-                map = downloadImage(url);
-            }
-            return map;
-        }
-
-        // Sets the Bitmap returned by doInBackground
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
-        }
-
-        // Creates Bitmap from InputStream and returns it
-        private Bitmap downloadImage(String url) {
-            Bitmap bitmap = null;
-            InputStream stream = null;
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inSampleSize = 1;
-
-            try {
-                stream = getHttpConnection(url);
-                bitmap = BitmapFactory.
-                        decodeStream(stream, null, bmOptions);
-                stream.close();
-            } catch (IOException e1) {
-                Toast toast = Toast.makeText(HomeActivity.this, "ERROR", Toast.LENGTH_LONG);
-                toast.show();
-
-
-            }
-            return bitmap;
-        }
-
-        // Makes HttpURLConnection and returns InputStream
-        private InputStream getHttpConnection(String urlString)
-                throws IOException {
-            InputStream stream = null;
-            URL url = new URL(urlString);
-            URLConnection connection = url.openConnection();
-
-            try {
-                HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                httpConnection.setRequestMethod("GET");
-                httpConnection.connect();
-
-                if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    stream = httpConnection.getInputStream();
-                }
-            } catch (Exception ex) {
-                Toast toast = Toast.makeText(HomeActivity.this, "ERROR", Toast.LENGTH_LONG);
-                toast.show();
-            }
-            return stream;
-        }
-    }
-
-    public void personalImageSearch(){
-
-        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+session.userkey+"/imageURL/");
-        Query queryRef = ref.orderByValue();
-
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-/*
-            if(!(dataSnapshot.getValue().toString()=="0"))
-                imageViewfromURL((String)dataSnapshot.getValue());
-
-*/
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        };
-
-        queryRef.addValueEventListener(listener);
-
-
-    }
     @Override
     public void onBackPressed(){
         new AlertDialog.Builder(this).setTitle("Log out").setMessage("Are you sure you want to log out?").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -472,25 +336,12 @@ private void callDelete(){
         queryRef2.addValueEventListener(listener2);
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_activity1, menu);
-        return true;
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 

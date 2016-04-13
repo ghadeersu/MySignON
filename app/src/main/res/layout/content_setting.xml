@@ -28,8 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Name :"
-                android:id="@+id/textView3"
+                android:text="@string/nameTextView"
+                android:id="@+id/NameTextView"
                 android:layout_marginLeft="10dp" />
 
             <EditText
@@ -38,14 +38,15 @@
                 android:id="@+id/NameEditText"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Old Password :"
-                android:id="@+id/textView7"
+                android:text="@string/settingOflPasswordTextView"
+                android:id="@+id/settingOldPasswordTextView"
                 android:layout_marginLeft="10dp" />
 
             <EditText
@@ -55,14 +56,15 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:password="true"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Password :"
-                android:id="@+id/textView5"
+                android:text="@string/settingPasswordTextView"
+                android:id="@+id/settingPasswordTextView"
                 android:layout_marginLeft="10dp" />
 
             <EditText
@@ -72,21 +74,22 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:password="true"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:inputType="text" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Birthday :"
-                android:id="@+id/textView18"
+                android:text="@string/birthTextView"
+                android:id="@+id/birthTextView"
                 android:layout_marginLeft="10dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="49dp"
+                android:layout_height="0dp"
                 android:layout_weight="0.06">
             <EditText
                 android:layout_width="210dp"
@@ -97,20 +100,21 @@
                 android:singleLine="true"
                 android:editable="false"
                 android:focusable="false"
-                android:focusableInTouchMode="false"/>
+                android:focusableInTouchMode="false"
+                android:inputType="text" />
 
             <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="set Date"
-            android:id="@+id/button7"
+            android:text="@string/setBirthdate"
+            android:id="@+id/setBirthdate"
             android:onClick="setDate"/>
                 </LinearLayout>
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edit Signature"
+                android:text="@string/settingEditSignature"
                 android:id="@+id/settingEditSignature"
                 android:onClick="editSignatures"
                 android:layout_gravity="right"
@@ -120,11 +124,9 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save Changes"
+                android:text="@string/saveChangesButton"
                 android:id="@+id/SaveChangesButton"
-                android:layout_row="1"
                 android:layout_marginLeft="10dp"
-                android:layout_column="2"
                 android:layout_marginRight="10dp"
                 android:onClick="SaveChangesOnClick" />
 

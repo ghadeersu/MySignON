@@ -3,7 +3,7 @@ package learn;
 /**
  * Created by daniah on 2/29/2016.
  */
-////////////////////////////// wherever you want to upload use new HDWFTP_Upload().execute("/sdcard/signon/word.pdf");
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -67,9 +67,6 @@ String originalOwner;
 
                 }
             });
-            //Query q =ref.orderByChild("documentOwnerID");
-           // q.
-
             FTPClient ftpClient = new FTPClient();
             int reply;
             try {
@@ -89,7 +86,7 @@ String originalOwner;
                     System.out.println("Connection Failed");
                     ftpClient.disconnect();
                 }
-///////////////create directory
+                //////////////create directory////////////////////////////////
 
                     ftpClient.changeWorkingDirectory("/htdocs/" + originalOwner + "/");
                 System.out.println( "/htdocs/" + originalOwner + "/");
@@ -99,39 +96,26 @@ String originalOwner;
                 if (ftpClient.getReplyString().contains("250")) {
                     ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
                     messagedigest= SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
-//message digest changed
                     //////////////////encrypt////////////////////////////
-try {
-    f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
-    ekey = AESencryptionSecond.getencryptioKey();
-    key = ekey.getBytes(Charset.forName("ASCII"));
-    AESencryptionSecond.encrypt(key, f, f);
-    System.out.println("enc suc");
-    System.out.println(ekey);
-}
-catch (CryptoException ex) {
-    System.out.println(ex.getMessage());
-    ex.printStackTrace();
-}
-
-
-
-
-
-
+                    try {
+                        f = new File(FULL_PATH_TO_LOCAL_FILE[0]);
+                        ekey = AESencryptionSecond.getencryptioKey();
+                        key = ekey.getBytes(Charset.forName("ASCII"));
+                        AESencryptionSecond.encrypt(key, f, f);
+                        System.out.println("enc suc");
+                        System.out.println(ekey);
+                    }
+                    catch (CryptoException ex) {
+                        System.out.println(ex.getMessage());
+                        ex.printStackTrace();
+                    }
                     BufferedInputStream buffIn = null;
                     System.out.println("Created an input stream buffer");
                     System.out.println(FULL_PATH_TO_LOCAL_FILE.toString());
-
                     buffIn = new BufferedInputStream(new FileInputStream(FULL_PATH_TO_LOCAL_FILE[0]));
                     ftpClient.enterLocalPassiveMode();
-
                     System.out.println("Entered binary and passive modes");
-
-
-
                     boolean result = ftpClient.storeFile(Picture_File_name, buffIn);
-
                     if (result) {
                         System.out.println("Success");
                         System.out.println("name "+Picture_File_name);
@@ -141,21 +125,15 @@ catch (CryptoException ex) {
                         System.out.println("ftp.byethost4.com/htdocs/"+originalOwner+"/"+Picture_File_name+"/");
                         System.out.println(messagedigest);
                         System.out.println(ekey);
-                        ///temp
                         document=new documents(session.docKey,messagedigest,ekey,documentURL,documentOwnerID,documentName);
                         System.out.println(document.getKey());
                         documentAdapter=new documentsArrayAdapter(context){
                             public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName){}
-
                         };
                         documentAdapter.updateItem(document);
                         returning=1;
                     }
-
-
                     System.out.println("File saved");
-
-
                     ftpClient.logout();
                     ftpClient.disconnect();
                     try {

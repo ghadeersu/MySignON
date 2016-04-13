@@ -95,28 +95,13 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                     System.out.println("Connection Failed");
                     ftpClient.disconnect();
                 }
-                //ftpPrintFilesList("/"+session.userkey+"/");
-///////////////create directory
+                ///////////////create directory/////////////////////////////////
                 if(!(ftpClient.changeWorkingDirectory("/htdocs/"+session.userkey+"/"))){
                     ftpClient.makeDirectory("/htdocs/"+session.userkey+"/");
                     ftpClient.changeWorkingDirectory("/htdocs/" + session.userkey + "/");
                 }
-                // ftpClient.changeToParentDirectory();
-//                int length=ftpClient.listNames().length;
-                //      System.out.println("length"+length);
-
-                //         String[] names=ftpClient.listNames();
-
                 String Picture_File_name = new File(FULL_PATH_TO_LOCAL_FILE[0]).getName();
-                // boolean exist=false;
-             /*   for (String name : names) {
-                    if (name.equals(Picture_File_name))
-                        exist = true;
-                }*/
                 boolean exist=false;
-
-                //exist=checkName(new File(FULL_PATH_TO_LOCAL_FILE[0]));
-
                 if (ftpClient.getReplyString().contains("250")) {
                     ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
                     messagedigest=SHA512.calculateSHA512(new File(FULL_PATH_TO_LOCAL_FILE[0]));
@@ -168,8 +153,6 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
                             documentName = Picture_File_name;
                             documentOwnerID = session.userkey;
                             documentURL = "ftp.byethost4.com/htdocs/" + session.userkey + "/" + Picture_File_name + "/";
-
-                            ///temp
                             document = new documents(null, messagedigest, ekey, documentURL, documentOwnerID, documentName);
                             documentAdapter = new documentsArrayAdapter(context) {
                                 public void onChildAdded(DataSnapshot dataSnapshot, String previeousChildName) {
@@ -253,26 +236,6 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
         context.startActivity(alert);
     }
 
-    /* private void createHandler() {
-            Thread thread = new Thread() {
-                public void run() {
-                    Looper.prepare();
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context,"cant",Toast.LENGTH_LONG).show();
-                            handler.removeCallbacks(this);
-                            Looper.myLooper().quit();
-                        }
-                    }, 2000);
-
-                    Looper.loop();
-                }
-            };
-            thread.start();
-        }*/
    private long getFileSize(FTPClient ftp, String filePath) throws Exception {
        long fileSize = 0;
        FTPFile[] files = ftp.listFiles(filePath);

@@ -39,5 +39,25 @@
     <string name="sync">Sync</string>
     <string name="sync_long">Sync with backend</string>
     <string name="add_long">Add a signature</string>
+    <string name="alertDialogButton">OK</string>
+    <string name="signatureListContentDescriber">signature image</string>
+    <string name="settingOflPasswordTextView">Old Password :</string>
+    <string name="introActivityLoginButton">logIn</string>
+    <string name="introActivityRegisterButton">register</string>
+    <string name="introActivityLogoTextView">SignOn</string>
+    <string name="introActivityImageView">backgroundimage</string>
+    <string name="introEmailEditText">Email</string>
+    <string name="introPasswordEditText">Password</string>
+    <string name="homeActivityTitleTextView">Home</string>
+    <string name="homeUploadButton">Upload Document</string>
+    <string name="homeCreateSignatureButton">Create signature</string>
+    <string name="homeActivityPendingImageView">pending document</string>
+    <string name="pendingTextViewHome">Pending Documents:</string>
+    <string name="nameTextView">Name :</string>
+    <string name="settingPasswordTextView">Password :</string>
+    <string name="birthTextView">Birthday :</string>
+    <string name="settingEditSignature">Edit Signature</string>
+    <string name="saveChangesButton">Save Changes</string>
+    <string name="setBirthdate">set Date</string>
 
 </resources>

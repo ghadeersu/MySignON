@@ -62,7 +62,6 @@ public class IntroActivity extends FragmentActivity {
 
             } else {
                 System.out.println("User is logged out");
-                ///////////////test//////////////
                 setContentView(R.layout.activity_intro);
                 Button introActivityLoginButton = (Button) findViewById(R.id.introActivityLoginButton);
                 Button introActivityRegisterButton = (Button) findViewById(R.id.introActivityRegisterButton);
@@ -140,76 +139,6 @@ public class IntroActivity extends FragmentActivity {
 
 
             }
-
-
-
-
-        /*
-        if(SaveSharedPreference.getUserName(this).length() == 0)
-        {
-            // stay in Login Activity
-
-
-
-
-            setContentView(R.layout.activity_intro);
-
-
-            Button introActivityLoginButton=(Button)findViewById(R.id.introActivityLoginButton);
-            Button introActivityRegisterButton=(Button) findViewById(R.id.introActivityRegisterButton);
-
-            final EditText email, password;
-            email = (EditText) findViewById(R.id.introEmailEditText);
-            password = (EditText) findViewById(R.id.introPasswordEditText);
-
-            introActivityLoginButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        public void onClick(View v) {
-
-                            searchforuser(email.getText().toString(), password.getText().toString());
-
-                        }
-
-                    }
-
-            );
-
-            introActivityRegisterButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(IntroActivity.this, learn.RigesterActivity.class));
-
-                        }
-
-                    }
-
-            );
-
-
-        }
-        else
-        {
-            // Stay at the current activity.
-            homeintent.putExtra("key", SaveSharedPreference.getUserName(this));
-            homeintent.putExtra("Email",SaveSharedPreference.getEmail(this));
-            startActivity(homeintent);
-
-        }*/
-
-    }
-    public void storeSignatureButtonClick(View v){
-        startActivity(new Intent(IntroActivity.this, learn.hash.class));
-
-    }
-    public void sha512ButtonClick(View v){
-        startActivity(new Intent(IntroActivity.this, learn.SignatureSelectActivity.class));
-
-
-    }
-    public void picButtonClick(View v){
-
-
     }
 
     public void searchforuser(final String email, final String password) {

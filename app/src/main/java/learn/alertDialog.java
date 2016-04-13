@@ -1,13 +1,13 @@
 package learn;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-
-import learn.R;
-
+/**
+ * Created by Daniyah.
+ */
+////////////////////this class is created to allow alert dialog inside class that is not an activity///////////////////////////////////////////
 
 public class alertDialog extends AppCompatActivity {
     private TextView message;

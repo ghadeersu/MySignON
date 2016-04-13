@@ -24,7 +24,6 @@ import java.util.Map;
 
 public class RigesterActivity extends AppCompatActivity {
 
-    private DatePicker datePicker;
     private Calendar calendar;
     private int year, month, day;
     private String birthdate;
@@ -149,7 +148,6 @@ public class RigesterActivity extends AppCompatActivity {
         BigInteger PrK = BigInteger.valueOf(Long.parseLong(timeStamp));
         CurrentUser.CreateECDSAobject(PrK);
 
-        ///////////////test/////////////
         Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com");
         ref.createUser(CurrentUser.getEmail(), etPassword.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override

@@ -67,12 +67,8 @@ public class CaptureSignatureActivity extends AppCompatActivity {
     LinearLayout mContent;
     signature mSignature;
     Button mClear, mGetSign, mCancel;
-    public static String tempDir;
-    public int count = 1;
-    //public String current = null;
     private Bitmap mBitmap;
     View mView;
-    File mypath;
     //private String uniqueId;
     public EditText SignatureName;
 
@@ -82,16 +78,7 @@ public class CaptureSignatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture_signature);
         SignatureName=(EditText)findViewById(R.id.captureSignatureNameEditText);
-        //tempDir = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.external_dir) + "/";
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir(getResources().getString(R.string.external_dir), Context.MODE_PRIVATE);
-
-        // prepareDirectory();
-        //uniqueId = getTodaysDate() + "_" + getCurrentTime() + "_" + Math.random();
-        //current = uniqueId + ".png";
-        //mypath= new File(directory,current);
-
-
         mContent = (LinearLayout) findViewById(R.id.linearLayout);
         mSignature = new signature(this, null);
         mSignature.setBackgroundColor(Color.WHITE);
@@ -175,44 +162,6 @@ public class CaptureSignatureActivity extends AppCompatActivity {
 
     }
 
-/*
-    private boolean prepareDirectory()
-    {
-        try
-        {
-            if (makedirs())
-            {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            Toast.makeText(this, "Could not initiate File System.. Is Sdcard mounted properly?", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
-*/
-   /* private boolean makedirs()
-    {
-        File tempdir = new File(tempDir);
-        if (!tempdir.exists())
-            tempdir.mkdirs();
-
-        if (tempdir.isDirectory())
-        {
-            File[] files = tempdir.listFiles();
-            for (File file : files)
-            {
-                if (!file.delete())
-                {
-                    System.out.println("Failed to delete " + file);
-                }
-            }
-        }
-        return (tempdir.isDirectory());
-    }*/
 
     public class signature extends View
     {
@@ -248,25 +197,14 @@ public class CaptureSignatureActivity extends AppCompatActivity {
             try
             {
                 ByteArrayOutputStream mFileOutStream = new ByteArrayOutputStream();
-
                 v.draw(canvas);
-                //mBitmap.createScaledBitmap(mBitmap, 50, 50,false);
-
                 Bitmap resized = Bitmap.createScaledBitmap(mBitmap, (int)(mBitmap.getWidth()*0.15), (int)(mBitmap.getHeight()*0.15), true);
-
-                //resized.compress(Bitmap.CompressFormat.PNG, 90, mFileOutStream);
-                //mFileOutStream.flush();
-                //mFileOutStream.close();
                 String url = MediaStore.Images.Media.insertImage(getContentResolver(), resized, "title", null);
                 Log.v("log_tag","url: " + url);
-                //In case you want to delete the file
-                //boolean deleted = mypath.delete();
-                //Log.v("log_tag","deleted: " + mypath.toString() + deleted);
-                //If you want to convert the image to string use base64 converter
+
                 ////////////////////////////////store to firebase/////////////////////////////////////////////
                 String tSignatureName=SignatureName.getText().toString();
                 String tSignatureBase64=BitMapToString(resized);
-                ///temp
                 String tSignerID= session.userkey;
                 SignatureArrayAdapter mAdapter = new SignatureArrayAdapter(CaptureSignatureActivity.this);
                learn.signature CurrentSignature = new learn.signature(null, tSignatureBase64, tSignatureName,tSignerID);

@@ -30,8 +30,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Home"
-            android:id="@+id/textView4"
+            android:text="@string/homeActivityTitleTextView"
+            android:id="@+id/homeActivityTitleTextView"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.31"
             android:textSize="30dp"
@@ -104,9 +104,8 @@
         <Button
             android:layout_width="148dp"
             android:layout_height="wrap_content"
-            android:text="  Upload Document  "
+            android:text="@string/homeUploadButton"
             android:id="@+id/homeUploadButton"
-            android:layout_column="38"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="60dp"
             android:background="#7724cc"
@@ -118,15 +117,15 @@
         <Button
             android:layout_width="148dp"
             android:layout_height="wrap_content"
-            android:text="    Create signature    "
-            android:id="@+id/button8"
-            android:layout_column="38"
+            android:text="@string/homeCreateSignatureButton"
+            android:id="@+id/homeCreateSignatureButton"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="center_horizontal"
             android:background="#7724cc"
             android:textColor="#ffffff"
-            android:onClick="testOn2"/>
+            android:onClick="createSignatureButton"
+            android:longClickable="false" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -141,15 +140,16 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageView2"
+                android:id="@+id/homeActivityPendingImageView"
                 android:background="@drawable/documentpend"
                 android:layout_gravity="center"
-                android:layout_marginLeft="40dp" />
+                android:layout_marginLeft="40dp"
+                android:contentDescription="@string/homeActivityPendingImageView" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pending Documents: "
+                android:text="@string/pendingTextViewHome"
                 android:id="@+id/pendingTextViewHome"
                 android:textSize="20sp"
                 android:layout_gravity="center"

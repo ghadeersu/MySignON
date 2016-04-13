@@ -34,7 +34,6 @@
         <activity android:name=".CaptureSignatureActivity" />
         <activity android:name=".Request_Signture" />
         <activity android:name=".RigesterActivity" />
-        <activity android:name=".hash" />
         <activity android:name=".SignAndVerifyActivity" />
         <activity android:name=".GetSignatureActivity" />
         <activity android:name=".SignatureActivity" />

@@ -26,7 +26,6 @@ import java.util.Calendar;
 public class SettingActivity extends BaseActivity {
 
     private String email;
-    private String birthday;
     private EditText Birthday;
     private int year, month, day;
     private Calendar calendar;
@@ -103,8 +102,7 @@ public class SettingActivity extends BaseActivity {
         String birthday = Birthday.getText().toString();
         user = new User(key, email, birthday,  name);
         mAdapter = new UserAdapter(this);
-
-//////////////////////////////////////update password///////////////////
+        //////////////////////////////////////update password///////////////////
         if(!Password.getText().toString().isEmpty() || !OldPassword.getText().toString().isEmpty()) {
             String password = Password.getText().toString();
             String oldPassword=OldPassword.getText().toString();
