@@ -29,6 +29,7 @@
         <activity android:name=".MyPdfViewerActivity" />
         <activity android:name=".MyImageViewerActivity" />
         <activity android:name=".SignatureSelectActivity" />
+        <activity android:name=".rendertry"/>
         <activity
             android:name=".alertDialog"
             android:theme="@style/mytheme" />
