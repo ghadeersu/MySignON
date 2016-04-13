@@ -132,11 +132,10 @@ public class Request_Signture extends ListActivity {
 
     }
 
-    @Override
+/*    @Override
     public void onBackPressed() {
         Intent intent = new Intent(Request_Signture.this, DocumentOwnerList.class);
         startActivity(intent);
-        finish();
 
-    }
+    }*/
 }
