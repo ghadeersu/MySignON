@@ -165,7 +165,7 @@ String originalOwner;
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progress = ProgressDialog.show(context, "Uploading", "Uploading Document ", true, true);
+        progress = ProgressDialog.show(context, "Uploading", "Uploading Document ", true, false);
     }
     @Override
     protected void onPostExecute(Long aLong) {
