@@ -69,7 +69,7 @@ public class CaptureSignatureActivity extends AppCompatActivity {
     Button mClear, mGetSign, mCancel;
     private Bitmap mBitmap;
     View mView;
-    //private String uniqueId;
+    private String uniqueId;
     public EditText SignatureName;
 
     @Override
@@ -81,7 +81,8 @@ public class CaptureSignatureActivity extends AppCompatActivity {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         mContent = (LinearLayout) findViewById(R.id.linearLayout);
         mSignature = new signature(this, null);
-        mSignature.setBackgroundColor(Color.WHITE);
+        ///////////////////To solve signature transparent background
+        mSignature.setBackgroundColor(Color.TRANSPARENT);
         mContent.addView(mSignature, ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
         mClear = (Button)findViewById(R.id.clear);
         mGetSign = (Button)findViewById(R.id.getsign);
@@ -191,7 +192,8 @@ public class CaptureSignatureActivity extends AppCompatActivity {
             Log.v("log_tag", "Height: " + v.getHeight());
             if(mBitmap == null)
             {
-                mBitmap =  Bitmap.createBitmap (mContent.getWidth(), mContent.getHeight(), Bitmap.Config.RGB_565);;
+                ///////////////////To solve signature transparent background
+                mBitmap =  Bitmap.createBitmap (mContent.getWidth(), mContent.getHeight(),Bitmap.Config.ARGB_4444 );// Bitmap.Config.RGB_565);;
             }
             Canvas canvas = new Canvas(mBitmap);
             try
