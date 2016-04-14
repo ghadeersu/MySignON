@@ -151,8 +151,7 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
      * stamp file
      */
     private PdfReader pdfReader;
-
-
+    private Button mSignAll;
     public PdfRendererBasicFragment() {
     }
 
@@ -179,6 +178,7 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
         mSelectSignature=(Button) view.findViewById(R.id.select);
         mSign=(Button) view.findViewById(R.id.sign);
         mSignatureImage=(ImageView)view.findViewById(R.id.signatureImage);
+        mSignAll=(Button) view.findViewById(R.id.signall);
         changeImageView();
         // Bind events.
         mButtonPrevious.setOnClickListener(this);
@@ -235,7 +235,74 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
                                         }
                                         if (SHA512.checkSHA512(messagedigest, test)) {
 System.out.println("step 14: "+mSignatureImage.getX()+"," +mSignatureImage.getY());
-                                            merge(mSignatureImage.getX(), mSignatureImage.getY(), mCurrentPage.getIndex()+1);
+                                            merge(mCurrentPage.getIndex()+1);
+
+                                            File f2 = new File(newP);
+
+                                            System.out.println("path " + f2.getPath());
+                                            File ff = new File(path);
+
+                                            f2.renameTo(test);
+                                            new HDWFTP_Upload_Update(getActivity()).execute(path);
+
+
+                                        } else {
+                                            AlertDialog alert = new AlertDialog.Builder(getActivity()).setMessage("You Altered the file").setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // do nothing
+                                                }
+                                            }).show();
+                                        }
+                                    }
+                                    break;
+
+
+                                }
+                            }
+                            counter++;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+
+                };
+                queryRef.addValueEventListener(listener);
+            }
+        });
+        mSignAll.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //signature
+                final File test = new File(path);
+                ////////////////check hash//////////////////////////////
+
+                Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents/");
+                Query queryRef = ref.orderByKey().equalTo(session.docKey);
+
+                System.out.println(session.docKey);
+                ValueEventListener listener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (counter == 0) {
+                            if (dataSnapshot.exists()) {
+                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                    if (child.getKey().equals(session.docKey)) {
+                                        messagedigest = child.child("messagedigest").getValue(String.class);
+                                        System.out.println(messagedigest + "      " + "message Di");
+                                        System.out.println("now     " + SHA512.calculateSHA512(test));
+                                        if (session.docKey != null) {
+                                            //        System.out.println(session.docKey);
+                                            System.out.println("yes");
+
+                                        } else {
+                                            System.out.println("no ");
+
+                                        }
+                                        if (SHA512.checkSHA512(messagedigest, test)) {
+                                            System.out.println("step 14: "+mSignatureImage.getX()+"," +mSignatureImage.getY());
+                                            merge(-1);
 
                                             File f2 = new File(newP);
 
@@ -330,8 +397,8 @@ System.out.println("step 14: "+mSignatureImage.getX()+"," +mSignatureImage.getY(
                 case MotionEvent.ACTION_MOVE:
                     if(moving)
                     {
-                        x = event.getX();//getRawX();//-(mPage/(mImageView.getHeight()*mZoom));//- mImageView.getWidth()/2;
-                        y = event.getY();//getRawY();//-(mPage/(mImageView.getWidth()*mZoom));//- mImageView.getHeight()*3/2;
+                        x = event.getX();//-(mPage/(mImageView.getHeight()*mZoom));//- mImageView.getWidth()/2;
+                        y = event.getY();//-(mPage/(mImageView.getWidth()*mZoom));//- mImageView.getHeight()*3/2;
                         xTouch=event.getRawX();
                         yTouch=event.getRawY();
                         mSignatureImage.setX(x);
@@ -479,7 +546,7 @@ System.out.println("step 1: "+session.userkey);
         queryRef.addValueEventListener(listener);
     }
 
-    public void merge(float x,float y, int pageNum) {
+    public void merge(int pageNum) {
         try {
 
             System.out.println("step 9: "+signatureByte);
@@ -487,14 +554,17 @@ System.out.println("step 1: "+session.userkey);
             //finish();
             pdfReader = new PdfReader(path);
             //fix y
-            y=pdfReader.getCropBox(pageNum).getHeight()-(y/2);
-            x=pdfReader.getCropBox(pageNum).getWidth()-(x/4);
-           // x+=mSignatureImage.getWidth()/5;
-            y-=(mSelectSignature.getHeight()/4);
-            System.out.println("step 14: "+x+"," +y);
-            //x=xTouch;
-            //y=yTouch;
-            System.out.println("step 15: "+x+"," +y);
+            Matrix matrix = mSignatureImage.getImageMatrix();
+            // Get the values of the matrix
+            float[] values = new float[9];
+            matrix.getValues(values);
+            float relativeX = (mSignatureImage.getX() - values[2]) / values[0];
+            float relativeY = (mSignatureImage.getY() - values[5]) / values[4];
+            x=relativeX;
+            y=relativeY;
+            if(pageNum!=-1){
+            y=pdfReader.getCropBox(pageNum).getHeight()-y;
+            y-=mSign.getHeight();}
             PdfStamper pdfStamper = new PdfStamper(pdfReader,
                     new FileOutputStream(newP));
             System.out.println();
@@ -502,12 +572,14 @@ System.out.println("step 1: "+session.userkey);
 
             if (pageNum==-1) {
 
+                y=pdfReader.getCropBox(1).getHeight()-y;
+                y-=mSign.getHeight();
                 for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
 
                     //put content under
-                    PdfContentByte content = pdfStamper.getUnderContent(i);
-                    image.setAbsolutePosition(x, y);
-                    content.addImage(image);
+                    PdfContentByte content;// = pdfStamper.getUnderContent(i);
+                   // image.setAbsolutePosition(x, y);
+                   // content.addImage(image);
 
                     //put content over
                     content = pdfStamper.getOverContent(i);
