@@ -12,7 +12,7 @@ public class session {
     public static String requesterID;
     public static String userEmail;
     public static String requestID;
-
+    public static int oldNumberOfRequests;
 
     public static void destructor(){
         userkey=null;
@@ -22,6 +22,7 @@ public class session {
         requesterID=null;
         userEmail=null;
         requestID=null;
+        oldNumberOfRequests=0;
 
     }
 

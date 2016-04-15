@@ -14,6 +14,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".IntroActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_intro"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -22,24 +23,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".DocumentActivity" />
-        <activity android:name=".SettingActivity" />
-        <activity android:name=".DocumentOwnerList" />
-        <activity android:name=".MyPdfViewerActivity" />
-        <activity android:name=".MyImageViewerActivity" />
-        <activity android:name=".SignatureSelectActivity" />
-        <activity android:name=".rendertry" />
+        <activity android:name=".HomeActivity" android:screenOrientation="portrait" />
+        <activity android:name=".DocumentActivity" android:screenOrientation="portrait" />
+        <activity android:name=".SettingActivity" android:screenOrientation="portrait" />
+        <activity android:name=".DocumentOwnerList" android:screenOrientation="portrait" />
+        <activity android:name=".MyPdfViewerActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MyImageViewerActivity" android:screenOrientation="portrait" />
+        <activity android:name=".SignatureSelectActivity" android:screenOrientation="portrait" />
+        <activity android:name=".rendertry" android:screenOrientation="portrait" />
         <activity
             android:name=".alertDialog"
-            android:theme="@style/mytheme" />
-        <activity android:name=".CaptureSignatureActivity" />
-        <activity android:name=".Request_Signture" />
-        <activity android:name=".RigesterActivity" />
-        <activity android:name=".SignAndVerifyActivity" />
-        <activity android:name=".GetSignatureActivity" />
-        <activity android:name=".SignatureActivity" />
-        <activity android:name=".ForgotPasswordActivity" >
+            android:theme="@style/mytheme" android:screenOrientation="portrait" />
+        <activity android:name=".CaptureSignatureActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Request_Signture" android:screenOrientation="portrait" />
+        <activity android:name=".RigesterActivity" android:screenOrientation="portrait" />
+        <activity android:name=".SignAndVerifyActivity" android:screenOrientation="portrait" />
+        <activity android:name=".GetSignatureActivity" android:screenOrientation="portrait" />
+        <activity android:name=".SignatureActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ForgotPasswordActivity" android:screenOrientation="portrait">
         </activity>
     </application>
 

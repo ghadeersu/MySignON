@@ -124,10 +124,11 @@ public abstract class Pdftry extends Activity {
     private float mZoom;
     private File mTmpFile;
     private ProgressDialog progress;
-
-    public String signPath;
-    public String newP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/l.pdf";
     public byte[] signatureByte;
+    public String newP = Environment.getExternalStorageDirectory().getAbsolutePath() + "/signon/l.pdf";
+    public String signPath;
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -1544,7 +1545,7 @@ public abstract class Pdftry extends Activity {
             y=pdfReader.getCropBox(1).getHeight()-y;
             PdfStamper pdfStamper = new PdfStamper(pdfReader,
                     new FileOutputStream(newP));
-
+            System.out.println("step 9: "+signatureByte);
             Image image = Image.getInstance(signatureByte);
 
             if (pageNum==-1) {

@@ -1,6 +1,7 @@
 package learn;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -36,6 +37,8 @@ public class IntroActivity extends FragmentActivity {
 
 
             } else {
+                session.destructor();
+                SaveSharedPreference.clearShared(this);
                 System.out.println("User is logged out");
                 setContentView(R.layout.activity_intro);
                 Button introActivityLoginButton = (Button) findViewById(R.id.introActivityLoginButton);
@@ -66,8 +69,11 @@ public class IntroActivity extends FragmentActivity {
 
                                                         homeintent.putExtra("key", child.getKey());
                                                         homeintent.putExtra("Email", email.getText().toString());
+                                                        session.userkey=child.getKey();
+                                                        session.userEmail=email.getText().toString();
                                                         SaveSharedPreference.setUserName(IntroActivity.this, child.getKey());
                                                         SaveSharedPreference.setEmail(IntroActivity.this, email.getText().toString());
+                                                        SaveSharedPreference.setName(IntroActivity.this, child.child("username").getValue(String.class));
                                                         startActivity(homeintent);
 
                                                     }
@@ -91,6 +97,8 @@ public class IntroActivity extends FragmentActivity {
                                     @Override
                                     public void onAuthenticationError(FirebaseError firebaseError) {
                                         // there was an error
+                                        Toast toast = Toast.makeText(IntroActivity.this, "wrong credentials", Toast.LENGTH_LONG);
+                                        toast.show();
                                     }
                                 });
 

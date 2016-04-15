@@ -110,8 +110,10 @@ public class FTP_Download extends AsyncTask <String, Void, Long>{
                         break;
                     case "Sign":
                         if(Type.equals("pdf")){
-                        Intent i = new Intent(context, MyPdfViewerActivity.class);
-                        i.putExtra(Pdftry.EXTRA_PDFFILENAME, FullPath.toString());
+                        //Intent i = new Intent(context, MyPdfViewerActivity.class);
+                        Intent i = new Intent(context,rendertry.class);
+                       // i.putExtra(Pdftry.EXTRA_PDFFILENAME, FullPath.toString());
+                           i.putExtra("path", FullPath.toString());
                         context.startActivity(i);
                         } else{
                             Intent i = new Intent(context, MyImageViewerActivity.class);

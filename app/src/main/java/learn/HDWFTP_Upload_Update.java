@@ -165,7 +165,7 @@ String originalOwner;
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progress = ProgressDialog.show(context, "Uploading", "Uploading Document ", true, true);
+        progress = ProgressDialog.show(context, "Signing", "Signing Document ", true, false);
     }
     @Override
     protected void onPostExecute(Long aLong) {
@@ -174,7 +174,7 @@ String originalOwner;
         Intent alert=new Intent(context, alertDialog.class);
         if(aLong==1) {
             progress.dismiss();
-            message = "File uploaded successfully.";
+            message = "File Signed successfully.";
             // ghadeer
             Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/documents");
             Query queryRef = ref.orderByChild("documentOwnerID").equalTo(session.userkey);
@@ -206,7 +206,7 @@ String originalOwner;
             queryRef.addListenerForSingleValueEvent(listener);
         }
         else
-            message="Error while uploading file.";
+            message="Error while Signning file.";
         alert.putExtra("message", message);
         context.startActivity(alert);
     }

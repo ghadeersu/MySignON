@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -55,6 +56,7 @@ public class HomeActivity extends BaseActivity {
     ImageView signatureImageView;
     TextView pendingTextViewHome;
     String path;
+
     int numberofRequests;
     ImageView imageView;
     private static final int FILE_SELECT_CODE = 0;
@@ -78,28 +80,35 @@ public class HomeActivity extends BaseActivity {
             test();
         }
         signatureImageView=(ImageView)findViewById(R.id.homeSignatureImageView);
-        Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/"+session.userkey+"/username/");
-        Query queryRef = ref.orderByValue();
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TextView usernametext = (TextView)findViewById(R.id.textView15);
-                usernametext.setText((String) dataSnapshot.getValue());
-                System.out.println(session.userEmail);
-                String x=session.userEmail;
-                Emailtext = (TextView)findViewById(R.id.textView16);
-                Emailtext.setText(x);
-            }
+        if(SaveSharedPreference.getUserName(HomeActivity.this).isEmpty()) {
+            Firebase ref = new Firebase("https://torrid-heat-4458.firebaseio.com/users/" + session.userkey + "/username/");
+            Query queryRef = ref.orderByValue();
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    TextView usernametext = (TextView) findViewById(R.id.textView15);
+                    usernametext.setText((String) dataSnapshot.getValue());
+                    System.out.println(session.userEmail);
+                    String x = session.userEmail;
+                    Emailtext = (TextView) findViewById(R.id.textView16);
+                    Emailtext.setText(x);
+                }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
 
-            }
-        };
+                }
+            };
 
-        queryRef.addListenerForSingleValueEvent(listener);
+            queryRef.addListenerForSingleValueEvent(listener);
 
-
+        }
+        else{
+            TextView usernametext = (TextView) findViewById(R.id.textView15);
+            usernametext.setText(SaveSharedPreference.getName(HomeActivity.this));
+            Emailtext = (TextView) findViewById(R.id.textView16);
+            Emailtext.setText(SaveSharedPreference.getEmail(HomeActivity.this));
+        }
     }
     public void uploadDocument(View v){
     ///////////////check permission////////////////
@@ -278,12 +287,6 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ////////logout//////////////////////
-                session.homecounter=0;
-                session.base64=null;
-                session.docKey=null;
-                session.requesterID=null;
-                session.userEmail=null;
-                session.userkey=null;
                 session.destructor();
                 SaveSharedPreference.clearShared(HomeActivity.this);
                 Firebase ref=new Firebase("https://torrid-heat-4458.firebaseio.com");
@@ -303,6 +306,7 @@ public class HomeActivity extends BaseActivity {
     public void onResume(){
 
        changeImageView();
+      //  pendingTextViewHome.setText("Pending Documents: " + session.oldNumberOfRequests + "");
         super.onResume();
 
     }
@@ -355,10 +359,12 @@ void test(){
             for (DataSnapshot child : Req.getChildren()) {
                 if (child.child("status").getValue(String.class).equals("waiting")) {
                     numberofRequests++;
+
                 }
 
             }
             pendingTextViewHome.setText("Pending Documents: " + numberofRequests + "");
+            session.oldNumberOfRequests=numberofRequests;
             numberofRequestQuery.removeEventListener(this);
         }
 
@@ -367,6 +373,8 @@ void test(){
 
         }
     });
+
     }
+
 
 }

@@ -26,9 +26,8 @@ package learn;
         import android.view.MenuItem;
 
 public class rendertry extends Activity {
-
     public static final String FRAGMENT_PDF_RENDERER_BASIC = "pdf_renderer_basic";
-
+    public static final String EXTRA_PDFFILENAME = "net.sf.andpdf.extra.PDFFILENAME";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

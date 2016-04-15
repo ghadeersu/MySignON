@@ -68,7 +68,7 @@ public class HDWFTP_Upload extends AsyncTask<String, Void, Long> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progress = ProgressDialog.show(context, "Uploading", "Uploading Document ", true, true);
+        progress = ProgressDialog.show(context, "Uploading", "Uploading Document ", true, false);
     }
 
     protected Long doInBackground(String... FULL_PATH_TO_LOCAL_FILE ) {
