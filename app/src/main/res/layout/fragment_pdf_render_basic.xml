@@ -105,8 +105,7 @@
             android:id="@+id/signatureImage"
             android:layout_gravity="center"
             android:layout_centerInParent="true"
-            android:visibility="gone"
-            android:src="@drawable/signature" />
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>

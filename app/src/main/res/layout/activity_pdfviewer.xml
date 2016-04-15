@@ -102,9 +102,7 @@
             android:text="Signature"
             android:id="@+id/signimage"
             android:scaleType="fitCenter"
-             android:layout_marginLeft="5dp"
-                  android:layout_marginRight="5dp"
-              android:layout_gravity="center" />
+            android:layout_gravity="center" />
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
@@ -124,8 +122,7 @@
             android:text="Sign"
             android:id="@+id/pdfVsignbutton"
             android:layout_gravity="center"
-            android:onClick="SignDocument"
-            android:layout_marginRight="5dp" />
+            android:onClick="SignDocument" />
 
         <Button
             style="?android:attr/buttonBarButtonStyle"

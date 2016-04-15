@@ -177,8 +177,10 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
         mShare= (Button) view.findViewById(R.id.share);
         mSelectSignature=(Button) view.findViewById(R.id.select);
         mSign=(Button) view.findViewById(R.id.sign);
+        mSign.setEnabled(false);
         mSignatureImage=(ImageView)view.findViewById(R.id.signatureImage);
         mSignAll=(Button) view.findViewById(R.id.signall);
+        mSignAll.setEnabled(false);
         changeImageView();
         // Bind events.
         mButtonPrevious.setOnClickListener(this);
@@ -386,11 +388,16 @@ System.out.println("step 14: "+mSignatureImage.getX()+"," +mSignatureImage.getY(
     private Matrix savedMatrix = new Matrix();*/
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(session.base64.isEmpty())
-        Toast.makeText(getActivity(),"Please select signature",Toast.LENGTH_LONG).show();
             mImageView.getParent().requestDisallowInterceptTouchEvent(true);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    if(mSignatureImage!=null){
+                        Toast.makeText(getActivity(),"Please select a signature",Toast.LENGTH_LONG).show();}
+                    else{
+                        mSign.setEnabled(true);
+                        if(mPdfRenderer.getPageCount()>1)
+                            mSignAll.setEnabled(true);
+                    }
                     mSignatureImage.setVisibility(ImageView.VISIBLE);
                     moving = true;
                     break;
