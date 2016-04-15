@@ -264,7 +264,7 @@ public abstract class Imagetry extends Activity {
             });
 
             //select signature button
-            ImageButton bSelect=(ImageButton)findViewById(R.id.pdfVselectsignimageButton);
+            Button bSelect=(Button)findViewById(R.id.pdfVselectsignimageButton);
             bSelect.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     //signature select function
@@ -273,7 +273,7 @@ public abstract class Imagetry extends Activity {
             });
 
             //share button
-            ImageButton share=(ImageButton)findViewById(R.id.pdfVshareimageButton);
+            Button share=(Button)findViewById(R.id.pdfVshareimageButton);
             share.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     //signature select function
@@ -583,6 +583,7 @@ public abstract class Imagetry extends Activity {
                             y = event.getRawY()-(mPage/(mImageView.getWidth()*mZoom));//- mImageView.getHeight()*3/2;
                             signature.setX(x);
                             signature.setY(y);
+
                             // Coord.setText(Float.toString(y));
                             // Coordx.setText(Float.toString(x));
                         }
@@ -780,10 +781,6 @@ public abstract class Imagetry extends Activity {
 
             addSpace(vg, 6, 6);
         }
-
-
-
-
         private void addSpace(ViewGroup vg, int width, int height) {
             TextView tvSpacer=new TextView(vg.getContext());
             tvSpacer.setLayoutParams(new LinearLayout.LayoutParams(width,height,1));
@@ -813,8 +810,7 @@ public abstract class Imagetry extends Activity {
                 public void run() {
                     mImageView.setImageBitmap(mBi);
                 }
-            });
-        }
+            });}
 
         private void setPageBitmap(Bitmap bi) {
             if (bi != null)
@@ -840,7 +836,7 @@ public abstract class Imagetry extends Activity {
             mGraphView.setPageBitmap(null);
             mGraphView.updateImage();
 
-        Bitmap f= BitmapFactory.decodeFile(signPath);
+            Bitmap f= BitmapFactory.decodeFile(signPath);
             int w = f.getWidth();
             int h = f.getHeight();
             //String path= Environment.getExternalStorageDirectory().getAbsolutePath()+"/signon/download/sign.jpg";

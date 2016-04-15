@@ -314,7 +314,7 @@ public abstract class Pdftry extends Activity {
                 }
             });
             //select signature button
-            ImageButton bSelect=(ImageButton)findViewById(R.id.pdfVselectsignimageButton);
+            Button bSelect=(Button)findViewById(R.id.pdfVselectsignimageButton);
             bSelect.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     //signature select function
@@ -323,7 +323,7 @@ public abstract class Pdftry extends Activity {
             });
 
             //share button
-            ImageButton share=(ImageButton)findViewById(R.id.pdfVshareimageButton);
+            Button share=(Button)findViewById(R.id.pdfVshareimageButton);
             share.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     //signature select function
