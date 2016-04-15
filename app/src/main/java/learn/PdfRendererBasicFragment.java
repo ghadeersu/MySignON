@@ -158,6 +158,9 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
+        if(isBlankOrNull(session.base64)){mSign.setEnabled(false);
+        mSignAll.setEnabled(false);
+        mSignatureImage.setVisibility(View.GONE);}
        changeImageView();
     }
 
@@ -168,7 +171,7 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Retain view references.
         mImageView = (ImageView) view.findViewById(R.id.image);
@@ -208,6 +211,7 @@ public class PdfRendererBasicFragment extends Fragment implements View.OnClickLi
         });
         mSign.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 //signature
                 final File test = new File(path);
 
@@ -386,19 +390,30 @@ System.out.println("step 14: "+mSignatureImage.getX()+"," +mSignatureImage.getY(
     /*
     private Matrix matrix = new Matrix();
     private Matrix savedMatrix = new Matrix();*/
+    public static boolean isBlankOrNull(String str) {
+        return (str == null || "".equals(str.trim()));
+    }
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        System.out.println("checkin g" + session.base64);
             mImageView.getParent().requestDisallowInterceptTouchEvent(true);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if(mSignatureImage!=null){
-                        Toast.makeText(getActivity(),"Please select a signature",Toast.LENGTH_LONG).show();}
+                    if(isBlankOrNull(session.base64)){
+                        System.out.println("in if");
+                        Toast.makeText(getActivity(),"Please select a signature",Toast.LENGTH_LONG).show();
+                        mSignatureImage.setVisibility(View.GONE);
+                    mSign.setEnabled(false);
+                        mSignAll.setEnabled(false);
+                    }
                     else{
+                        System.out.println("in else");
                         mSign.setEnabled(true);
                         if(mPdfRenderer.getPageCount()>1)
                             mSignAll.setEnabled(true);
+                        mSignatureImage.setVisibility(ImageView.VISIBLE);
                     }
-                    mSignatureImage.setVisibility(ImageView.VISIBLE);
+
                     moving = true;
                     break;
                 case MotionEvent.ACTION_MOVE:
@@ -535,9 +550,10 @@ System.out.println("step 1: "+session.userkey);
                         if(child.getKey().equals(session.base64)){
                             System.out.println("step 2: "+session.base64);
                             signatureByte= Base64.decode(child.child("signatureBase64").getValue(String.class), Base64.NO_WRAP);
-                            System.out.println("step 3: "+signatureByte.toString());
+                            System.out.println("step 3: " + signatureByte.toString());
                             Bitmap img= BitmapFactory.decodeByteArray(signatureByte, 0, signatureByte.length);
                             mSignatureImage.setImageBitmap(img);
+
 
                         }
                     }
