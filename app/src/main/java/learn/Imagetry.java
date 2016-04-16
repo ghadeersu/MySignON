@@ -166,8 +166,8 @@ public abstract class Imagetry extends Activity {
     /** Called when the activity is first created. */
 //new sign button
     LinearLayout Rlayout;
-    Button sign;
-    Button signAll;
+ //   Button sign;
+  //  Button signAll;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -238,7 +238,7 @@ public abstract class Imagetry extends Activity {
             });
 
             // sign button
-            sign=(Button)findViewById(R.id.pdfVsignbutton);
+    /*        sign=(Button)findViewById(R.id.pdfVsignbutton);
             signAll=(Button)findViewById(R.id.pdfVsignallbutton);
             sign.setEnabled(true);
             signAll.setEnabled(false);
@@ -262,7 +262,7 @@ public abstract class Imagetry extends Activity {
 
                 }
             });
-
+*/
             //select signature button
             Button bSelect=(Button)findViewById(R.id.pdfVselectsignimageButton);
             bSelect.setOnClickListener(new View.OnClickListener() {
@@ -272,7 +272,7 @@ public abstract class Imagetry extends Activity {
                 }
             });
 
-            //share button
+  /*          //share button
             Button share=(Button)findViewById(R.id.pdfVshareimageButton);
             share.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -281,7 +281,7 @@ public abstract class Imagetry extends Activity {
                 }
             });
 
-
+*/
         }
     }
 
@@ -488,7 +488,7 @@ public abstract class Imagetry extends Activity {
         ImageButton bZoomOut;
         ImageButton bZoomIn;
         ImageButton bSelect;
-        ImageButton share;
+        Button share;
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         //private Fragment sign_bar;
         private Button send;
@@ -533,7 +533,7 @@ public abstract class Imagetry extends Activity {
             vl.addView(mImageView);
 
             setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 100));
-            setBackgroundColor(Color.LTGRAY);
+            setBackgroundColor(Color.WHITE);
             setHorizontalScrollBarEnabled(true);
             setHorizontalFadingEdgeEnabled(true);
             setVerticalScrollBarEnabled(true);
@@ -733,22 +733,105 @@ public abstract class Imagetry extends Activity {
 
             addSpace(hl, 6, 6);
 
+            // sign button
+            sign=new Button(context);
+            sign.setLayoutParams(lpChild1);
+            sign.setText("SIGN");
+            sign.setTextSize(14);
+            sign.setBackgroundColor(Color.WHITE);
+            sign.setTextColor(Color.parseColor("#FF7724CC"));
+            sign.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mGraphView.signature.getVisibility() == ImageView.VISIBLE) {
+                        mGraphView.setsignbutton();
+                        sign.setEnabled(false);
+//                        signAll.setEnabled(false);
+                    } else {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Put the signature on the page to sign", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
+
+                }
+            });
+            hl.addView(sign);
+
+
+            // sign button
+           /* signAll=new Button(context);
+            signAll.setLayoutParams(lpChild1);
+            signAll.setText("SignALL");
+            signAll.setBackgroundColor(Color.WHITE);
+            signAll.setTextColor(Color.parseColor("#FF7724CC"));
+            signAll.setTextSize(14);
+            signAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mGraphView.signature.getVisibility() == ImageView.VISIBLE) {
+                        mGraphView.setsignAllbutton();
+                        sign.setEnabled(false);
+                        signAll.setEnabled(false);
+                    } else {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Put the signature on the page to sign", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
+
+                }
+            });
+            hl.addView(signAll);
+*/
+            // sign button
+            share=new Button(context);
+            share.setLayoutParams(lpChild1);
+
+            share.setText("SHARE");
+            share.setBackgroundColor(Color.WHITE);
+            share.setTextColor(Color.parseColor("#FF7724CC"));
+            share.setTextSize(14);
+            share.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //signature select function
+                    shareDocument();
+                }
+            });
+            hl.addView(share);
+
+            /*
+             <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Share"
+            android:id="@+id/pdfVshareimageButton"
+            android:layout_gravity="center" />
+            * */
             // prev button
-            ImageButton bPrev=new ImageButton(context);
+         /*   ImageButton bPrev=new ImageButton(context);
             bPrev.setBackgroundDrawable(null);
             bPrev.setLayoutParams(lpChild1);
             //bPrev.setText("<");
             //bPrev.setWidth(40);
             bPrev.setImageResource(getPreviousPageImageResource());
-            bPrev.setEnabled(false);
+            bPrev.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    prevPage();
+                }
+            });
             hl.addView(bPrev);
 
             // page button
             mBtPage=new Button(context);
             mBtPage.setLayoutParams(lpChild1);
-
-            mBtPage.setText("1" + "/ 1");
-            mBtPage.setEnabled(false);
+            String maxPage = ((mPdfFile==null)?"0":Integer.toString(mPdfFile.getNumPages()));
+            mBtPage.setText(mPage+"/"+maxPage);
+            mBtPage.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    gotoPage();
+                }
+            });
             hl.addView(mBtPage);
 
             // next button
@@ -758,17 +841,24 @@ public abstract class Imagetry extends Activity {
             //bNext.setText(">");
             //bNext.setWidth(40);
             bNext.setImageResource(getNextPageImageResource());
-            bNext.setEnabled(false);
+            bNext.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    nextPage();
+                }
+            });
             hl.addView(bNext);
 
             // addSpace(hl, 20, 20);
-
+*/
             // exit button
 
             Button bExit=new Button(context);
             bExit.setLayoutParams(lpChild1);
-            bExit.setText("X");
+            bExit.setText("EXIT");
             bExit.setWidth(4);
+            bExit.setTextSize(14);
+            bExit.setBackgroundColor(Color.WHITE);
+            bExit.setTextColor(Color.parseColor("#FF7724CC"));
             bExit.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -776,6 +866,7 @@ public abstract class Imagetry extends Activity {
                 }
             });
             hl.addView(bExit);
+
 
             vg.addView(hl);
 

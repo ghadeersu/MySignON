@@ -84,7 +84,7 @@ public class Request_Signture extends ListActivity {
 
     public void DoneButtonOnClick (View view)
     {
-        startActivity(new Intent(Request_Signture.this, DocumentOwnerList.class));
+     //   startActivity(new Intent(Request_Signture.this, DocumentOwnerList.class));
         finish();
     }
 

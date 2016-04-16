@@ -71,7 +71,6 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:id="@+id/bottom_panel"
@@ -102,11 +101,11 @@
             android:text="Signature"
             android:id="@+id/signimage"
             android:scaleType="fitCenter"
-             android:layout_marginLeft="5dp"
+          android:layout_marginLeft="5dp"
                   android:layout_marginRight="5dp"
               android:layout_gravity="center" />
 
-        <Button
+       <!-- <Button
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -136,7 +135,7 @@
             android:id="@+id/pdfVshareimageButton"
             android:layout_gravity="center" />
 
-
+-->
 
 
     </LinearLayout>
