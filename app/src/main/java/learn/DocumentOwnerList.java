@@ -23,6 +23,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.util.jar.JarException;
+
 
 /**
  * Created by Naseebah on 26/02/16.
@@ -61,7 +63,7 @@ public class DocumentOwnerList extends ListActivity {
 
         Bundle exras = getIntent().getExtras();
         View view=new View(this);
-
+try{
         switch (exras.getString("choice")){
 
             case "owner":
@@ -78,7 +80,10 @@ public class DocumentOwnerList extends ListActivity {
                 break;
 
 
-        }
+        }}
+catch (Exception e){
+    mydocsclick(view);
+}
 
         //getListView().setChoiceMode (ListView.);
         //  getListView().setOnItemSelectedListener(new MyselectClickListener());
