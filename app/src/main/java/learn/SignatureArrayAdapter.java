@@ -70,6 +70,7 @@ public class SignatureArrayAdapter extends BaseAdapter implements ChildEventList
     public void removeItem(signature signature) {
         //TODO: Remove data from Firebase
         mFireBase.child(signature.getKey()).removeValue();
+        session.base64="";
     }
 
     public void addItem(signature signature) {

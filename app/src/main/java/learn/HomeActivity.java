@@ -327,7 +327,7 @@ public class HomeActivity extends BaseActivity {
                     }
                 }
                 else
-                    test.setImageResource(R.drawable.signature);
+                    test.setImageResource(0);
 
 
             }

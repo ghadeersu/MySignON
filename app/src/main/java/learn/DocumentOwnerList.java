@@ -23,6 +23,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.util.jar.JarException;
+
 
 /**
  * Created by Naseebah on 26/02/16.
@@ -61,7 +63,7 @@ public class DocumentOwnerList extends ListActivity {
 
         Bundle exras = getIntent().getExtras();
         View view=new View(this);
-
+try{
         switch (exras.getString("choice")){
 
             case "owner":
@@ -78,7 +80,10 @@ public class DocumentOwnerList extends ListActivity {
                 break;
 
 
-        }
+        }}
+catch (Exception e){
+    mydocsclick(view);
+}
 
         //getListView().setChoiceMode (ListView.);
         //  getListView().setOnItemSelectedListener(new MyselectClickListener());
@@ -87,6 +92,7 @@ public class DocumentOwnerList extends ListActivity {
 
     String DocURL , EncKey,DocName,DocOwner;
     String Operation;
+    static boolean firstsigner= false;
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -172,15 +178,62 @@ public class DocumentOwnerList extends ListActivity {
                             1);
                     permission=false;
                 }
-                else {
-                FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentOwnerList.this).execute(DocURL);
-                v.setEnabled(false);
-                signB.setEnabled(false);
-                requestB.setEnabled(false);
-                deleteB.setEnabled(false);
+                else { if(List_Name=="completed"){
 
-            }}
+                    DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                    app.verify(DocName,EncKey,DocOwner,DocURL,Operation,DocumentOwnerList.this);
+
+                }
+                else {
+                    if (List_Name == "pending") {
+
+                        Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+                        final Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
+                        final ValueEventListener listener0 = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot DocID) {
+                                System.out.println("GHG waiting list signature exists ? " + DocID.exists());
+                                System.out.println("GHG waiting list digsignature key :::::" + DocID.getKey());
+                                if (!DocID.exists()) {
+                                    System.out.println("GHG before remove event lisener");
+                                    queryRef.removeEventListener(this);
+                                    firstsigner = true;
+                                    System.out.println("GHG inside docID not exist");
+                                    // this variable change doesnt apply to the variable inside if exists
+                                    FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                                    new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+
+                                }
+
+
+                                if (DocID.exists()) {
+                                    queryRef.removeEventListener(this);
+                                    System.out.println("GHG inside not first signer");
+                                    DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                                    app.verify(DocName, EncKey, DocOwner, DocURL, Operation, DocumentOwnerList.this);
+
+                                }
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        };
+                        queryRef.addListenerForSingleValueEvent(listener0);
+                    } else {
+                        FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                        new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+                    }
+
+                    v.setEnabled(false);
+                    signB.setEnabled(false);
+                    requestB.setEnabled(false);
+                    deleteB.setEnabled(false);
+
+                }}}
         });
 
 
@@ -198,15 +251,67 @@ public class DocumentOwnerList extends ListActivity {
                 }
                 else {
 
+                    if(List_Name=="completed"){
 
+                        DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                        app.verify(DocName,EncKey,DocOwner,DocURL,Operation,DocumentOwnerList.this);
+
+                    }
+                    else{
+                        if(List_Name=="pending"){
+
+                            Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
+                            final Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
+                            final ValueEventListener listener0 = new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot DocID) {
+                                    System.out.println("GHG waiting list signature exists ? "+DocID.exists());
+                                    System.out.println("GHG waiting list digsignature key :::::"+DocID.getKey());
+                                    if (!DocID.exists()) {
+                                        System.out.println("GHG before remove event lisener");
+                                        queryRef.removeEventListener(this);
+                                        firstsigner= true;
+                                        System.out.println("GHG inside docID not exist");
+                                        // this variable change doesnt apply to the variable inside if exists
+                                        FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
+                                        new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+
+                                    }
+
+
+                                    if(DocID.exists()) {
+                                        queryRef.removeEventListener(this);
+                                        System.out.println("GHG inside not first signer");
+                                        DigitalSignatureSignAndVerfiy app = new DigitalSignatureSignAndVerfiy();
+                                        app.verify(DocName, EncKey, DocOwner, DocURL, Operation, DocumentOwnerList.this);
+
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+
+                                }
+                            };
+
+                            queryRef.addListenerForSingleValueEvent(listener0);
+
+
+
+                        }
+
+                    else{
                 FTP_Download.iniate(DocName, EncKey, DocOwner, Operation);
-                new FTP_Download(DocumentOwnerList.this).execute(DocURL);
+                new FTP_Download(DocumentOwnerList.this).execute(DocURL);}
+
                 v.setEnabled(false);
                 viewB.setEnabled(false);
                 requestB.setEnabled(false);
                 deleteB.setEnabled(false);
 
-            }}
+            }}}
         });
 
         /////////////////////////////Delete Button/////////////////
