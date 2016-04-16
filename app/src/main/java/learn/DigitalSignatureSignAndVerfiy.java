@@ -57,7 +57,6 @@ public class DigitalSignatureSignAndVerfiy {
    private Context context;
     private boolean check = true;
     private  int childcount;
-    boolean FirstSigner= false; // document without signature -- to idnetify first document to be signd so that it doesnt varify after signing
     private  int childcount2;
     public void Startsigningowner() { // get public key from FIREBASE
 
@@ -342,32 +341,6 @@ System.out.println("GHG inside ECDSAsiging");
 
     }
 
-    public void checkifitsthefirstSigner(){
-
-        Firebase signFire = new Firebase("https://torrid-heat-4458.firebaseio.com/digsignature/");
-        Query queryRef = signFire.orderByChild("docID").equalTo(session.docKey);
-        ValueEventListener listener0 = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot DocID) {
-                if (DocID.exists()) {
-
-                    FirstSigner=true;
-
-
-
-                }
-
-
-            }
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                };
-
-                queryRef.addValueEventListener(listener0);
-
-    }
 
     public void searchDIgitals() {
 
