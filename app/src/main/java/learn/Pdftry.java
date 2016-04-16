@@ -1239,7 +1239,7 @@ public abstract class Pdftry extends Activity {
                 }
             });
             hl.addView(sign);
-
+//
 
             // sign button
             signAll=new Button(context);

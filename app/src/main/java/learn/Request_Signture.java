@@ -40,7 +40,7 @@ public class Request_Signture extends ListActivity {
             Button btnAdd = (Button) findViewById(R.id.add_signer_button);
             btnAdd.setEnabled(false);
             Toast.makeText(Request_Signture.this, "you need to wait untill the requested signers sign the document", Toast.LENGTH_SHORT).show();
-            finish();
+        //    finish();
 
         }
         if (flag)

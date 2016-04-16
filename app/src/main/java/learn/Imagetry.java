@@ -851,7 +851,7 @@ public abstract class Imagetry extends Activity {
             // addSpace(hl, 20, 20);
 */
             // exit button
-
+//
             Button bExit=new Button(context);
             bExit.setLayoutParams(lpChild1);
             bExit.setText("EXIT");
