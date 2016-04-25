@@ -71,13 +71,12 @@ public class HomeActivity extends BaseActivity {
         mNavigationView.getMenu().getItem(0).setChecked(true);
         Firebase.setAndroidContext(this);
         numberofRequests=0;
-        test();
+
         if(session.homecounter==0){
         Bundle extras = getIntent().getExtras();
         session.userkey = extras.getString("key");
         session.userEmail = extras.getString("Email");
         session.homecounter=1;
-            test();
         }
         signatureImageView=(ImageView)findViewById(R.id.homeSignatureImageView);
         if(SaveSharedPreference.getUserName(HomeActivity.this).isEmpty()) {
@@ -308,6 +307,7 @@ public class HomeActivity extends BaseActivity {
        changeImageView();
       //  pendingTextViewHome.setText("Pending Documents: " + session.oldNumberOfRequests + "");
         super.onResume();
+        test();
 
     }
 
